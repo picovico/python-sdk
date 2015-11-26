@@ -7,7 +7,7 @@ print(r)
 r = app.profile()
 print(r)
 
-r = app.begin("Aaeronn")
+r = app.begin("Some cool project")
 print(r)
 print("Begin project")
 
@@ -52,11 +52,15 @@ print("Music added")
 # r = app.get_styles()
 # print(r)
 # print("Style added")
-r = app.remove_credits()
-print(r)
+# r = app.remove_credits()
+# print(r)
 r = app.add_credits("Music", "Aaeronn")
 print(r)
 print("Credit Added")
+
+r = app.add_credits("Photo", "Hem")
+print(r)
+print("Another Credit Added")
 
 
 r = app.set_quality(Picovico.Q_360P)
@@ -74,3 +78,6 @@ print("Quality set")
 r = app.create()
 print(r)
 print("Video Created")
+
+r = app.get_videos()
+print(r)

@@ -1,10 +1,13 @@
 import requests, json, sys
-from lib import urls, utils, constants
+from lib import urls, utils, constants, exceptions
 class PicovicoBase:
 
 	def set_tokens(self, access_key, access_token):
-		self.access_key = access_key
-		self.access_token = access_token
+		if access_key and access_token:
+			self.access_key = access_key
+			self.access_token = access_token
+		else:
+			raise exceptions.UserNotAuthenticated('Not authenticated. Please authenticate first')
 
 	def picovico_auth_headers(self):
 		return {
@@ -44,7 +47,9 @@ class PicovicoBase:
 
 		data = {
 			'name': 'image',
-			'text': caption,
+			'data':{
+				'text': caption,
+			},
 			'asset_id': image_id
 		}
 		self.append_vdd_slide(vdd, data)
@@ -72,6 +77,7 @@ class PicovicoBase:
 
 			vdd['assets'].append(slide)
 
+
 	def append_text_slide(self, vdd, title=None, text=None):
 		'''
 			Picovico: Prepares the slide data for text slides and appends to the vdd
@@ -79,8 +85,10 @@ class PicovicoBase:
 
 		data = {
 			'name': 'text',
-			'title': title,
-			'text': text
+			'data':{
+				'title': title,
+				'text': text
+			}
 		}
 		self.append_vdd_slide(vdd, data)
 

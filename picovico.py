@@ -99,7 +99,7 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			self.vdd = decoded_response
 			self.vdd['assets'] = []
 
-		return self.video_id
+		return self.vdd
 
 	def upload_image(self, image_path, source=None):
 		'''
@@ -236,7 +236,7 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			credit_list = [title, text]	
 
 			self.vdd['credit'].append(credit_list)
-			self.vdd['credit']
+			# self.vdd['credit']
 			return True
 
 		return False
@@ -258,7 +258,7 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		self.vdd['callback_url'] = url
 		return True
 
-	def get(self, video_id):
+	def get_video(self, video_id):
 		'''
 			Picovico: Fetch any existing video. Use open() for editing.
 		'''
@@ -275,19 +275,16 @@ class Picovico(PicovicoBase, PicovicoConstants):
 
 
 		self.append_music(self.vdd)
-		print(self.vdd)
-		
-		some = {}
+
+		video_assets = {}
 		for k,v in self.vdd.items():
 			if type(v) is list:
-				some[k] = json.dumps(v)
+				video_assets[k] = json.dumps(v)
 			else:
-				some[k] = v
+				video_assets[k] = v
 
-		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.SAVE_VIDEO).format(self.video_id), data=some, headers=self.picovico_auth_headers())
+		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.SAVE_VIDEO).format(self.video_id), data=video_assets, headers=self.picovico_auth_headers())
 	
-		# decoded_response = json.loads(response.text)
-		# return decoded_response
 		return (response.text)
 
 	def preview(self):
@@ -307,14 +304,8 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			Picovico: Send the actual rendering request to rendering engine
 		'''
 		video_response = self.save()
-		print("Lets picovico")
-		print(video_response)
-		print("In the create")
-		# print(video_response)
-		print(self.vdd)
+
 		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.CREATE_VIDEO).format(self.video_id), headers=self.picovico_auth_headers())
-		print("Hellooww")
-		print(response)
 		decoded_response = json.loads(response.text)
 
 		return decoded_response
@@ -354,6 +345,14 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		decoded_response = json.loads(response.text)
 		return decoded_response
 
+	def single_draft(self, draft_id):
+		'''
+			Picovico: Returns single draft by id
+		'''
+		response = requests.get((urls.PICOVICO_API_ENDPOINT + urls.GET_SINGLE_DRAFT).format(draft_id), headers=self.picovico_auth_headers())
+		decoded_response = json.loads(response.text)
+		return decoded_response
+
 	def dump(self):
 		'''
 			Picovico: Creates a readable dump of the current project
@@ -361,10 +360,6 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		if self.vdd:
 			return self.vdd
 		return False
-
-
-
-
 
 
 

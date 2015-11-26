@@ -1,0 +1,2 @@
+class UserNotAuthenticate(Exception):
+	pass
