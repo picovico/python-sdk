@@ -5,7 +5,7 @@
 #Config for Picovico endpoint api url
 PICOVICO_API_ENDPOINT = "https://uapi-f1.picovico.com/v2.1/"
 
-LOGIN = "/login"
+LOGIN = "login"
 APP_AUTHENTICATE = "login/app"
 BEGIN_PROJECT = "me/videos"
 SINGLE_VIDEO = "me/videos/{}"
@@ -22,4 +22,4 @@ UPLOAD_PHOTO = "me/photos"
 GET_STYLES = "me/styles"
 GET_DRAFT = "me/draft"
 GET_SINGLE_DRAFT = "me/draft/{}"
-ME = "/me"
+ME = "me"

@@ -18,6 +18,34 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		else:
 			self.device_id = device_id
 
+		# super(Picovico, self).__init(app_id=None, app_secret=None, device_id=None)
+		# Q_360 = 
+
+	def login(self, username, password, app_id):
+		'''
+			Picovico: Login with username and password. APP_ID is mendetory for both logins
+		'''
+		if username and password:
+			data = {
+				'username': username,
+				'password': password,
+				'app_id' : app_id,
+				'device_id': self.device_id
+			}
+
+			response = request.posts(urls.PICOVICO_API_ENDPOINT + urls.LOGIN, data)
+			decoded_response = json.loads(response.text)
+			try:
+				self.access_key = decoded_response['access_key']
+				self.access_token = decoded_response['access_token']
+			except KeyError:
+				pass
+
+			if self.access_key and self.access_token:
+				self.set_login_tokens(self.access_key, self.access_token)
+
+			return decoded_response
+
 	def authenticate(self):
 		'''
 			Picovico: login with app_id and app_secret
@@ -79,7 +107,6 @@ class Picovico(PicovicoBase, PicovicoConstants):
 				return False
 
 		return self.vdd
-
 
 	def begin(self, name, quality=360): 
 		'''
