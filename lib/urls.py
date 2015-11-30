@@ -1,5 +1,5 @@
 '''
-	Url configuration for Picovico python-sdk
+    Url configuration for Picovico python-sdk
 '''
 
 #Config for Picovico endpoint api url
