@@ -1,25 +1,35 @@
 """
-When the access_key and access_token aren't available
-for the curent session
+Picovico:
+	When the access_key and access_token aren't available
+	for the curent session
 """
 class PicovicoUnauthorizedException(Exception):
-     def __init__():
-        super(PicovicoUnauthorizedException, self).__init__()
+
+	def __init__(self, message=None):
+		self.message = "Not Authorised"
+
+	def __str__(self):
+		return repr(self.message)
 
 
 """
-When the response status code is not 200
-Something like : 
-{
-    "error":{
-
-    }
-}
+Picovico:
+	When the response status code is not 200
+	Something like : 
+	{
+		"error":{
+			'status': 400,
+			'message': "Some messages"
+		}
+	}
 """
 class PicovicoAPIResponseException(Exception):
 
-    code = None
-    message = None
-    
-    def __init__():
-        super(PicovicoAPIResponseException, self).__init__()
+	def __init__(self, status=None, message=None, data=None):
+		self.status = status
+		self.message = message
+		self.data = data
+
+	def __str__(self):
+		return  repr({'error':{'status':self.status,'message': self.message}, 'data': self.data})
+
