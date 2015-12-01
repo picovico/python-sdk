@@ -33,12 +33,12 @@ class Picovico(PicovicoConstants, PicovicoUploads):
 				'device_id': self.device_id
 			}
 
-			response = self.post(urls.LOGIN, data=data)
+			response = self.post(urls.LOGIN, data=data, is_anonymous=True)
 			try:
 				self.access_key = response['access_key']
 				self.access_token = response['access_token']
 			except KeyError:
-				raise DataNotFound("Not authorised")
+				raise DataNotFound(messages.ACCESS_KEY_AND_ACCESS_TOKEN_MISSING)
 
 			self.set_login_tokens(self.access_key, self.access_token)
 

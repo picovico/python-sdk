@@ -13,10 +13,10 @@ class PicovicoAPIRequest(base.PicovicoBase):
 			"X-Access-Key":None,
 			"X-Access-Token":None
 		}
-
+		
 		if not is_anonymous and not self.is_logged_in():
 			raise exceptions.PicovicoUnauthorizedException()
-			
+
 		return self.picovico_auth_headers()
 
 	def get(self, url=None, is_anonymous=False):
