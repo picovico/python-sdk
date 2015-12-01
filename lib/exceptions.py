@@ -33,3 +33,6 @@ class PicovicoAPIResponseException(Exception):
 	def __str__(self):
 		return  repr({'error':{'status':self.status,'message': self.message}, 'data': self.data})
 
+class DataNotFound(Exception):
+	pass
+

@@ -1,11 +1,12 @@
 import requests, json, sys
-from lib import config, urls
+from lib import config, urls, messages
 from lib.base import PicovicoBase
+from lib.api import PicovicoAPIRequest
 from lib.constants import PicovicoConstants
-from lib.exceptions import PicovicoAPIResponseException, PicovicoUnauthorizedException
+from lib.uploads import PicovicoUploads
+from lib.exceptions import PicovicoAPIResponseException, PicovicoUnauthorizedException, DataNotFound
 
-
-class Picovico(PicovicoBase, PicovicoConstants):
+class Picovico(PicovicoConstants, PicovicoUploads):
 
 	def __init__(self, app_id=None, app_secret=None, device_id=None):
 		'''
@@ -32,23 +33,16 @@ class Picovico(PicovicoBase, PicovicoConstants):
 				'device_id': self.device_id
 			}
 
-			response = request.posts(urls.PICOVICO_API_ENDPOINT + urls.LOGIN, data)
-			decoded_response = json.loads(response.text)
-
-			if not response.status_code == 200:
-				error = decoded_response['error']
-				raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
+			response = self.post(urls.LOGIN, data=data)
 			try:
-				self.access_key = decoded_response['access_key']
-				self.access_token = decoded_response['access_token']
+				self.access_key = response['access_key']
+				self.access_token = response['access_token']
 			except KeyError:
-				raise PicovicoUnauthorizedException("Not authorised")
+				raise DataNotFound("Not authorised")
 
-			if self.access_key and self.access_token:
-				self.set_login_tokens(self.access_key, self.access_token)
+			self.set_login_tokens(self.access_key, self.access_token)
 
-			return decoded_response
+			return response
 
 	def authenticate(self):
 		'''
@@ -60,23 +54,17 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			'device_id':self.device_id
 			}
 
-		response = requests.post(urls.PICOVICO_API_ENDPOINT + urls.APP_AUTHENTICATE, data)
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
+		response = self.post(url=urls.APP_AUTHENTICATE, data=data, is_anonymous=True)
+		
 		try:
-			self.access_key = decoded_response['access_key']
-			self.access_token = decoded_response['access_token']
+			self.access_key = response['access_key']
+			self.access_token = response['access_token']
 		except KeyError:
-			raise PicovicoUnauthorizedException("Not Authorised")
+			raise DataNotFound(messages.ACCESS_KEY_AND_ACCESS_TOKEN_MISSING)
 
-		if self.access_key and self.access_token:
-			self.set_login_tokens(self.access_key, self.access_token)
+		self.set_login_tokens(self.access_key, self.access_token)
 
-		return (decoded_response)
+		return response
 
 	def set_login_tokens(self, access_key, access_tokens):
 		'''
@@ -88,16 +76,8 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		'''
 			Picovico: Generates profile for authenticated user
 		'''
-
-		response = requests.get(urls.PICOVICO_API_ENDPOINT + urls.ME, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
-
+		response = self.get(url=urls.ME)
+		return response
 
 	def open(self, video_id=None):
 		'''
@@ -132,16 +112,11 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			'name': name,
 			'quality': quality,
 		}
-		response = requests.post(urls.PICOVICO_API_ENDPOINT + urls.BEGIN_PROJECT, data, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
+		response = self.post(url=urls.BEGIN_PROJECT, data=data)
 
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		if decoded_response['id']:
-			self.video_id = decoded_response['id']
-			self.vdd = decoded_response
+		if response['id']:
+			self.video_id = response['id']
+			self.vdd = response
 			self.vdd['assets'] = []
 
 		return self.vdd
@@ -169,7 +144,6 @@ class Picovico(PicovicoBase, PicovicoConstants):
 
 		return response
 
-
 	def add_library_image(self, image_id, caption=""):
 		'''
 			Picovico: Appends any image previously uploaded.
@@ -180,33 +154,20 @@ class Picovico(PicovicoBase, PicovicoConstants):
 
 		return False
 
-
 	def get_musics(self):
 		'''
 			Picovico: List all the uploaded musics
 		'''
-		response = requests.get(urls.PICOVICO_API_ENDPOINT + urls.GET_MUSICS, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.get(urls.GET_MUSICS)
+		return response
 
 	def get_library_musics(self):
 		'''
 			Picovico: List all the library musics
 		'''
-		response = requests.get(urls.PICOVICO_API_ENDPOINT + urls.GET_LIBRARY_MUSICS, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
-
+		response = self.get(urls.GET_LIBRARY_MUSICS)
+		return response
+		
 	def add_text(self, title="", text=""):
 		'''
 			Picovico: Adds text slide to the project
@@ -228,7 +189,6 @@ class Picovico(PicovicoBase, PicovicoConstants):
 
 		return response
 
-
 	def add_library_music(self, music_id):
 		'''
 			Picovico: Define any previously uploaded music, or any music available from library. 
@@ -244,29 +204,16 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			Picovico: Deletes the music from your library
 		'''
 		if music_id:
-			response = requests.delete((urls.PICOVICO_API_ENDPOINT + urls.DELETE_MUSIC).format(music_id), headers=self.picovico_auth_headers())
-			decoded_response = json.loads(response.text)
-
-			if not response.status_code == 200:
-				error = decoded_response['error']
-				raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-			return decoded_response
-		
+			response = self.delete((urls.DELETE_MUSIC).format(music_id))
+			return response
 		return False
 
 	def get_styles(self):
 		'''
 			Picovico: Fetches styles available for the logged in account.
 		'''
-		response = requests.get(urls.PICOVICO_API_ENDPOINT + urls.GET_STYLES, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.get(urls.GET_STYLES)
+		return response
 
 	def set_style(self, style_machine_name):
 		'''
@@ -287,7 +234,6 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			return True
 
 		return False
-
 
 	def add_credits(self, title=None, text=None):
 		'''
@@ -327,14 +273,8 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		'''
 			Picovico: Fetch any existing video. Use open() for editing.
 		'''
-		response = requests.get((urls.PICOVICO_API_ENDPOINT + urls.SINGLE_VIDEO).format(video_id), headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.get((urls.SINGLE_VIDEO).format(video_id))
+		return response
 
 	def save(self):
 		'''
@@ -342,7 +282,6 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		'''
 		if not self.video_id:
 			return None
-
 
 		self.append_music(self.vdd)
 
@@ -353,13 +292,8 @@ class Picovico(PicovicoBase, PicovicoConstants):
 			else:
 				video_assets[k] = v
 
-		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.SAVE_VIDEO).format(self.video_id), data=video_assets, headers=self.picovico_auth_headers())
-		
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return (response.text)
+		response = self.post((urls.SAVE_VIDEO).format(self.video_id), data=video_assets)
+		return response
 
 	def preview(self):
 		'''
@@ -369,55 +303,30 @@ class Picovico(PicovicoBase, PicovicoConstants):
 				Rendering state of the video will not be changed.
 		'''
 		video_response = self.save()
-		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.PREVIEW_VIDEO).format(self.video_id), headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.post((urls.PREVIEW_VIDEO).format(self.video_id))
+		return response
 
 	def create(self):
 		'''
 			Picovico: Send the actual rendering request to rendering engine
 		'''
 		video_response = self.save()
-
-		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.CREATE_VIDEO).format(self.video_id), headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.post((urls.CREATE_VIDEO).format(self.video_id))
+		return response
 
 	def duplicate(self, video_id):
 		'''
 			Picovico: Duplicates any video and saves it to the new draft or overwrites if any exists
 		'''
-		response = requests.post((urls.PICOVICO_API_ENDPOINT + urls.DUPLICATE_VIDEO).format(video_id), headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.post((urls.DUPLICATE_VIDEO).format(video_id))
+		return response
 
 	def get_videos(self):
 		'''
 			Picovico: Get list of 15 videos
 		'''
-		response = requests.get(urls.PICOVICO_API_ENDPOINT + urls.GET_VIDEOS, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.get(urls.GET_VIDEOS)
+		return response
 
 	def reset(self):
 		'''
@@ -434,27 +343,15 @@ class Picovico(PicovicoBase, PicovicoConstants):
 		'''
 			Picovico: Returns the current draft saved
 		'''
-		response = requests.get(urls.PICOVICO_API_ENDPOINT + urls.GET_DRAFT, headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.get(urls.GET_DRAFT)
+		return response
 
 	def single_draft(self, draft_id):
 		'''
 			Picovico: Returns single draft by id
 		'''
-		response = requests.get((urls.PICOVICO_API_ENDPOINT + urls.GET_SINGLE_DRAFT).format(draft_id), headers=self.picovico_auth_headers())
-		decoded_response = json.loads(response.text)
-
-		if not response.status_code == 200:
-			error = decoded_response['error']
-			raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-		return decoded_response
+		response = self.get((urls.GET_SINGLE_DRAFT).format(draft_id))
+		return response
 
 	def dump(self):
 		'''

@@ -1,76 +1,25 @@
 import requests, json, sys
-from lib import urls, utils, constants
-from lib.exceptions import PicovicoAPIResponseException
-
+from lib import urls, utils, constants, messages
+from lib.exceptions import PicovicoAPIResponseException, DataNotFound
 
 class PicovicoBase:
 
 	def set_tokens(self, access_key, access_token):
-		if access_key and access_token:
 			self.access_key = access_key
 			self.access_token = access_token
-		else:
-			raise exceptions.PicovicoUnauthorizedException('Not Authorised.')
-
+		
+	def is_logged_in(self):
+		try:
+			if self.access_key and self.access_token:
+				return True
+		except:
+			return False
+		
 	def picovico_auth_headers(self):
 		return {
 			"X-Access-Key":self.access_key,
 			"X-Access-Token":self.access_token
 		}
-
-	def upload_image_file(self, file_path, source=None):
-		if utils.is_local_file(file_path):
-			response = requests.put(urls.PICOVICO_API_ENDPOINT + urls.UPLOAD_PHOTO, file_path, headers=self.picovico_auth_headers())
-			decoded_response = json.loads(response.text)
-
-			if not response.status_code == 200:
-				error = decoded_response['error']
-				raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-			return decoded_response
-		else:
-			data = {
-				'url': file_path,
-				'source': source,
-				'thumbnail_url': file_path
-			}
-			response = requests.post(urls.PICOVICO_API_ENDPOINT + urls.UPLOAD_PHOTO, data, headers=self.picovico_auth_headers())
-			decoded_response = json.loads(response.text)
-
-			if not response.status_code == 200:
-				error = decoded_response['error']
-				raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-			return decoded_response
-			
-	def upload_music_file(self, file_path, source=None):
-		if utils.is_local_file(file_path):
-			data = {
-				'X-Music-Artist': "Unknown",
-				"X-Music-Title": "Unknown - {}".format('r')
-			}
-			response = requests.put(urls.PICOVICO_API_ENDPOINT + urls.UPLOAD_MUSIC, file_path, data, headers=self.picovico_auth_headers())
-			decoded_response = json.loads(response.text)
-
-			if not response.status_code == 200:
-				error = decoded_response['error']
-				raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-			return decoded_response
-		else:
-			data = {
-				'url': file_path,
-				'preview_url': file_path
-			}
-			response = requests.post(urls.PICOVICO_API_ENDPOINT + urls.UPLOAD_MUSIC, data, headers=self.picovico_auth_headers())
-			decoded_response = json.loads(response.text)
-
-			if not response.status_code == 200:
-				error = decoded_response['error']
-				raise PicovicoAPIResponseException(error['status'], error['message'], decoded_response)
-
-			return decoded_response
-
 
 	def append_image_slide(self, vdd, image_id, caption=None):
 
@@ -106,7 +55,6 @@ class PicovicoBase:
 
 			vdd['assets'].append(slide)
 
-
 	def append_text_slide(self, vdd, title=None, text=None):
 		'''
 			Picovico: Prepares the slide data for text slides and appends to the vdd
@@ -133,7 +81,6 @@ class PicovicoBase:
 			'_comment': 'Some cool comment which will replace later'
 		}
 		vdd['_music'] = data
-
 
 	def append_music(self, vdd):
 		'''
