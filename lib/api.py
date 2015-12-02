@@ -1,6 +1,5 @@
 import requests, json, sys
 from lib import urls, constants, exceptions, base
-#import picovico
 
 class PicovicoAPIRequest(base.PicovicoBase):
 

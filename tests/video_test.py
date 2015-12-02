@@ -12,6 +12,8 @@ class PicovicoVideoTest(unittest.TestCase):
         self.app = picovico.Picovico(config.PICOVICO_APP_ID, config.PICOVICO_APP_SECRET)
         authenticate = self.app.authenticate()
         self.assertTrue('access_key' and 'access_token' in authenticate.keys())
+        begin = self.app.begin("My test video")
+        self.assertTrue('id' in begin.keys())
 
     # def test_begin(self):
     #   '''
@@ -47,6 +49,15 @@ class PicovicoVideoTest(unittest.TestCase):
 
         create = self.app.create()
         self.assertEqual(create['status'], 7101)
+
+    # def test_begin(self):
+    #     begin = self.app.begin("My another cool video")
+    #     self.assertTrue('id' in begin.keys())
+
+    def test_add_image(self):
+        image = self.app.add_image('http://s3-us-west-2.amazonaws.com/pv-styles/christmas/pv_christmas_winter_themes.png', "This is caption")
+        self.assertTrue('id' in image.keys())
+
 
 
 
