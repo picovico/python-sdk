@@ -1,8 +1,48 @@
-import requests, json, sys
-from lib import urls, utils, constants, messages
-from lib.exceptions import PicovicoAPIResponseException, DataNotFound
+class PicovicoProject(Picovico):
 
-class PicovicoBase:
+	def upload_image():
+		pass
+
+	def upload_music():
+		pass
+
+	def add_image():
+		pass
+
+	def add_library_image():
+		pass
+
+	def add_text():
+		pass
+
+	def add_music():
+		pass
+
+	def add_library_music():
+		pass
+
+	def delete_music():
+		pass
+
+	def delete_music():
+		pass
+
+	def set_styles():
+		pass
+
+	def set_quality():
+		pass
+
+	def set_credits():
+		pass
+
+	def remove_credits():
+		pass
+
+	def set_callback_url():
+		pass
+
+		pass
 
 	def append_image_slide(self, vdd, image_id, caption=None):
 
@@ -78,5 +118,10 @@ class PicovicoBase:
 
 	def reset_music(self, vdd):
 		del vdd['_music']
+
+
+
+
+
 
 
