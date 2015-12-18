@@ -1,4 +1,4 @@
-from picovico.lib.api import PicovicoApiRequest
+from lib.api import PicovicoApiRequest
 
 class PicovicoMusic(PicovicoApiRequest):
 	'''

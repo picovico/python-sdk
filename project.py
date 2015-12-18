@@ -1,6 +1,8 @@
 from picovico import Picovico
 from lib import constants, urls, utils
 from lib.api import PicovicoAPIRequest
+from lib.components.music import PicovicoMusic
+
 class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 	def open(self, video_id=None):
@@ -45,6 +47,10 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 		return self.vdd
 
+	def upload_music(auth_session=None):
+		return pv_music.upload_music(auth_session=auth_session)
+
+
 	def add_credits(self, title=None, text=None):
 		'''
 			Picovico: Append credit slide to the current project
@@ -72,8 +78,6 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 		return False
 
-
-
 	def append_vdd_slide(self, vdd, slide):
 		'''
 			Picovico: Appends image slides into the project with data
@@ -98,7 +102,6 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 			slide['end_time'] = last_end_time + constants.STANDARD_SLIDE_DURATION
 
 			vdd['assets'].append(slide)
-
 
 	def draft(self):
 		'''
