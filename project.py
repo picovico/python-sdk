@@ -1,10 +1,96 @@
-class PicovicoProject(Picovico):
+from picovico import Picovico
+from lib import constants, urls, utils
+from lib.api import PicovicoAPIRequest
+class PicovicoProject(Picovico, PicovicoAPIRequest):
 
-	def upload_image():
-		pass
+	def open(self, video_id=None):
+		'''
+			Picovico: Open any existing project which has not yet been rendered
+		'''
+		self.video_id = None
+		self.vdd = {}
+		if video_id:
+			picovico_video = self.get(video_id)
+			if picovico_video['status'] == self.VIDEO_INITIAL:
+				self.video_id = video_id
+				self.vdd = picovico_video
 
-	def upload_music():
-		pass
+				quality_cleanups = []
+				for some_quality in self.vdd['quality']:
+					quality_cleanups.append(some_quality)
+
+				self.vdd['quality'] = max(quality_cleanups)
+
+			else:
+				return False
+
+		return self.vdd
+
+	def begin(self, name, quality=constants.Q_360P, auth_session=None): 
+		'''
+			Picovico: Begin the project
+		'''
+		self.video_id = None
+		self.vdd = {}
+		data = {
+			'name': name,
+			'quality': quality,
+		}
+		response = self.post(url=urls.BEGIN_PROJECT, data=data, auth_session=auth_session)
+
+		if response['id']:
+			self.video_id = response['id']
+			self.vdd = response
+			self.vdd['assets'] = []
+
+		return self.vdd
+
+	def upload_image(self, image_path, source=None, auth_session=None):
+		'''
+			Picovico: Uploads the image to the current project
+		'''
+		return self.upload_image_file(image_path, source, auth_session=auth_session)
+
+	def upload_image_file(self, file_path, source=None, auth_session=None):
+		'''
+			Picovico: Checks if the image is uploaded locally and process the requests.
+		'''
+		if utils.is_local_file(file_path):
+			response = self.put(urls.UPLOAD_PHOTO, file_path, auth_session=auth_session)
+			return response
+		else:
+			data = {
+				'url': file_path,
+				'source': source,
+				'thumbnail_url': file_path
+			}
+			response = self.post(urls.UPLOAD_PHOTO, data=data, auth_session=auth_session)
+			return response
+
+	def upload_music(self, music_path, source=None, auth_session=None):
+		'''
+			Picovico: Uploads the music file to the current project.
+		'''
+		return self.upload_music_file(music_path, source, auth_session=auth_session)
+
+	def upload_music_file(self, file_path, source=None):
+		'''
+			Picovico: Checks if the music is uploaded locally and proecess the requests.
+		'''
+		if utils.is_local_file(file_path):
+			data = {
+				'X-Music-Artist': "Unknown",
+				"X-Music-Title": "Unknown - {}".format('r')
+			}
+			response = self.put(urls.UPLOAD_MUSIC, file_path, data)
+			return response
+		else:
+			data = {
+				'url': file_path,
+				'preview_url': file_path
+			}
+			response = self.post(urls.UPLOAD_MUSIC, data)
+			return response
 
 	def add_image():
 		pass
@@ -42,7 +128,16 @@ class PicovicoProject(Picovico):
 	def set_callback_url():
 		pass
 
+	def save():
 		pass
+
+	def reset():
+		pass
+
+	def dump():
+		pass
+
+
 
 	def append_image_slide(self, vdd, image_id, caption=None):
 
