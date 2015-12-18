@@ -1,30 +1,32 @@
 from lib.session import PicovicoSession
 from lib.api import PicovicoAPIRequest
 class Picovico:
+	
+	def preview_video(self):
+		'''
+			Picovico:
+				Make a preview request for the project. 
+				Will generate 144p video is preview is available for the style.
+				Rendering state of the video will not be changed.
+		'''
+		video_response = self.save()
+		response = self.post((urls.PREVIEW_VIDEO).format(self.video_id))
+		return response
 
-	# def __init__(self, app_id=None, app_secret=None, device_id=None):
-	# 	'''
-	# 		Picovico: Constructor that initialize the app_id and app_secret.
-	# 		Also initializes device_id if available, else sets default device_id.
-	# 	'''
-	# 	self.app_id = app_id
-	# 	self.app_secret = app_secret
+	def create_video(self):
+		'''
+			Picovico: Send the actual rendering request to rendering engine
+		'''
+		video_response = self.save()
+		response = self.post((urls.CREATE_VIDEO).format(self.video_id))
+		return response
 
-	# 	if not device_id:
-	# 		self.device_id = "com.picovico.api.python-sdk"
-	# 	else:
-	# 		self.device_id = device_id
-
-	# 	#self.picovico_request = PicovicoAPIRequest()
-
-	def preview_video(video_id):
-		pass
-
-	def create_video(video_id):
-		pass
-
-	def duplicate_video(video_id):
-		pass
+	def duplicate_video(self, video_id):
+		'''
+			Picovico: Duplicates any video and saves it to the new draft or overwrites if any exists
+		'''
+		response = self.post((urls.DUPLICATE_VIDEO).format(video_id))
+		return response
 
 	def get_draft(video_id=None):
 		pass

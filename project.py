@@ -45,113 +45,39 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 		return self.vdd
 
-	def upload_image(self, image_path, source=None, auth_session=None):
+	def add_credits(self, title=None, text=None):
 		'''
-			Picovico: Uploads the image to the current project
+			Picovico: Append credit slide to the current project
 		'''
-		return self.upload_image_file(image_path, source, auth_session=auth_session)
+		if title or text:
 
-	def upload_image_file(self, file_path, source=None, auth_session=None):
+			if not self.vdd['credit']:
+				self.vdd['credit'] = []
+
+			credit_list = [title, text] 
+
+			self.vdd['credit'].append(credit_list)
+			# self.vdd['credit']
+			return True
+
+		return False
+
+	def remove_credits(self):
 		'''
-			Picovico: Checks if the image is uploaded locally and process the requests.
+			Picovico: Removes all credit slides
 		'''
-		if utils.is_local_file(file_path):
-			response = self.put(urls.UPLOAD_PHOTO, file_path, auth_session=auth_session)
-			return response
-		else:
-			data = {
-				'url': file_path,
-				'source': source,
-				'thumbnail_url': file_path
-			}
-			response = self.post(urls.UPLOAD_PHOTO, data=data, auth_session=auth_session)
-			return response
+		if self.vdd['credit']:
+			self.vdd['credit'] = []
+			return True
 
-	def upload_music(self, music_path, source=None, auth_session=None):
-		'''
-			Picovico: Uploads the music file to the current project.
-		'''
-		return self.upload_music_file(music_path, source, auth_session=auth_session)
-
-	def upload_music_file(self, file_path, source=None):
-		'''
-			Picovico: Checks if the music is uploaded locally and proecess the requests.
-		'''
-		if utils.is_local_file(file_path):
-			data = {
-				'X-Music-Artist': "Unknown",
-				"X-Music-Title": "Unknown - {}".format('r')
-			}
-			response = self.put(urls.UPLOAD_MUSIC, file_path, data)
-			return response
-		else:
-			data = {
-				'url': file_path,
-				'preview_url': file_path
-			}
-			response = self.post(urls.UPLOAD_MUSIC, data)
-			return response
-
-	def add_image():
-		pass
-
-	def add_library_image():
-		pass
-
-	def add_text():
-		pass
-
-	def add_music():
-		pass
-
-	def add_library_music():
-		pass
-
-	def delete_music():
-		pass
-
-	def delete_music():
-		pass
-
-	def set_styles():
-		pass
-
-	def set_quality():
-		pass
-
-	def set_credits():
-		pass
-
-	def remove_credits():
-		pass
-
-	def set_callback_url():
-		pass
-
-	def save():
-		pass
-
-	def reset():
-		pass
-
-	def dump():
-		pass
+		return False
 
 
-
-	def append_image_slide(self, vdd, image_id, caption=None):
-
-		data = {
-			'name': 'image',
-			'data':{
-				'text': caption,
-			},
-			'asset_id': image_id
-		}
-		self.append_vdd_slide(vdd, data)
 
 	def append_vdd_slide(self, vdd, slide):
-
+		'''
+			Picovico: Appends image slides into the project with data
+		'''
 		if vdd:
 			if not vdd['assets']:
 				vdd['assets'] = []
@@ -169,54 +95,42 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 					last_end_time = last_slide.end_time
 
 			slide['start_time'] = last_end_time
-			slide['end_time'] = last_end_time + self.STANDARD_SLIDE_DURATION
+			slide['end_time'] = last_end_time + constants.STANDARD_SLIDE_DURATION
 
 			vdd['assets'].append(slide)
 
-	def append_text_slide(self, vdd, title=None, text=None):
+
+	def draft(self):
 		'''
-			Picovico: Prepares the slide data for text slides and appends to the vdd
+			Picovico: Returns the current draft saved
 		'''
+		response = self.get(urls.GET_DRAFT)
+		return response
 
-		data = {
-			'name': 'text',
-			'data':{
-				'title': title,
-				'text': text
-			}
-		}
-		self.append_vdd_slide(vdd, data)
-
-	def set_music(self, vdd, music_id):
+	def dump(self):
 		'''
-			Picovico:
-				Saves music for the current video project.
-				Saved separately because only one music is supported.
+			Picovico: Creates a readable dump of the current project
 		'''
-		data = {
-			'name': 'music',
-			'asset_id': music_id,
-			'_comment': 'Some cool comment which will replace later'
-		}
-		vdd['_music'] = data
+		if self.vdd:
+			return self.vdd
+		return False
 
-	def append_music(self, vdd):
+	def reset(self):
 		'''
-			Picovico: If music is set and not appended to the VDD slide, appends the music as vdd slide
+			Picovico: Resets the current local progress
 		'''
-		if vdd['_music']:
-			self.append_vdd_slide(vdd, vdd['_music'])
-			del vdd['_music']
-
-	def reset_slides(self, vdd):
-		vdd['assets'] = []
-
-	def reset_music(self, vdd):
-		del vdd['_music']
+		self.reset_music(self.vdd)
+		self.reset_slides(self.vdd)
+		self.remove_credits()
+		self.vdd['style'] = None
+		self.vdd['quality'] = None
+		return self.vdd
 
 
 
 
+
+	
 
 
 

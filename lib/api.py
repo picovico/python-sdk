@@ -5,8 +5,6 @@ from lib import urls, constants, exceptions
 class PicovicoAPIRequest:
 
 	def is_logged_in(self, auth_session):
-		print('logged in')
-		print(auth_session)
 		if auth_session.get('X-Access-Key') and auth_session.get('X-Access-Token'):
 			return True
 
@@ -21,8 +19,6 @@ class PicovicoAPIRequest:
 			"X-Access-Key":None,
 			"X-Access-Token":None
 		}
-		print('headers')
-		print(auth_session)
 		if not is_anonymous and not self.is_logged_in(auth_session):
 			raise exceptions.PicovicoUnauthorizedException()
 
@@ -39,9 +35,9 @@ class PicovicoAPIRequest:
 		# response = requests.post(urls.PICOVICO_API_ENDPOINT + url, data)
 		return self.sdk_response(response)
 
-	# def put(self, url=None, filename=None, data=None, is_anonymous=False):
-	# 	response = requests.get(urls.PICOVICO_API_ENDPOINT + url, filename, data, headers=self.get_auth_headers(is_anonymous))
-	# 	return self.sdk_response(response)
+	def put(self, url=None, filename=None, data=None, is_anonymous=False, auth_session=None):
+		response = requests.put(urls.PICOVICO_API_ENDPOINT + url, filename, data, headers=self.get_auth_headers(is_anonymous, auth_session))
+		return self.sdk_response(response)
 
 	# def delete(self, url=None, is_anonymous=False):
 	# 	response = requests.delete(urls.PICOVICO_API_ENDPOINT + url, headers=self.get_auth_headers(is_anonymous))
