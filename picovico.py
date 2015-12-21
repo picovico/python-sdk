@@ -1,7 +1,7 @@
 import json
 from lib import urls
 from lib.session import PicovicoSession
-#from lib.api import PicovicoAPIRequest
+from lib.api import PicovicoAPIRequest
 from lib.helpers import append_music
 class Picovico(PicovicoAPIRequest):
 
