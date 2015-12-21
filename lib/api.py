@@ -5,8 +5,11 @@ from lib import urls, constants, exceptions
 class PicovicoAPIRequest:
 
 	def is_logged_in(self, auth_session):
-		if auth_session.get('X-Access-Key') and auth_session.get('X-Access-Token'):
-			return True
+		try:
+			if auth_session.get('X-Access-Key') and auth_session.get('X-Access-Token'):
+				return True
+		except:
+			return None
 
 		return False
 
@@ -25,23 +28,20 @@ class PicovicoAPIRequest:
 		return auth_session
 
 	def get(self, url=None, is_anonymous=False, auth_session=None):
-		# headers = lambda auth_session: auth_session if auth_session else self.get_auth_headers(is_anonymous)
-		
 		response = requests.get(urls.PICOVICO_API_ENDPOINT + url, headers=self.get_auth_headers(is_anonymous, auth_session))
 		return self.sdk_response(response)
 
 	def post(self, url=None, data=None, is_anonymous=False, auth_session=None):
 		response = requests.post(urls.PICOVICO_API_ENDPOINT + url, data, headers=self.get_auth_headers(is_anonymous, auth_session))
-		# response = requests.post(urls.PICOVICO_API_ENDPOINT + url, data)
 		return self.sdk_response(response)
 
 	def put(self, url=None, filename=None, data=None, is_anonymous=False, auth_session=None):
 		response = requests.put(urls.PICOVICO_API_ENDPOINT + url, filename, data, headers=self.get_auth_headers(is_anonymous, auth_session))
 		return self.sdk_response(response)
 
-	# def delete(self, url=None, is_anonymous=False):
-	# 	response = requests.delete(urls.PICOVICO_API_ENDPOINT + url, headers=self.get_auth_headers(is_anonymous))
-	# 	return self.sdk_response(response)
+	def delete(self, url=None, is_anonymous=False, auth_session=None):
+		response = requests.delete(urls.PICOVICO_API_ENDPOINT + url, headers=self.get_auth_headers(is_anonymous, auth_session))
+		return self.sdk_response(response)
 
 	def sdk_response(self, response):
 		decoded_response = json.loads(response.text)

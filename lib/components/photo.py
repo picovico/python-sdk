@@ -1,21 +1,23 @@
-from picovico.lib.api import PicovicoApiRequest
+from lib.api import PicovicoAPIRequest
+from lib import utils, urls
+from lib.helpers import append_vdd_slide
 
-class PicovicoPhoto(PicovicoApiRequest):
+class PicovicoPhoto(PicovicoAPIRequest):
 	'''
 		Picovico: Library componenet for photo
 	'''
-	def upload_image(self, image_path, source=None, auth_session=None):
+	def get_images(self, auth_session):
 		'''
-			Picovico: Uploads the image to the current project
+			Picovico: Get authenticated user's photo.
 		'''
-		return self.upload_image_file(image_path, source, auth_session=auth_session)
+		response = self.get(urls.ME_PHOTO, auth_session=auth_session)
 
 	def upload_image_file(self, file_path, source=None, auth_session=None):
 		'''
 			Picovico: Checks if the image is uploaded locally and process the requests.
 		'''
 		if utils.is_local_file(file_path):
-			response = self.put(urls.UPLOAD_PHOTO, file_path, auth_session=auth_session)
+			response = self.put(urls.ME_PHOTO, file_path, auth_session=auth_session)
 			return response
 		else:
 			data = {
@@ -23,25 +25,25 @@ class PicovicoPhoto(PicovicoApiRequest):
 				'source': source,
 				'thumbnail_url': file_path
 			}
-			response = self.post(urls.UPLOAD_PHOTO, data=data, auth_session=auth_session)
+			response = self.post(urls.ME_PHOTO, data=data, auth_session=auth_session)
 			return response
 
-	def add_image(self, image_path, caption="", source="hosted", auth_session=None):
+	def delete_image(self, image_id, auth_session):
 		'''
-			Picovico: Add and append image to the current project
+			Picovico: Deletes uploaded image
 		'''
-		response = self.upload_image(image_path, source, auth_session=auth_session)
-		if response['id']:
-			self.add_library_image(response['id'], caption)
+		return self.delete((urls.ME_PHOTO_DELETE).format(image_id), auth_session=auth_session)
 
-		return response
+	'''
+		Picovico: Helpers for image component processing
+	'''
 
-	def add_library_image(self, image_id, caption=""):
+	def add_library_image(self, image_id, vdd, caption=""):
 		'''
 			Picovico: Appends any image previously uploaded.
 		'''
 		if image_id:
-			self.append_image_slide(self.vdd, image_id, caption)
+			self.append_image_slide(vdd, image_id, caption)
 			return True
 
 		return False
@@ -57,17 +59,7 @@ class PicovicoPhoto(PicovicoApiRequest):
 			},
 			'asset_id': image_id
 		}
-		self.append_vdd_slide(vdd, data)
-
-	def add_text(self, title="", text=""):
-		'''
-			Picovico: Adds text slide to the project
-		'''
-		if title or text:
-			self.append_text_slide(self.vdd, title, text)
-			return True
-		
-		return False
+		append_vdd_slide(vdd, data)
 
 	def append_text_slide(self, vdd, title=None, text=None):
 		'''
@@ -80,7 +72,5 @@ class PicovicoPhoto(PicovicoApiRequest):
 				'text': text
 			}
 		}
-		self.append_vdd_slide(vdd, data)
+		append_vdd_slide(vdd, data)
 		
-	def get_photos(self):
-		pass

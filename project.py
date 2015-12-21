@@ -2,8 +2,20 @@ from picovico import Picovico
 from lib import constants, urls, utils
 from lib.api import PicovicoAPIRequest
 from lib.components.music import PicovicoMusic
+from lib.components.video import PicovicoVideo 
+from lib.components.photo import PicovicoPhoto
+from lib.components.style import PicovicoStyle
+from lib.helpers import reset_slides, reset_music
 
-class PicovicoProject(Picovico, PicovicoAPIRequest):
+class PicovicoProject(Picovico, PicovicoVideo):
+
+	def __init__(self):
+		'''
+			Picovico: Construction for picovico components object.
+		'''
+		self.pv_music = PicovicoMusic()
+		self.pv_photo = PicovicoPhoto()
+		self.pv_style = PicovicoStyle()
 
 	def open(self, video_id=None):
 		'''
@@ -13,7 +25,7 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 		self.vdd = {}
 		if video_id:
 			picovico_video = self.get(video_id)
-			if picovico_video['status'] == self.VIDEO_INITIAL:
+			if picovico_video['status'] == constants.VIDEO_INITIAL:
 				self.video_id = video_id
 				self.vdd = picovico_video
 
@@ -28,7 +40,7 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 		return self.vdd
 
-	def begin(self, name, quality=constants.Q_360P, auth_session=None): 
+	def begin(self, name, quality=constants.Q_360P, auth_session=None):
 		'''
 			Picovico: Begin the project
 		'''
@@ -47,23 +59,87 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 		return self.vdd
 
-	def upload_music(auth_session=None):
-		return pv_music.upload_music(auth_session=auth_session)
+	def get_images(self, auth_session=None):
+		'''
+			Picovico: Gets list of uploaded images.
+		'''
+		return self.pv_photo.get_images(auth_session=auth_session)
 
+	# def delete_image(self, image_id, auth_session):
+	# 	'''
+	# 		Picovico: Deletes uploaded image with given image id.
+	# 	'''
+	# 	return self.pv_photo.delete_image(image_id, auth_session=auth_session)
+
+	def upload_image(self, image_path, source=None, auth_session=None):
+		'''
+			Picovico: Uploads the image to the current project
+		'''
+		return self.pv_photo.upload_image_file(image_path, source, auth_session=auth_session)
+
+	def add_image(self, image_path, caption="", source="hosted", auth_session=None):
+		'''
+			Picovico: Add and append image to the current project
+		'''
+		response = self.upload_image(image_path, source, auth_session=auth_session)
+		if response['id']:
+			self.pv_photo.add_library_image(response['id'], self.vdd, caption)
+
+		return response
+
+	def add_text(self, title="", text=""):
+		'''
+			Picovico: Adds text slide to the project
+		'''
+		if title or text:
+			self.pv_photo.append_text_slide(self.vdd, title, text)
+			return True
+		
+		return False
+
+	def upload_music(self, music_path, source=None, auth_session=None):
+		'''
+			Picovico: Uploads the music file to the current project.
+		'''
+		return self.pv_music.upload_music_file(music_path, source, auth_session=auth_session)
+
+	def add_music(self, music_path, auth_session=None):
+		'''
+			Picovico: Defines the background music
+		'''
+		response = self.upload_music(music_path, auth_session=auth_session)
+
+		if response['id']:
+			self.pv_music.add_library_music(response['id'], self.vdd)
+
+		return response
+
+	def get_styles(self, auth_session=None):
+		'''
+			Picovico: Gets available styles
+		'''
+		return self.pv_style.get_styles(auth_session)
+
+	def set_style(self, style_machine_name):
+		'''
+			Picovico: Defines style for the current video project.
+		'''
+		if style_machine_name:
+			self.vdd['style'] = style_machine_name
+			return True
+		
+		return False
 
 	def add_credits(self, title=None, text=None):
 		'''
 			Picovico: Append credit slide to the current project
 		'''
 		if title or text:
-
 			if not self.vdd['credit']:
 				self.vdd['credit'] = []
 
 			credit_list = [title, text] 
-
 			self.vdd['credit'].append(credit_list)
-			# self.vdd['credit']
 			return True
 
 		return False
@@ -78,37 +154,12 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 
 		return False
 
-	def append_vdd_slide(self, vdd, slide):
-		'''
-			Picovico: Appends image slides into the project with data
-		'''
-		if vdd:
-			if not vdd['assets']:
-				vdd['assets'] = []
-
-			last_slide = None
-			current_slides_count = len(vdd['assets'])
-			last_end_time = 0
-
-			if vdd['assets']:
-				last_slide = vdd['assets'][len(vdd['assets']) - 1]
-
-				if last_slide:
-					last_end_time = last_slide["end_time"]
-				else:
-					last_end_time = last_slide.end_time
-
-			slide['start_time'] = last_end_time
-			slide['end_time'] = last_end_time + constants.STANDARD_SLIDE_DURATION
-
-			vdd['assets'].append(slide)
-
-	def draft(self):
-		'''
-			Picovico: Returns the current draft saved
-		'''
-		response = self.get(urls.GET_DRAFT)
-		return response
+	# def draft(self):
+	# 	'''
+	# 		Picovico: Returns the current draft saved
+	# 	'''
+	# 	response = self.get(urls.GET_DRAFT)
+	# 	return response
 
 	def dump(self):
 		'''
@@ -122,12 +173,22 @@ class PicovicoProject(Picovico, PicovicoAPIRequest):
 		'''
 			Picovico: Resets the current local progress
 		'''
-		self.reset_music(self.vdd)
-		self.reset_slides(self.vdd)
+		reset_music(self.vdd)
+		reset_slides(self.vdd)
 		self.remove_credits()
 		self.vdd['style'] = None
 		self.vdd['quality'] = None
 		return self.vdd
+
+	def set_quality(self, quality):
+		'''
+			Picovico: Defines rendering quality for the current video project
+		'''
+		if quality:
+			self.vdd['quality'] = quality
+			return True
+			
+		return False
 
 
 
