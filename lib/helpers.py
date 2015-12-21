@@ -1,4 +1,4 @@
-from lib import constants
+from lib import constants, exceptions, messages
 
 def append_vdd_slide(vdd, slide):
 		'''
@@ -35,7 +35,21 @@ def append_music(vdd):
 			del vdd['_music']
 
 def reset_slides(vdd):
-		vdd['assets'] = []
+	'''
+		Picovico: Resets slides data i.e assets
+	'''
+	vdd['assets'] = []
 
 def reset_music(vdd):
+	'''
+		Picovico: Resets music for the project
+	'''
 	del vdd['_music']
+
+def check_video_data(video_data):
+	'''
+		Picovico: Helper method to check if video data is available
+	'''
+	if not video_data:
+		raise exceptions.VideoDataNotFound(messages.VIDEO_DATA_NOT_FOUND)
+	pass

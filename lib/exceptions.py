@@ -36,3 +36,9 @@ class PicovicoAPIResponseException(Exception):
 class DataNotFound(Exception):
 	pass
 
+class VideoIdNotFound(Exception):
+	pass
+
+class VideoDataNotFound(Exception):
+	pass
+

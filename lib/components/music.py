@@ -1,5 +1,6 @@
 from lib.api import PicovicoAPIRequest
 from lib import utils, urls
+from lib.helpers import check_video_data
 
 class PicovicoMusic(PicovicoAPIRequest):
 	'''
@@ -17,6 +18,24 @@ class PicovicoMusic(PicovicoAPIRequest):
 			Picovico: List all the library musics
 		'''
 		response = self.get(urls.GET_LIBRARY_MUSICS, auth_session=auth_session)
+		return response
+
+	def upload_music(self, music_path, source=None, auth_session=None):
+		'''
+			Picovico: Uploads the music file to the current project.
+		'''
+		return self.upload_music_file(music_path, source, auth_session=auth_session)
+
+	def add_music(self, music_path, video_data=None, auth_session=None):
+		'''
+			Picovico: Defines the background music
+		'''
+		check_video_data(video_data)
+		response = self.upload_music(music_path, auth_session=auth_session)
+
+		if response['id']:
+			self.add_library_music(response['id'], video_data)
+
 		return response
 		
 	def upload_music_file(self, file_path, source=None, auth_session=None):
@@ -54,7 +73,7 @@ class PicovicoMusic(PicovicoAPIRequest):
 		if music_id:
 			self.set_music(music_id, vdd)
 			return False
-			
+
 		return True
 
 	def set_music(self, music_id, vdd):

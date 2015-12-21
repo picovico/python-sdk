@@ -1,6 +1,6 @@
 from lib.api import PicovicoAPIRequest
 from lib import utils, urls
-from lib.helpers import append_vdd_slide
+from lib.helpers import append_vdd_slide, check_video_data
 
 class PicovicoPhoto(PicovicoAPIRequest):
 	'''
@@ -11,6 +11,34 @@ class PicovicoPhoto(PicovicoAPIRequest):
 			Picovico: Get authenticated user's photo.
 		'''
 		response = self.get(urls.ME_PHOTO, auth_session=auth_session)
+
+	def upload_image(self, image_path, source=None, auth_session=None):
+		'''
+			Picovico: Uploads the image to the current project
+		'''
+		return self.upload_image_file(image_path, source, auth_session=auth_session)
+
+	def add_image(self, image_path, caption="", source="hosted", video_data=None, auth_session=None):
+		'''
+			Picovico: Add and append image to the current project
+		'''
+		check_video_data(video_data)
+		response = self.upload_image(image_path, source, auth_session=auth_session)
+		if response['id']:
+			self.add_library_image(response['id'], video_data, caption)
+
+		return response
+
+	def add_text(self, title="", text="", video_data=None):
+		'''
+			Picovico: Adds text slide to the project
+		'''
+		check_video_data(video_data)
+		if title or text:
+			self.append_text_slide(video_data, title, text)
+			return True
+		
+		return False
 
 	def upload_image_file(self, file_path, source=None, auth_session=None):
 		'''

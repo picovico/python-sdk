@@ -1,23 +1,24 @@
 from lib.api import PicovicoAPIRequest
 from lib import urls
+from lib.helpers import check_video_data
 
 class PicovicoStyle(PicovicoAPIRequest):
 	'''
 		Picovico: Library component for style.
 	'''
-	def get_styles(self, auth_session):
+	def get_styles(self, auth_session=None):
 		'''
-			Picovico: Fetches styles available for the logged in account.
+			Picovico: Gets available styles
 		'''
-		response = self.get(urls.GET_STYLES, auth_session=auth_session)
-		return response
+		return self.get(urls.GET_STYLES, auth_session=auth_session)
 
-	# def set_style(self, style_machine_name, vdd):
-	# 	'''
-	# 		Picovico: Defines style for the current video project.
-	# 	'''
-	# 	if style_machine_name:
-	# 		vdd['style'] = style_machine_name
-	# 		return True
+	def set_style(self, style_machine_name, video_data=None):
+		'''
+			Picovico: Defines style for the current video project.
+		'''
+		check_video_data(video_data)
+		if style_machine_name:
+			video_data['style'] = style_machine_name
+			return True
 		
-	# 	return False
+		return False
