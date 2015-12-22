@@ -1,6 +1,8 @@
 from lib.api import PicovicoAPIRequest
 from lib import urls, exceptions
-class PicovicoSession(PicovicoAPIRequest):
+
+
+class PicovicoSession:
 
 	access_key = None
 	access_token = None
@@ -61,7 +63,7 @@ class PicovicoSession(PicovicoAPIRequest):
 				'device_id': self.device_id
 			}
 
-			response = self.post(urls.LOGIN, data=data)
+			response = PicovicoAPIRequest.post(urls.LOGIN, data=data)
 
 			if not response.get('access_key') and response.get('access_token'):
 				raise DataNotFound(messages.ACCESS_KEY_AND_ACCESS_TOKEN_MISSING)
@@ -82,7 +84,7 @@ class PicovicoSession(PicovicoAPIRequest):
 			'device_id':self.device_id
 			}
 
-		response = self.post(url=urls.APP_AUTHENTICATE, data=data)
+		response = PicovicoAPIRequest.post(url=urls.APP_AUTHENTICATE, data=data)
 
 		if not response.get('access_key') and response.get('access_token'):
 			raise DataNotFound(messages.ACCESS_KEY_AND_ACCESS_TOKEN_MISSING)
@@ -100,5 +102,5 @@ class PicovicoSession(PicovicoAPIRequest):
 		self.access_key = None
 		self.access_token = None
 		self.user_id = None
-		
+
 
