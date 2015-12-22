@@ -42,3 +42,6 @@ class VideoIdNotFound(Exception):
 class VideoDataNotFound(Exception):
 	pass
 
+class PicovicoSessionRequiredException(Exception):
+	pass
+	

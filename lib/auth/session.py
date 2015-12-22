@@ -1,5 +1,5 @@
 from lib.api import PicovicoAPIRequest
-from lib import urls, exceptions
+from lib import urls, exceptions, messages
 
 
 class PicovicoSession:
@@ -24,10 +24,13 @@ class PicovicoSession:
 			self.device_id = device_id
 
 	def set_auth_tokens(self, access_key, access_token, user_id=None):
+		'''
+			Picovico: Set access_key and access_token as authentication key
+		'''
 		self.access_key = access_key
 		self.access_token = access_token
 
-	def _get_auth_headers(self, is_anonymous=False):
+	def get_auth_headers(self, is_anonymous=False):
 		'''
 		Picovico: Checks if user is anonymous and returns exceptis if it is.
 		'''
@@ -97,7 +100,7 @@ class PicovicoSession:
 
 	def logout(self):
 		'''
-			Picovico: 
+			Picovico: Logout requested user
 		'''
 		self.access_key = None
 		self.access_token = None

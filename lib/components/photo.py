@@ -1,29 +1,30 @@
 from lib.api import PicovicoAPIRequest
+from lib.auth.session import PicovicoSession
 from lib import utils, urls
 from lib.helpers import append_vdd_slide, check_video_data
 
-class PicovicoPhoto(PicovicoAPIRequest):
+class PicovicoPhoto(PicovicoSession):
 	'''
 		Picovico: Library componenet for photo
 	'''
-	def get_images(self, auth_session):
+	def get_images(self, headers):
 		'''
 			Picovico: Get authenticated user's photo.
 		'''
-		response = self.get(urls.ME_PHOTO, auth_session=auth_session)
+		response = PicovicoAPIRequest.get(urls.ME_PHOTO, headers=headers)
 
-	def upload_image(self, image_path, source=None, auth_session=None):
+	def upload_image(self, image_path, source=None, headers=None):
 		'''
 			Picovico: Uploads the image to the current project
 		'''
-		return self.upload_image_file(image_path, source, auth_session=auth_session)
+		return self.upload_image_file(image_path, source, headers=headers)
 
-	def add_image(self, image_path, caption="", source="hosted", video_data=None, auth_session=None):
+	def add_image(self, image_path, caption="", source="hosted", video_data=None, headers=None):
 		'''
 			Picovico: Add and append image to the current project
 		'''
 		check_video_data(video_data)
-		response = self.upload_image(image_path, source, auth_session=auth_session)
+		response = self.upload_image(image_path, source, headers=headers)
 		if response['id']:
 			self.add_library_image(response['id'], video_data, caption)
 
@@ -40,12 +41,12 @@ class PicovicoPhoto(PicovicoAPIRequest):
 		
 		return False
 
-	def upload_image_file(self, file_path, source=None, auth_session=None):
+	def upload_image_file(self, file_path, source=None, headers=None):
 		'''
 			Picovico: Checks if the image is uploaded locally and process the requests.
 		'''
 		if utils.is_local_file(file_path):
-			response = self.put(urls.ME_PHOTO, file_path, auth_session=auth_session)
+			response = PicovicoAPIRequest.put(urls.ME_PHOTO, file_path, headers=headers)
 			return response
 		else:
 			data = {
@@ -53,14 +54,14 @@ class PicovicoPhoto(PicovicoAPIRequest):
 				'source': source,
 				'thumbnail_url': file_path
 			}
-			response = self.post(urls.ME_PHOTO, data=data, auth_session=auth_session)
+			response = PicovicoAPIRequest.post(urls.ME_PHOTO, data=data, headers=headers)
 			return response
 
-	def delete_image(self, image_id, auth_session):
+	def delete_image(self, image_id, headers=None):
 		'''
 			Picovico: Deletes uploaded image
 		'''
-		return self.delete((urls.ME_PHOTO_DELETE).format(image_id), auth_session=auth_session)
+		return PicovicoAPIRequest.delete((urls.ME_PHOTO_DELETE).format(image_id), headers=headers)
 
 	'''
 		Picovico: Helpers for image component processing

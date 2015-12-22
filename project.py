@@ -1,4 +1,4 @@
-from picovico import Picovico
+#from picovico import Picovico
 from lib import constants, urls, utils
 from lib.api import PicovicoAPIRequest
 from lib.components.music import PicovicoMusic
@@ -8,15 +8,6 @@ from lib.components.style import PicovicoStyle
 from lib.helpers import reset_slides, reset_music
 
 class PicovicoProject(PicovicoVideo):
-
-	def __init__(self):
-		'''
-			Picovico: Construction for picovico components object.
-		'''
-		# self.pv_music = PicovicoMusic()
-		# self.pv_photo = PicovicoPhoto()
-		# self.pv_style = PicovicoStyle()
-		self.pv_request = PicovicoAPIRequest()
 
 	def open(self, video_id=None):
 		'''
@@ -60,71 +51,6 @@ class PicovicoProject(PicovicoVideo):
 
 		return self.vdd
 
-	# def delete_image(self, image_id, auth_session):
-	# 	'''
-	# 		Picovico: Deletes uploaded image with given image id.
-	# 	'''
-	# 	return self.pv_photo.delete_image(image_id, auth_session=auth_session)
-
-	# def upload_image(self, image_path, source=None, auth_session=None):
-	# 	'''
-	# 		Picovico: Uploads the image to the current project
-	# 	'''
-	# 	return self.pv_photo.upload_image_file(image_path, source, auth_session=auth_session)
-
-	# def add_image(self, image_path, caption="", source="hosted", auth_session=None):
-	# 	'''
-	# 		Picovico: Add and append image to the current project
-	# 	'''
-	# 	response = self.upload_image(image_path, source, auth_session=auth_session)
-	# 	if response['id']:
-	# 		self.pv_photo.add_library_image(response['id'], self.vdd, caption)
-
-	# 	return response
-
-	# def add_text(self, title="", text=""):
-	# 	'''
-	# 		Picovico: Adds text slide to the project
-	# 	'''
-	# 	if title or text:
-	# 		self.pv_photo.append_text_slide(self.vdd, title, text)
-	# 		return True
-		
-	# 	return False
-
-	# def upload_music(self, music_path, source=None, auth_session=None):
-	# 	'''
-	# 		Picovico: Uploads the music file to the current project.
-	# 	'''
-	# 	return self.pv_music.upload_music_file(music_path, source, auth_session=auth_session)
-
-	# def add_music(self, music_path, auth_session=None):
-	# 	'''
-	# 		Picovico: Defines the background music
-	# 	'''
-	# 	response = self.upload_music(music_path, auth_session=auth_session)
-
-	# 	if response['id']:
-	# 		self.pv_music.add_library_music(response['id'], self.vdd)
-
-	# 	return response
-
-	# def get_styles(self, auth_session=None):
-	# 	'''
-	# 		Picovico: Gets available styles
-	# 	'''
-	# 	return self.pv_style.get_styles(auth_session)
-
-	# def set_style(self, style_machine_name):
-	# 	'''
-	# 		Picovico: Defines style for the current video project.
-	# 	'''
-	# 	if style_machine_name:
-	# 		self.vdd['style'] = style_machine_name
-	# 		return True
-		
-	# 	return False
-
 	def add_credits(self, title=None, text=None):
 		'''
 			Picovico: Append credit slide to the current project
@@ -153,7 +79,7 @@ class PicovicoProject(PicovicoVideo):
 		'''
 			Picovico: Returns the current draft saved
 		'''
-		response = self.pv_request.get(urls.GET_DRAFT, auth_session=auth_session)
+		response = PicovicoAPIRequest.get(urls.GET_DRAFT, auth_session=auth_session)
 		return response
 
 	def dump(self):
