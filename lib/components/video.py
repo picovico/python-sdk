@@ -1,11 +1,8 @@
 import json
 from lib import urls
 from lib.api import PicovicoAPIRequest
-from lib.exceptions import VideoIdNotFound
-from lib.messages import VIDEO_ID_NOT_FOUND
-from lib.helpers import append_music
-from lib.exceptions import PicovicoSessionRequiredException
-from lib.messages import SESSION_REQUIRED_MESSAGE
+from lib.exceptions import VideoIdNotFound, PicovicoSessionRequiredException
+from lib.messages import VIDEO_ID_NOT_FOUND, SESSION_REQUIRED_MESSAGE
 
 
 class PicovicoVideo(PicovicoAPIRequest):
@@ -36,22 +33,6 @@ class PicovicoVideo(PicovicoAPIRequest):
 		response = self.get(urls.GET_VIDEOS, headers=self.headers)
 		return response
 
-	# def save(self, video_id):
-	# 	'''
-	# 		Picovico: Save the current progress with the project.
-	# 	'''
-	# 	self.check_video_id(video_id)
-	# 	append_music(self.vdd)
-
-	# 	video_assets = {}
-	# 	for k,v in self.vdd.items():
-	# 		if type(v) is list:
-	# 			video_assets[k] = json.dumps(v)
-	# 		else:
-	# 			video_assets[k] = v
-
-	# 	response = self.post((urls.SAVE_VIDEO).format(video_id), data=video_assets, headers=self.headers)
-	# 	return response
 
 	def preview_video(self, video_id):
 		'''
@@ -60,8 +41,10 @@ class PicovicoVideo(PicovicoAPIRequest):
 				144p video preview is available for the style.
 				Rendering state of the video will not be changed.
 		'''
-		self.check_video_id(video_id)
-		video_response = self.save(video_id, auth_session)
+		if video_id is None:
+			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
+
+		video_response = self.save(video_id)
 
 		response = self.post((urls.PREVIEW_VIDEO).format(video_id), headers=self.headers)
 		return response
@@ -70,8 +53,10 @@ class PicovicoVideo(PicovicoAPIRequest):
 		'''
 			Picovico: Sends the actual rendering request to rendering engine
 		'''
-		self.check_video_id(video_id)
-		video_response = self.save(video_id, auth_session)
+		if video_id is None:
+			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
+
+		video_response = self.save(video_id)
 		response = self.post((urls.CREATE_VIDEO).format(video_id), headers=self.headers)
 		return response
 

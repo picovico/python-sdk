@@ -1,6 +1,5 @@
-from lib.auth.session import PicovicoSession
-from lib.api import PicovicoAPIRequest
 from lib import utils, urls
+from lib.api import PicovicoAPIRequest
 from lib.exceptions import PicovicoSessionRequiredException
 from lib.messages import SESSION_REQUIRED_MESSAGE
 
@@ -38,7 +37,7 @@ class PicovicoMusic():
 		'''
 		return self.upload_music_file(music_path, source)
 
-	def upload_music_file(self, file_path, source=None, headers=None):
+	def upload_music_file(self, file_path, source=None):
 		'''
 			Picovico: Checks if the music is uploaded locally and proecess the requests.
 		'''
@@ -47,14 +46,14 @@ class PicovicoMusic():
 				'Music-Artist': "Unknown",
 				"Music-Title": "Unknown - {}".format('r')
 			}
-			response = PicovicoAPIRequest.put(urls.UPLOAD_MUSIC, file_path, data, headers=headers)
+			response = PicovicoAPIRequest.put(urls.UPLOAD_MUSIC, file_path, data, headers=self.headers)
 			return response
 		else:
 			data = {
 				'url': file_path,
 				'preview_url': file_path
 			}
-			response = PicovicoAPIRequest.post(urls.UPLOAD_MUSIC, data, headers=headers)
+			response = PicovicoAPIRequest.post(urls.UPLOAD_MUSIC, data, headers=self.headers)
 			return response
 
 	def delete_music(self, music_id):
@@ -62,29 +61,7 @@ class PicovicoMusic():
 			Picovico: Deletes the music from your library
 		'''
 		if music_id:
-			response = PicovicoAPIRequest.delete((urls.DELETE_MUSIC).format(music_id), headers=headers)
+			response = PicovicoAPIRequest.delete((urls.DELETE_MUSIC).format(music_id), headers=self.headers)
 			return response
 		return False
 
-	def add_library_music(self, music_id, vdd):
-		'''
-			Picovico: Define any previously uploaded music, or any music available from library. 
-		'''
-		if music_id:
-			self.set_music(music_id, vdd)
-			return False
-
-		return True
-
-	def set_music(self, music_id, vdd):
-		'''
-			Picovico:
-				Saves music for the current video project.
-				Saved separately because only one music is supported.
-		'''
-		data = {
-			'name': 'music',
-			'asset_id': music_id,
-			'_comment': 'Some cool comment which will replace later'
-		}
-		vdd['_music'] = data

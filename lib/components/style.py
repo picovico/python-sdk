@@ -1,6 +1,5 @@
+from lib import urls
 from lib.api import PicovicoAPIRequest
-from lib.auth.session import PicovicoSession
-from lib import urls, exceptions, messages
 from lib.exceptions import PicovicoSessionRequiredException
 from lib.messages import SESSION_REQUIRED_MESSAGE
 

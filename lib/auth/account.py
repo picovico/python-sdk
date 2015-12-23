@@ -1,5 +1,4 @@
 from lib import urls
-from lib.auth.session import PicovicoSession
 from lib.api import PicovicoAPIRequest
 from lib.exceptions import PicovicoSessionRequiredException
 from lib.messages import SESSION_REQUIRED_MESSAGE
@@ -10,15 +9,15 @@ class PicovicoAccount():
 	picovico_session = None
 
 	def __init__(self, picovico_session=None):
-		try:
-			if picovico_session:
-				self.picovico_session = picovico_session
-		except:
+
+		if picovico_session:
+			self.headers = picovico_session.get_auth_headers()
+		else:
 			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
 
 	def profile(self):
 		'''
 			Picovico: Generates profile for authenticated user
 		'''
-		response = PicovicoAPIRequest.get(url=urls.ME, headers=self.picovico_session.get_auth_headers())
+		response = PicovicoAPIRequest.get(url=urls.ME, headers=self.headers)
 		return response

@@ -1,7 +1,5 @@
-from lib.api import PicovicoAPIRequest
-from lib.auth.session import PicovicoSession
 from lib import utils, urls
-from lib.helpers import append_vdd_slide, check_video_data
+from lib.api import PicovicoAPIRequest
 from lib.exceptions import PicovicoSessionRequiredException
 from lib.messages import SESSION_REQUIRED_MESSAGE
 

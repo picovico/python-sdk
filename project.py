@@ -1,4 +1,4 @@
-#from picovico import Picovico
+import json
 from lib import constants, urls, utils
 from lib.api import PicovicoAPIRequest
 from lib.components.music import PicovicoMusic
@@ -21,6 +21,7 @@ class PicovicoProject(PicovicoVideo):
 			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
 
 		self.pv_photo = PicovicoPhoto(picovico_session)
+		self.pv_music = PicovicoMusic(picovico_session)
 
 
 	def open(self, video_id=None):
@@ -162,12 +163,35 @@ class PicovicoProject(PicovicoVideo):
 		'''
 			Picovico: Defines the background music
 		'''
-		response = self.upload_music(music_path)
+		response = self.pv_music.upload_music(music_path)
 
 		if response['id']:
-			self.add_library_music(response['id'], vdd)
+			self.add_library_music(response['id'], self.vdd)
 
 		return response
+
+	def add_library_music(self, music_id, vdd):
+		'''
+			Picovico: Define any previously uploaded music, or any music available from library. 
+		'''
+		if music_id:
+			self.set_music(music_id, vdd)
+			return False
+
+		return True
+
+	def set_music(self, music_id, vdd):
+		'''
+			Picovico:
+				Saves music for the current video project.
+				Saved separately because only one music is supported.
+		'''
+		data = {
+			'name': 'music',
+			'asset_id': music_id,
+			'_comment': 'Some cool comment which will replace later'
+		}
+		vdd['_music'] = data
 		
 
 	def add_credits(self, title=None, text=None):
@@ -213,8 +237,8 @@ class PicovicoProject(PicovicoVideo):
 		'''
 			Picovico: Resets the current local progress
 		'''
-		reset_music(self.vdd)
-		reset_slides(self.vdd)
+		self.reset_music(self.vdd)
+		self.reset_slides(self.vdd)
 		self.remove_credits()
 		self.vdd['style'] = None
 		self.vdd['quality'] = None
@@ -230,12 +254,29 @@ class PicovicoProject(PicovicoVideo):
 			
 		return False
 
+
+	def save(self, video_id):
+		'''
+			Picovico: Save the current progress with the project.
+		'''
+		self.append_music(self.vdd)
+
+		video_assets = {}
+		for k,v in self.vdd.items():
+			if type(v) is list:
+				video_assets[k] = json.dumps(v)
+			else:
+				video_assets[k] = v
+
+		response = PicovicoAPIRequest.post((urls.SAVE_VIDEO).format(video_id), data=video_assets, headers=self.headers)
+		return response
+
 	def append_music(self, vdd):
 		'''
 			Picovico: If music is set and not appended to the VDD slide, appends the music as vdd slide
 		'''
 		if vdd['_music']:
-			append_vdd_slide(vdd, vdd['_music'])
+			self.append_vdd_slide(vdd, vdd['_music'])
 			del vdd['_music']
 
 	def reset_slides(self, vdd):
