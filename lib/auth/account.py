@@ -9,7 +9,7 @@ class PicovicoAccount():
 
 	picovico_session = None
 
-	def __init__(self, picovico_session):
+	def __init__(self, picovico_session=None):
 		try:
 			if picovico_session:
 				self.picovico_session = picovico_session

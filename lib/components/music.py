@@ -1,41 +1,52 @@
 from lib.auth.session import PicovicoSession
 from lib.api import PicovicoAPIRequest
 from lib import utils, urls
-from lib.helpers import check_video_data
+from lib.exceptions import PicovicoSessionRequiredException
+from lib.messages import SESSION_REQUIRED_MESSAGE
 
-class PicovicoMusic(PicovicoSession):
+
+class PicovicoMusic():
 	'''
 		Picovico: Library componenet for music
 	'''
-	def get_musics(self, headers=None):
+	picovico_session = None
+
+	def __init__(self, picovico_session=None):
+
+		if picovico_session:
+			self.headers = picovico_session.get_auth_headers()
+		else:
+			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
+
+	def get_musics(self):
 		'''
 			Picovico: List all the uploaded musics
 		'''
-		response = PicovicoAPIRequest.get(urls.GET_MUSICS, headers=headers)
+		response = PicovicoAPIRequest.get(urls.GET_MUSIC, headers=self.headers)
 		return response
 
-	def get_library_musics(self, headers=None):
+	def get_library_musics(self):
 		'''
 			Picovico: List all the library musics
 		'''
-		response = PicovicoAPIRequest.get(urls.GET_LIBRARY_MUSICS, headers=headers)
+		response = PicovicoAPIRequest.get(urls.GET_LIBRARY_MUSICS, headers=self.headers)
 		return response
 
-	def upload_music(self, music_path, source=None, headers=None):
+	def upload_music(self, music_path, source=None):
 		'''
 			Picovico: Uploads the music file to the current project.
 		'''
-		return self.upload_music_file(music_path, source, headers=headers)
+		return self.upload_music_file(music_path, source)
 
-	def add_music(self, music_path, video_data=None, headers=None):
+	def add_music(self, music_path):
 		'''
 			Picovico: Defines the background music
 		'''
-		check_video_data(video_data)
-		response = self.upload_music(music_path, headers=headers)
+		#check_video_data(video_data)
+		response = self.upload_music(music_path)
 
 		if response['id']:
-			self.add_library_music(response['id'], video_data)
+			self.add_library_music(response['id'], vdd)
 
 		return response
 		

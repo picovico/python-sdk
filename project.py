@@ -6,8 +6,20 @@ from lib.components.video import PicovicoVideo
 from lib.components.photo import PicovicoPhoto
 from lib.components.style import PicovicoStyle
 from lib.helpers import reset_slides, reset_music
+from lib.exceptions import PicovicoSessionRequiredException
+from lib.messages import SESSION_REQUIRED_MESSAGE
 
 class PicovicoProject(PicovicoVideo):
+
+	picovico_session = None
+
+	def __init__(self, picovico_session=None):
+		
+		if picovico_session:
+			self.headers = picovico_session.get_auth_headers()
+		else:
+			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
+
 
 	def open(self, video_id=None):
 		'''
@@ -32,7 +44,7 @@ class PicovicoProject(PicovicoVideo):
 
 		return self.vdd
 
-	def begin(self, name, quality=constants.Q_360P, auth_session=None):
+	def begin(self, name, quality=constants.Q_360P):
 		'''
 			Picovico: Begin the project
 		'''
@@ -42,7 +54,7 @@ class PicovicoProject(PicovicoVideo):
 			'name': name,
 			'quality': quality,
 		}
-		response = self.post(url=urls.BEGIN_PROJECT, data=data, auth_session=auth_session)
+		response = self.post(url=urls.BEGIN_PROJECT, data=data, headers=self.headers)
 
 		if response['id']:
 			self.video_id = response['id']
@@ -79,7 +91,7 @@ class PicovicoProject(PicovicoVideo):
 		'''
 			Picovico: Returns the current draft saved
 		'''
-		response = PicovicoAPIRequest.get(urls.GET_DRAFT, auth_session=auth_session)
+		response = PicovicoAPIRequest.get(urls.GET_DRAFT, headers=self.headers)
 		return response
 
 	def dump(self):
