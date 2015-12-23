@@ -22,7 +22,6 @@ class PicovicoVideo(PicovicoAPIRequest):
 		'''
 			Picovico: Fetch any existing video. Use open() for editing.
 		'''
-		self.check_video_id(video_id)
 		response = self.get((urls.SINGLE_VIDEO).format(video_id), headers=self.headers)
 		return response
 
