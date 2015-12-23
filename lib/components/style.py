@@ -22,16 +22,3 @@ class PicovicoStyle():
 			Picovico: Gets available styles
 		'''
 		return PicovicoAPIRequest.get(urls.GET_STYLES, headers=self.headers)
-
-	def set_style(self, style_machine_name, video_id=None):
-		'''
-			Picovico: Defines style for the current video project.
-		'''
-		pass
-		#self.video_id = None
-		# picovico_video = video_id
-		# if style_machine_name:
-		# 	picovico_video['style'] = style_machine_name
-		# 	return True
-		
-		# return False

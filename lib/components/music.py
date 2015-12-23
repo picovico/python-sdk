@@ -38,18 +38,6 @@ class PicovicoMusic():
 		'''
 		return self.upload_music_file(music_path, source)
 
-	def add_music(self, music_path):
-		'''
-			Picovico: Defines the background music
-		'''
-		#check_video_data(video_data)
-		response = self.upload_music(music_path)
-
-		if response['id']:
-			self.add_library_music(response['id'], vdd)
-
-		return response
-		
 	def upload_music_file(self, file_path, source=None, headers=None):
 		'''
 			Picovico: Checks if the music is uploaded locally and proecess the requests.
@@ -69,7 +57,7 @@ class PicovicoMusic():
 			response = PicovicoAPIRequest.post(urls.UPLOAD_MUSIC, data, headers=headers)
 			return response
 
-	def delete_music(self, music_id, headers=None):
+	def delete_music(self, music_id):
 		'''
 			Picovico: Deletes the music from your library
 		'''

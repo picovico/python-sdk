@@ -135,6 +135,16 @@ class PicovicoProject(PicovicoVideo):
 			vdd['assets'].append(slide)
 			return vdd
 
+	def add_text(self, title="", text=""):
+		'''
+			Picovico: Adds text slide to the project
+		'''
+		if title or text:
+			self.append_text_slide(self.vdd, title, text)
+			return True
+		
+		return False
+
 	def append_text_slide(self, vdd, title=None, text=None):
 		'''
 			Picovico: Prepares the slide data for text slides and appends to the vdd
@@ -146,7 +156,19 @@ class PicovicoProject(PicovicoVideo):
 				'text': text
 			}
 		}
-		append_vdd_slide(vdd, data)
+		self.append_vdd_slide(vdd, data)
+
+	def add_music(self, music_path):
+		'''
+			Picovico: Defines the background music
+		'''
+		response = self.upload_music(music_path)
+
+		if response['id']:
+			self.add_library_music(response['id'], vdd)
+
+		return response
+		
 
 	def add_credits(self, title=None, text=None):
 		'''
