@@ -1,4 +1,7 @@
 """
+	Picovico: Picovico custom exception classes
+"""
+"""
 Picovico:
 	When the access_key and access_token aren't available
 	for the curent session

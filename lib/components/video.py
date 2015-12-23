@@ -1,4 +1,3 @@
-import json
 from lib import urls
 from lib.api import PicovicoAPIRequest
 from lib.exceptions import VideoIdNotFound, PicovicoSessionRequiredException
@@ -22,6 +21,9 @@ class PicovicoVideo(PicovicoAPIRequest):
 		'''
 			Picovico: Fetch any existing video. Use open() for editing.
 		'''
+		if video_id is None:
+			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
+
 		response = self.get((urls.SINGLE_VIDEO).format(video_id), headers=self.headers)
 		return response
 
@@ -62,5 +64,8 @@ class PicovicoVideo(PicovicoAPIRequest):
 		'''
 			Picovico: Duplicates any video and saves it to the new draft or overrides if any exists.
 		'''
+		if video_id is None:
+			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
+
 		response = self.post((urls.DUPLICATE_VIDEO).format(video_id), headers=self.headers)
 		return response

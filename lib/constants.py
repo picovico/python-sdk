@@ -1,8 +1,8 @@
 '''
 	Constants configuration for Picovico
 '''
-
 # Api version settings 
+
 API_VERSION = '2.1'
 VERSION = '2.0.13'
 API_SERVER = 'api.picovico.com'

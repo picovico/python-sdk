@@ -216,7 +216,7 @@ class PicovicoProject(PicovicoVideo):
 
 		return False
 
-	def draft(self, auth_session=None):
+	def draft(self):
 		'''
 			Picovico: Returns the current draft saved
 		'''
