@@ -14,11 +14,13 @@ class PicovicoProject(PicovicoVideo):
 	picovico_session = None
 
 	def __init__(self, picovico_session=None):
-		
+
 		if picovico_session:
 			self.headers = picovico_session.get_auth_headers()
 		else:
 			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
+
+		self.pv_photo = PicovicoPhoto(picovico_session)
 
 
 	def open(self, video_id=None):
@@ -62,6 +64,89 @@ class PicovicoProject(PicovicoVideo):
 			self.vdd['assets'] = []
 
 		return self.vdd
+
+	def set_style(self, style_machine_name):
+		'''
+			Picovico: Defines style for the current video project.
+		'''
+		if style_machine_name:
+			self.vdd['style'] = style_machine_name
+			return True
+		
+		return False
+
+	def add_image(self, image_path, caption="", source="hosted"):
+		'''
+			Picovico: Add and append image to the current project
+		'''
+		response = self.pv_photo.upload_image(image_path, source)
+
+		if response['id']:
+			self.add_library_image(response['id'], self.vdd, caption)
+
+		return response
+
+	def add_library_image(self, image_id, vdd, caption=""):
+		'''
+			Picovico: Appends any image previously uploaded.
+		'''
+		if image_id:
+			self.append_image_slide(image_id, vdd, caption)
+			return True
+
+		return False
+
+	def append_image_slide(self, image_id, vdd, caption=None):
+		'''
+			Picovico: Appends image slide with given data
+		'''
+		data = {
+			'name': 'image',
+			'data':{
+				'text': caption,
+			},
+			'asset_id': image_id
+		}
+		self.append_vdd_slide(vdd, data)
+
+	def append_vdd_slide(self, vdd, slide):
+		'''
+			Picovico: Appends image slides into the project with data
+		'''
+		if vdd:
+			if not vdd['assets']:
+				vdd['assets'] = []
+
+			last_slide = None
+			current_slides_count = len(vdd['assets'])
+			last_end_time = 0
+
+			if vdd['assets']:
+				last_slide = vdd['assets'][len(vdd['assets']) - 1]
+
+				if last_slide:
+					last_end_time = last_slide["end_time"]
+				else:
+					last_end_time = last_slide.end_time
+
+			slide['start_time'] = last_end_time
+			slide['end_time'] = last_end_time + constants.STANDARD_SLIDE_DURATION
+
+			vdd['assets'].append(slide)
+			return vdd
+
+	def append_text_slide(self, vdd, title=None, text=None):
+		'''
+			Picovico: Prepares the slide data for text slides and appends to the vdd
+		'''
+		data = {
+			'name': 'text',
+			'data':{
+				'title': title,
+				'text': text
+			}
+		}
+		append_vdd_slide(vdd, data)
 
 	def add_credits(self, title=None, text=None):
 		'''
@@ -122,6 +207,26 @@ class PicovicoProject(PicovicoVideo):
 			return True
 			
 		return False
+
+	def append_music(self, vdd):
+		'''
+			Picovico: If music is set and not appended to the VDD slide, appends the music as vdd slide
+		'''
+		if vdd['_music']:
+			append_vdd_slide(vdd, vdd['_music'])
+			del vdd['_music']
+
+	def reset_slides(self, vdd):
+		'''
+			Picovico: Resets slides data i.e assets
+		'''
+		vdd['assets'] = []
+
+	def reset_music(self, vdd):
+		'''
+			Picovico: Resets music for the project
+		'''
+		del vdd['_music']
 
 
 
