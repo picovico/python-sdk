@@ -5,7 +5,6 @@ from lib.components.music import PicovicoMusic
 from lib.components.video import PicovicoVideo 
 from lib.components.photo import PicovicoPhoto
 from lib.components.style import PicovicoStyle
-from lib.helpers import reset_slides, reset_music
 from lib.exceptions import PicovicoSessionRequiredException
 from lib.messages import SESSION_REQUIRED_MESSAGE
 
