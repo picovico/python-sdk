@@ -11,7 +11,6 @@ class PicovicoUnauthorizedException(Exception):
 	def __str__(self):
 		return repr(self.message)
 
-
 """
 Picovico:
 	When the response status code is not 200
@@ -37,9 +36,6 @@ class DataNotFound(Exception):
 	pass
 
 class VideoIdNotFound(Exception):
-	pass
-
-class VideoDataNotFound(Exception):
 	pass
 
 class PicovicoSessionRequiredException(Exception):

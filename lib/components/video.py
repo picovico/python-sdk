@@ -33,7 +33,6 @@ class PicovicoVideo(PicovicoAPIRequest):
 		response = self.get(urls.GET_VIDEOS, headers=self.headers)
 		return response
 
-
 	def preview_video(self, video_id):
 		'''
 			Picovico:

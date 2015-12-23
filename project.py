@@ -23,7 +23,6 @@ class PicovicoProject(PicovicoVideo):
 		self.pv_photo = PicovicoPhoto(picovico_session)
 		self.pv_music = PicovicoMusic(picovico_session)
 
-
 	def open(self, video_id=None):
 		'''
 			Picovico: Open any existing project which has not yet been rendered
@@ -253,7 +252,6 @@ class PicovicoProject(PicovicoVideo):
 			return True
 			
 		return False
-
 
 	def save(self, video_id):
 		'''

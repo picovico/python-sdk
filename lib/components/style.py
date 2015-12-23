@@ -3,6 +3,7 @@ from lib.api import PicovicoAPIRequest
 from lib.exceptions import PicovicoSessionRequiredException
 from lib.messages import SESSION_REQUIRED_MESSAGE
 
+
 class PicovicoStyle():
 	'''
 		Picovico: Library component for style.
