@@ -20,5 +20,5 @@ class PicovicoAccount():
 		'''
 			Picovico: Generates profile for authenticated user
 		'''
-		response = PicovicoAPIRequest.get(url=urls.ME, headers=picovico_session.get_auth_headers())
+		response = PicovicoAPIRequest.get(url=urls.ME, headers=self.picovico_session.get_auth_headers())
 		return response
