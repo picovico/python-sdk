@@ -133,51 +133,6 @@ class PicovicoProjectTest(unittest.TestCase):
 
 
 
-
-
-
-
-
-
-
-
-	# def test_project(self):
-	# 	print("begin")
-	# 	begin = self.project.begin("My another cool video")
-	# 	self.assertTrue('id' in begin.keys())
-
-	# 	style = self.project.set_style('vanilla')
-	# 	self.assertTrue(style is True)
-
-	# 	'''
-	# 		Picovico: A video needs atleast 4 slides so 2 images and 2 text are added.
-	# 	'''
-
-	# 	for i in range(0,2):
-	# 		image = self.project.add_image('http://s3-us-west-2.amazonaws.com/pv-styles/christmas/pv_christmas_winter_themes.png', "This is caption")
-	# 		self.assertTrue('id' in image.keys())
-
-	# 	for i in range(0,2):
-	# 		text = self.project.add_text("This is cool", "This is not cool")
-	# 		self.assertTrue(text is True)
-
-	# 	music = self.project.add_music("http://s3.amazonaws.com/picovico-1/assets/music/Latin/Latinish.mp3")
-	# 	self.assertTrue('id' in music.keys())
-
-	# 	credit = self.project.add_credits("Music", "Vishnu")
-	# 	self.assertTrue(credit is True)
-
-	# 	quality = self.project.set_quality(constants.Q_360P)
-	# 	self.assertTrue(quality is True)
-
-	# 	create = self.project.create(begin['id'])
-	# 	self.assertEqual(create['status'], 7101)
-
-	# def test_add_image(self):
-	#     image = self.app.add_image('http://s3-us-west-2.amazonaws.com/pv-styles/christmas/pv_christmas_winter_themes.png', "This is caption")
-	#     self.assertTrue('id' in image.keys())
-
-
 if __name__ == '__main__':
 	unittest.main()
 
