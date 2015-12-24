@@ -4,7 +4,7 @@ from lib.exceptions import VideoIdNotFound, PicovicoSessionRequiredException
 from lib.messages import VIDEO_ID_NOT_FOUND, SESSION_REQUIRED_MESSAGE
 
 
-class PicovicoVideo(PicovicoAPIRequest):
+class PicovicoVideo():
 	'''
 		Picovico: Library component for video
 	'''
@@ -24,14 +24,14 @@ class PicovicoVideo(PicovicoAPIRequest):
 		if video_id is None:
 			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
 
-		response = self.get((urls.SINGLE_VIDEO).format(video_id), headers=self.headers)
+		response = PicovicoAPIRequest.get((urls.SINGLE_VIDEO).format(video_id), headers=self.headers)
 		return response
 
 	def get_videos(self):
 		'''
 			Picovico: Get list of 15 videos
 		'''
-		response = self.get(urls.GET_VIDEOS, headers=self.headers)
+		response = PicovicoAPIRequest.get(urls.GET_VIDEOS, headers=self.headers)
 		return response
 
 	def preview_video(self, video_id):
@@ -46,7 +46,7 @@ class PicovicoVideo(PicovicoAPIRequest):
 
 		video_response = self.save(video_id)
 
-		response = self.post((urls.PREVIEW_VIDEO).format(video_id), headers=self.headers)
+		response = PicovicoAPIRequest.post((urls.PREVIEW_VIDEO).format(video_id), headers=self.headers)
 		return response
 
 	def create_video(self, video_id):
@@ -57,7 +57,7 @@ class PicovicoVideo(PicovicoAPIRequest):
 			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
 
 		video_response = self.save(video_id)
-		response = self.post((urls.CREATE_VIDEO).format(video_id), headers=self.headers)
+		response = PicovicoAPIRequest.post((urls.CREATE_VIDEO).format(video_id), headers=self.headers)
 		return response
 
 	def duplicate_video(self, video_id):
@@ -67,5 +67,5 @@ class PicovicoVideo(PicovicoAPIRequest):
 		if video_id is None:
 			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
 
-		response = self.post((urls.DUPLICATE_VIDEO).format(video_id), headers=self.headers)
+		response = PicovicoAPIRequest.post((urls.DUPLICATE_VIDEO).format(video_id), headers=self.headers)
 		return response

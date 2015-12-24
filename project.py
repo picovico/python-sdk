@@ -29,7 +29,7 @@ class PicovicoProject(PicovicoVideo):
 		self.video_id = None
 		self.vdd = {}
 		if video_id:
-			picovico_video = self.get(video_id)
+			picovico_video = self.get_video(video_id)
 			if picovico_video['status'] == constants.VIDEO_INITIAL:
 				self.video_id = video_id
 				self.vdd = picovico_video
@@ -55,7 +55,7 @@ class PicovicoProject(PicovicoVideo):
 			'name': name,
 			'quality': quality,
 		}
-		response = self.post(url=urls.BEGIN_PROJECT, data=data, headers=self.headers)
+		response = PicovicoAPIRequest.post(url=urls.BEGIN_PROJECT, data=data, headers=self.headers)
 
 		if response['id']:
 			self.video_id = response['id']

@@ -20,6 +20,7 @@ print(r)
 print("Profile")
 
 proj = PicovicoProject(headers)
+
 print('project')
 r = proj.begin("Some cool project")
 print(r)
@@ -28,25 +29,50 @@ print(r['id'])
 video_id = r['id']
 print("Begin project")
 
-r = proj.set_style("vanilla")
+r = proj.open(video_id=video_id)
+print(r)
+print('Video Opened')
+
+r = proj.set_style("carol")
 print(r)
 print("Style Added")
 
-r = proj.add_image('http://s3.amazonaws.com/pvcdn2/video/8501d6865c2d484abb2e8a858cffca80/8501d6865c2d484abb2e8a858cffca80-360.jpg', 'This is caption')
+r = proj.add_image('http://c.tadst.com/gfx/600x400/christmas.jpg?1', 'Ho Ho Ho Its christmas :)')
 print(r)
 print("Image added")
+
+r = proj.add_text("Christmas", "A season of cold warm with happiness around ")
+print(r)
+print("Text slide added")
+
+r = proj.add_text("...And", "Christmas is the season when you buy this year's gifts with next year's money..")
+print(r)
+print("Text slide added")
+
 
 r = proj.add_image('http://s3.amazonaws.com/pvcdn2/video/8501d6865c2d484abb2e8a858cffca80/8501d6865c2d484abb2e8a858cffca80-360.jpg')
 print(r)
 print("Another Image added")
 
-r = proj.add_text("Aaeronn", "Bhatta")
+r = proj.add_text("My Wish", "Dear Santa, what I want for Christmas is... your list with names of naughty girls.")
 print(r)
 print("Text slide added")
 
-r = proj.add_text("Vishnu", "Bhatta")
+r = proj.add_text("...And", "a bar with my choice of wine.. HO HO..")
 print(r)
-print("Another Text slide added")
+print("Text slide added")
+
+r = proj.add_image('http://snowvillageinn.com/wp-content/uploads/2015/10/christmas_decoration.jpg')
+print(r)
+print("Another Image added")
+
+r = proj.add_image('http://oilersnation.com/uploads/Image/christmas2.jpg')
+print(r)
+print("Another Image added")
+
+r = proj.add_text("Wish", "you all MERRY CHRISTMAS")
+print(r)
+print("Text slide added")
 
 r = proj.add_music("http://s3.amazonaws.com/picovico-1/assets/music/Latin/Latinish.mp3")
 print(r)
