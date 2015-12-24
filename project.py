@@ -174,9 +174,9 @@ class PicovicoProject(PicovicoVideo):
 		'''
 		if music_id:
 			self.set_music(music_id, vdd)
-			return False
+			return True
 
-		return True
+		return False
 
 	def set_music(self, music_id, vdd):
 		'''
@@ -286,7 +286,7 @@ class PicovicoProject(PicovicoVideo):
 		'''
 			Picovico: Resets music for the project
 		'''
-		del vdd['_music']
+		vdd['_music'] = {}
 
 
 

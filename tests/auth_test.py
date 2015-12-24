@@ -1,32 +1,42 @@
-import requests, sys
-import unittest
-from picovico import Picovico
-from lib import config
+import requests, unittest, json
+from lib import config, urls
+from lib.auth.session import PicovicoSession
+from lib.exceptions import DataNotFound, PicovicoAPIResponseException
+from ddt import ddt, data, unpack
+from lib.api import PicovicoAPIRequest
 
-class PicovicoAuthenticationTest(unittest.TestCase):
 
-    def setUp(self):
-        '''
-            Picovico Test: Set up the app_id and app_secret and authenticate.
-        '''
-        self.app = Picovico(config.PICOVICO_APP_ID, config.PICOVICO_APP_SECRET)
-        authenticate = self.app.authenticate()
-        self.assertTrue('access_key' and 'access_token' in authenticate.keys())
+@ddt
+class PicovicoSessionTest(unittest.TestCase):
 
-    def test_authenticate(self):
+    @data(
+            (config.PICOVICO_APP_ID, config.PICOVICO_APP_SECRET, False, False),
+            ('277a723c32b3578a549e5aaaf8e79c7f7f3a64a91e12e1e219c6c50db4496a9300', 'e61b883b2a0109763cb0289f751df8289c6baa3fcab98bf2842f3345a70bc7b400', True, False),
+            #('277a723c32b3578a549e5aaaf8e79c7f7f3a64a91e12e1e219c6c50db4496a9300', 'e61b883b2a0109763cb0289f751df8289c6baa3fcab98bf2842f3345a70bc7b400', False, True)
+        )
+    @unpack
+    def test_authenticate(self, app_id, app_secret, expectedPicovicoAPIResponseException, expectedDataNotFound):
         '''
-            Picovico Test: As authentication is called in set up, it is no need to call explicitly here.
+            Picovico Test: Authentication test for picovico
         '''
-        # response = self.app.authenticate()
-        # self.assertTrue('access_key' and 'access_token' in response.keys())
+        self.session = PicovicoSession(app_id, app_secret)
+
+        if expectedPicovicoAPIResponseException:
+            self.assertRaises(PicovicoAPIResponseException, lambda: self.session.authenticate())
+            return 
+
+        # if expectedDataNotFound:
+           
+        #     # #self.assertRaises(PicovicoAPIResponseException, lambda: PicovicoAPIRequest.sdk_response())
+        #     self.assertRaises(DataNotFound, lambda: self.session.authenticate())
+        #     return 
+
+        authenticate = self.session.authenticate()
+        self.assertTrue(authenticate)
+
+    def test_login(self):
         pass
 
-    def test_profile(self):
-        '''
-            Picovico Test: Test for picovico user profile.
-        '''
-        response = self.app.profile()
-        self.assertTrue('email' in response.keys())
 
 if __name__ == '__main__':
     unittest.main()

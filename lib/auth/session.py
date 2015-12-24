@@ -68,7 +68,7 @@ class PicovicoSession:
 
 			response = PicovicoAPIRequest.post(urls.LOGIN, data=data)
 
-			if not response.get('access_key') and response.get('access_token'):
+			if not response.get('access_key') and not response.get('access_token'):
 				raise DataNotFound(messages.ACCESS_KEY_AND_ACCESS_TOKEN_MISSING)
 
 			self.set_auth_tokens(access_key=response.get('access_key'), 
@@ -89,7 +89,7 @@ class PicovicoSession:
 
 		response = PicovicoAPIRequest.post(url=urls.APP_AUTHENTICATE, data=data)
 
-		if not response.get('access_key') and response.get('access_token'):
+		if not response.get('access_key') and not response.get('access_token'):
 			raise DataNotFound(messages.ACCESS_KEY_AND_ACCESS_TOKEN_MISSING)
 
 		self.set_auth_tokens(access_key=response.get('access_key'), 
