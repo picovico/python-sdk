@@ -16,7 +16,10 @@ class PicovicoAPIRequest:
 
 	@staticmethod
 	def put(url=None, filename=None, data=None, headers=None):
-		response = requests.put(urls.PICOVICO_API_ENDPOINT + url, filename, data, headers=headers)
+		pv_file = open(filename, 'r')
+		if data:
+			headers.update(data)
+		response = requests.put(urls.PICOVICO_API_ENDPOINT + url, pv_file, headers=headers)
 		return PicovicoAPIRequest.sdk_response(response)
 
 	@staticmethod

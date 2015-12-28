@@ -2,6 +2,7 @@ import unittest
 from lib import config
 from lib.auth.session import PicovicoSession
 from lib.auth.account import PicovicoAccount
+from lib.exceptions import PicovicoSessionRequiredException
 
 
 class PicovicoAccountTest(unittest.TestCase):
@@ -12,7 +13,10 @@ class PicovicoAccountTest(unittest.TestCase):
 		'''
 		self.session = PicovicoSession(config.PICOVICO_APP_ID, config.PICOVICO_APP_SECRET)
 		self.authenticate = self.session.authenticate()
-		self.account = PicovicoAccount(self.session)
+		try:
+			self.account = PicovicoAccount()
+		except PicovicoSessionRequiredException:
+			self.account = PicovicoAccount(self.session)
 
 	def test_profile(self):
 		'''

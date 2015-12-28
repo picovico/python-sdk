@@ -22,16 +22,16 @@ print("Profile")
 proj = PicovicoProject(headers)
 
 print('project')
-r = proj.begin("Some cool project")
+r = proj.begin("My project")
 print(r)
 print("Video id")
 print(r['id'])
 video_id = r['id']
 print("Begin project")
 
-r = proj.open(video_id=video_id)
-print(r)
-print('Video Opened')
+# r = proj.open(video_id=video_id)
+# print(r)
+# print('Video Opened')
 
 r = proj.set_style("carol")
 print(r)
@@ -74,7 +74,7 @@ r = proj.add_text("Wish", "you all MERRY CHRISTMAS")
 print(r)
 print("Text slide added")
 
-r = proj.add_music("http://s3.amazonaws.com/picovico-1/assets/music/Latin/Latinish.mp3")
+r = proj.add_music("https://s3-us-west-2.amazonaws.com/pv-audio-library/free-music/preview/Christmas/Kevin-MacLeod-Christmas-Rap.mp3")
 print(r)
 print("Music added")
 
@@ -86,10 +86,15 @@ r = proj.set_quality(constants.Q_360P)
 print(r)
 print("Quality set")
 
+r = proj.preview_video(video_id=video_id)
+print(r)
+print("Previewed")
 
 r = proj.create_video(video_id=video_id)
 print(r)
 print('Video Created')
+
+
 
 
 

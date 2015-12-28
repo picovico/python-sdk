@@ -11,7 +11,7 @@ class PicovicoAccount():
 	def __init__(self, picovico_session=None):
 
 		if picovico_session:
-			self.headers = picovico_session.get_auth_headers()
+			self.auth_headers = picovico_session.get_auth_headers()
 		else:
 			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
 
@@ -19,5 +19,5 @@ class PicovicoAccount():
 		'''
 			Picovico: Generates profile for authenticated user
 		'''
-		response = PicovicoAPIRequest.get(url=urls.ME, headers=self.headers)
+		response = PicovicoAPIRequest.get(url=urls.ME, headers=self.auth_headers)
 		return response

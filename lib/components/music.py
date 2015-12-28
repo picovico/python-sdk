@@ -13,7 +13,7 @@ class PicovicoMusic():
 	def __init__(self, picovico_session=None):
 
 		if picovico_session:
-			self.headers = picovico_session.get_auth_headers()
+			self.auth_headers = picovico_session.get_auth_headers()
 		else:
 			raise PicovicoSessionRequiredException(SESSION_REQUIRED_MESSAGE)
 
@@ -21,14 +21,14 @@ class PicovicoMusic():
 		'''
 			Picovico: List all the uploaded musics
 		'''
-		response = PicovicoAPIRequest.get(urls.GET_MUSIC, headers=self.headers)
+		response = PicovicoAPIRequest.get(urls.GET_MUSIC, headers=self.auth_headers)
 		return response
 
 	def get_library_musics(self):
 		'''
 			Picovico: List all the library musics
 		'''
-		response = PicovicoAPIRequest.get(urls.GET_LIBRARY_MUSICS, headers=self.headers)
+		response = PicovicoAPIRequest.get(urls.GET_LIBRARY_MUSICS, headers=self.auth_headers)
 		return response
 
 	def upload_music(self, music_path, source=None):
@@ -44,16 +44,16 @@ class PicovicoMusic():
 		if utils.is_local_file(file_path):
 			data = {
 				'Music-Artist': "Unknown",
-				"Music-Title": "Unknown - {}".format('r')
+				"Music-Title": "Unknown"
 			}
-			response = PicovicoAPIRequest.put(urls.UPLOAD_MUSIC, file_path, data, headers=self.headers)
+			response = PicovicoAPIRequest.put(urls.UPLOAD_MUSIC, file_path, data, headers=self.auth_headers)
 			return response
 		else:
 			data = {
 				'url': file_path,
 				'preview_url': file_path
 			}
-			response = PicovicoAPIRequest.post(urls.UPLOAD_MUSIC, data, headers=self.headers)
+			response = PicovicoAPIRequest.post(urls.UPLOAD_MUSIC, data, headers=self.auth_headers)
 			return response
 
 	def delete_music(self, music_id):
@@ -61,7 +61,8 @@ class PicovicoMusic():
 			Picovico: Deletes the music from your library
 		'''
 		if music_id:
-			response = PicovicoAPIRequest.delete((urls.DELETE_MUSIC).format(music_id), headers=self.headers)
+			response = PicovicoAPIRequest.delete((urls.DELETE_MUSIC).format(music_id), headers=self.auth_headers)
 			return response
 		return False
+
 

@@ -106,4 +106,6 @@ class PicovicoSession:
 		self.access_token = None
 		self.user_id = None
 
+		return True
+
 
