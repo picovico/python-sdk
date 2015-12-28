@@ -62,7 +62,7 @@ class PicovicoProjectTest(unittest.TestCase):
 
 	def test_add_library_image(self):
 		vdd = {}
-		library_image = self.project.add_library_image(None, vdd)
+		library_image = self.project.ProjectHelpers(self.project).add_library_image(None, vdd)
 		self.assertFalse(library_image)
 
 
@@ -85,7 +85,7 @@ class PicovicoProjectTest(unittest.TestCase):
 
 	def test_add_library_music(self):
 		vdd = {}
-		library_music = self.project.add_library_music(None, vdd)
+		library_music = self.project.ProjectHelpers(self.project).add_library_music(None, vdd)
 		self.assertFalse(library_music)
 
 	@data((None, None, False), ('Music', 'Aaeronn', True))
