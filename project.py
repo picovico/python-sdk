@@ -82,7 +82,7 @@ class PicovicoProject(PicovicoVideo):
 		response = self.pv_photo.upload_image(image_path, source)
 
 		if response['id']:
-			self.ProjectHelpers(self).add_library_image(response['id'], self.vdd, caption)
+			self.ProjectHelper(self).add_library_image(response['id'], self.vdd, caption)
 
 		return response
 
@@ -91,7 +91,7 @@ class PicovicoProject(PicovicoVideo):
 			Picovico: Adds text slide to the project
 		'''
 		if title or text:
-			self.ProjectHelpers(self).append_text_slide(self.vdd, title, text)
+			self.ProjectHelper(self).append_text_slide(self.vdd, title, text)
 			return True
 		
 		return False
@@ -103,7 +103,7 @@ class PicovicoProject(PicovicoVideo):
 		response = self.pv_music.upload_music(music_path)
 
 		if response['id']:
-			self.ProjectHelpers(self).add_library_music(response['id'], self.vdd)
+			self.ProjectHelper(self).add_library_music(response['id'], self.vdd)
 
 		return response
 
@@ -152,8 +152,8 @@ class PicovicoProject(PicovicoVideo):
 		'''
 			Picovico: Resets the current local progress
 		'''
-		self.ProjectHelpers(self).reset_music(self.vdd)
-		self.ProjectHelpers(self).reset_slides(self.vdd)
+		self.ProjectHelper(self).reset_music(self.vdd)
+		self.ProjectHelper(self).reset_slides(self.vdd)
 		self.remove_credits()
 		self.vdd['style'] = None
 		self.vdd['quality'] = None
@@ -169,7 +169,7 @@ class PicovicoProject(PicovicoVideo):
 			
 		return False
 
-	class ProjectHelpers():
+	class ProjectHelper():
 
 		def __init__(self, project_instance):
 			self.project_helpers = project_instance

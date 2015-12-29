@@ -44,7 +44,7 @@ class PicovicoVideo():
 		if video_id is None:
 			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
 
-		video_response = self.ProjectHelpers(self).save(video_id)
+		video_response = self.ProjectHelper(self).save(video_id)
 
 		response = PicovicoAPIRequest.post((urls.PREVIEW_VIDEO).format(video_id), headers=self.auth_headers)
 		return response
@@ -56,7 +56,7 @@ class PicovicoVideo():
 		if video_id is None:
 			raise VideoIdNotFound(VIDEO_ID_NOT_FOUND)
 
-		video_response = self.ProjectHelpers(self).save(video_id)
+		video_response = self.ProjectHelper(self).save(video_id)
 		response = PicovicoAPIRequest.post((urls.CREATE_VIDEO).format(video_id), headers=self.auth_headers)
 		return response
 
