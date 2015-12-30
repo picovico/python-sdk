@@ -10,7 +10,9 @@ from lib.messages import SESSION_REQUIRED_MESSAGE
 
 
 class PicovicoProject(PicovicoVideo):
-
+	'''
+		Picovico: Picovico class for project workflow and video creation.
+	'''
 	picovico_session = None
 
 	def __init__(self, picovico_session=None):
@@ -172,6 +174,9 @@ class PicovicoProject(PicovicoVideo):
 		return False
 
 	class ProjectHelper():
+		'''
+			Picovico: Helper class for PicovicoProject which should be called with PicovicoProject instance.
+		'''
 
 		def __init__(self, project_instance):
 			'''

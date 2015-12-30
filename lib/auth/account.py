@@ -5,7 +5,9 @@ from lib.messages import SESSION_REQUIRED_MESSAGE
 
 
 class PicovicoAccount():
-
+	'''
+		Picovico: Picovico class for user detail and updata.
+	'''
 	picovico_session = None
 
 	def __init__(self, picovico_session=None):

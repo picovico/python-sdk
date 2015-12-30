@@ -3,7 +3,9 @@ from lib import urls, exceptions, messages
 
 
 class PicovicoSession:
-
+	'''
+		Picovico: Picovico class for picovico session like authentication, login and logout.
+	'''
 	access_key = None
 	access_token = None
 	app_id = None
