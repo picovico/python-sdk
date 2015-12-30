@@ -32,7 +32,7 @@ class PicovicoSession:
 
 	def get_auth_headers(self, is_anonymous=False):
 		'''
-		Picovico: Checks if user is anonymous and returns exceptis if it is.
+		Picovico: Checks if user is anonymous and returns exception if it is and not logged in..
 		'''
 		if is_anonymous:
 			return {

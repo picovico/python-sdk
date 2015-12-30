@@ -9,7 +9,9 @@ class PicovicoAccount():
 	picovico_session = None
 
 	def __init__(self, picovico_session=None):
-
+		'''
+			Picovico: Constructor to accept session instance. If not, will raise exception.
+		'''
 		if picovico_session:
 			self.auth_headers = picovico_session.get_auth_headers()
 		else:

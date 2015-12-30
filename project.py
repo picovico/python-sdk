@@ -14,7 +14,9 @@ class PicovicoProject(PicovicoVideo):
 	picovico_session = None
 
 	def __init__(self, picovico_session=None):
-
+		'''
+			Picovico: Constructor to accepts session instance. If not, will raise exception.
+		'''
 		if picovico_session:
 			self.auth_headers = picovico_session.get_auth_headers()
 		else:
@@ -172,7 +174,10 @@ class PicovicoProject(PicovicoVideo):
 	class ProjectHelper():
 
 		def __init__(self, project_instance):
-			self.project_helpers = project_instance
+			'''
+				Picovico: Constructor that accepts super class instance.
+			'''
+			self.project_helper = project_instance
 
 		def add_library_image(self, image_id, vdd, caption=""):
 			'''
@@ -268,13 +273,13 @@ class PicovicoProject(PicovicoVideo):
 			#self.append_music(self.vdd)
 
 			video_assets = {}
-			for k,v in self.project_helpers.vdd.items():
+			for k,v in self.project_helper.vdd.items():
 				if type(v) is list:
 					video_assets[k] = json.dumps(v)
 				else:
 					video_assets[k] = v
 
-			response = PicovicoAPIRequest.post((urls.SAVE_VIDEO).format(video_id), data=video_assets, headers=self.project_helpers.auth_headers)
+			response = PicovicoAPIRequest.post((urls.SAVE_VIDEO).format(video_id), data=video_assets, headers=self.project_helper.auth_headers)
 			return response
 
 		def reset_slides(self, vdd):
