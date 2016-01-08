@@ -45,7 +45,7 @@ class PicovicoAPIRequest:
 	@staticmethod
 	def sdk_response(raw_response):
 		'''
-			Picovico: Decodes the raw response from api to json.
+			Picovico: Decodes the raw response from api.
 						Checks if status code is 200. If not raises PicovicoAPIResponseException with error message.
 						Returns decoded response
 		'''
