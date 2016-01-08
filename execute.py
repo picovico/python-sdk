@@ -1,83 +1,102 @@
-from lib import config, constants
-from picovico import Picovico
+from lib import config, constants 
+from project import PicovicoProject
+from lib.auth.session import PicovicoSession
+from lib.auth.account import PicovicoAccount
+from lib.components.video import PicovicoVideo
+from lib.components.photo import PicovicoPhoto
+from lib.components.music import PicovicoMusic
+from lib.components.style import PicovicoStyle
 
-app = Picovico(config.PICOVICO_APP_ID, config.PICOVICO_APP_SECRET)
-r = app.authenticate()
+session = PicovicoSession(config.PICOVICO_APP_ID, config.PICOVICO_APP_SECRET)
+r = session.authenticate()
 print(r)
-r = app.profile()
-print(r)
+headers = session
+print(headers)
+print("Authenticated")
 
-r = app.begin("Some cool project")
+acc = PicovicoAccount(headers)
+r = acc.profile()
 print(r)
+print("Profile")
+
+proj = PicovicoProject(headers)
+
+print('project')
+r = proj.begin("My project")
+print(r)
+print("Video id")
+print(r['id'])
+video_id = r['id']
 print("Begin project")
 
-r = app.set_style("vanilla")
+# r = proj.open(video_id=video_id)
+# print(r)
+# print('Video Opened')
+
+r = proj.set_style("carol")
 print(r)
 print("Style Added")
 
-r = app.add_text("Aaeronn", "Bhatta")
+r = proj.add_image('http://c.tadst.com/gfx/600x400/christmas.jpg?1', 'Ho Ho Ho Its christmas :)')
+print(r)
+print("Image added")
+
+r = proj.add_text("Christmas", "A season of cold warm with happiness around ")
 print(r)
 print("Text slide added")
 
-r = app.add_image('http://s3-us-west-2.amazonaws.com/pv-styles/christmas/pv_christmas_winter_themes.png', "This is caption")
+r = proj.add_text("...And", "Christmas is the season when you buy this year's gifts with next year's money..")
 print(r)
-print("Image Added")
+print("Text slide added")
 
-r = app.add_image('http://s3.amazonaws.com/pvcdn2/video/8501d6865c2d484abb2e8a858cffca80/8501d6865c2d484abb2e8a858cffca80-360.jpg')
+
+r = proj.add_image('http://s3.amazonaws.com/pvcdn2/video/8501d6865c2d484abb2e8a858cffca80/8501d6865c2d484abb2e8a858cffca80-360.jpg')
 print(r)
-print("Another image added")
+print("Another Image added")
 
-r = app.add_text("Vishnu", "Raj")
+r = proj.add_text("My Wish", "Dear Santa, what I want for Christmas is... your list with names of naughty girls.")
 print(r)
-print("Another Text slide added")
+print("Text slide added")
 
-# r = app.upload_image("http://s3-us-west-2.amazonaws.com/pv-styles/christmas/pv_christmas_winter_themes.png", "hosted")
-# print(r)
-# r = app.upload_music("http://s3.amazonaws.com/picovico-1/assets/music/Latin/Latinish.mp3", "hosted")
-# print(r)
+r = proj.add_text("...And", "a bar with my choice of wine.. HO HO..")
+print(r)
+print("Text slide added")
 
-# r = app.get_musics()
-# print(r)
-# r = app.get_library_musics()
-# #print(r)
-# print("library music completed")
+r = proj.add_image('http://snowvillageinn.com/wp-content/uploads/2015/10/christmas_decoration.jpg')
+print(r)
+print("Another Image added")
 
-r = app.add_music("http://s3.amazonaws.com/picovico-1/assets/music/Latin/Latinish.mp3")
+r = proj.add_image('http://oilersnation.com/uploads/Image/christmas2.jpg')
+print(r)
+print("Another Image added")
+
+r = proj.add_text("Wish", "you all MERRY CHRISTMAS")
+print(r)
+print("Text slide added")
+
+r = proj.add_music("https://s3-us-west-2.amazonaws.com/pv-audio-library/free-music/preview/Christmas/Kevin-MacLeod-Christmas-Rap.mp3")
 print(r)
 print("Music added")
-# r = app.delete_music("nMBt9")
-# print(r)
-# print("Music deleted")
 
-# r = app.get_styles()
-# print(r)
-# print("Style added")
-# r = app.remove_credits()
-# print(r)
-r = app.add_credits("Music", "Aaeronn")
+r = proj.add_credits("Music", "Aaeronn")
 print(r)
 print("Credit Added")
 
-r = app.add_credits("Photo", "Hem")
-print(r)
-print("Another Credit Added")
-
-
-r = app.set_quality(Picovico.Q_360P)
+r = proj.set_quality(constants.Q_360P)
 print(r)
 print("Quality set")
 
-# r = app.remove_credits()
-# print(r)
-# print("Credit removed")
-
-# r = app.get("nMB2k")
-# print(r)
-# print("Single video")
-
-r = app.create()
+r = proj.preview_video(video_id=video_id)
 print(r)
-print("Video Created")
+print("Previewed")
 
-r = app.get_videos()
+r = proj.create_video(video_id=video_id)
 print(r)
+print('Video Created')
+
+
+
+
+
+
+
