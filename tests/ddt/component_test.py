@@ -14,10 +14,13 @@ MUSIC_ID = 'nMEwp'
 IMAGE_ID = "nMEoM"
 VIDEO_ID = "nMFoG"
 
-TEST_DATA_DIR =  os.path.dirname(os.path.realpath(os.path.__file__)) + "/data/"
+#TEST_DATA_DIR =  os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "/data/"
+TEST_DATA_DIR =  os.path.realpath(__file__)
+TEST_BASE_DIR = os.path.dirname(TEST_DATA_DIR) + "/data/"
+print(TEST_BASE_DIR)
 
-LOCAL_MUSIC_FILE =  TEST_DATA_DIR + "music.mp3"
-LOCAL_IMAGE_FILE = TEST_DATA_DIR + "image.jpg"
+LOCAL_MUSIC_FILE =  TEST_BASE_DIR + "music.mp3"
+LOCAL_IMAGE_FILE = TEST_BASE_DIR + "image.jpg"
 
 URL_MUSIC_FILE = "https://s3-us-west-2.amazonaws.com/pv-audio-library/free-music/preview/Christmas/Kevin-MacLeod-Angels-We-Have-Heard-piano.mp3"
 URL_IMAGE_FILE = "https://s3-us-west-2.amazonaws.com/pv-styles/carol/carol_thumb.jpg"
