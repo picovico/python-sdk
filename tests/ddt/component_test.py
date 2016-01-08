@@ -1,3 +1,4 @@
+import os
 import unittest
 from ddt import ddt, data, unpack
 from lib import config
@@ -12,11 +13,14 @@ from lib.exceptions import PicovicoSessionRequiredException, VideoIdNotFound
 MUSIC_ID = 'nMEwp'
 IMAGE_ID = "nMEoM"
 VIDEO_ID = "nMFoG"
-LOCAL_MUSIC_FILE = "/home/kashif/Music/music48.mp3"
-URL_MUSIC_FILE = "http://s3.amazonaws.com/picovico-1/assets/music/Latin/Latinish.mp3"
-LOCAL_IMAGE_FILE = "/home/kashif/Pictures/friendship/images.jpeg"
-URL_IMAGE_FILE = "http://c.tadst.com/gfx/600x400/christmas.jpg?1"
 
+TEST_DATA_DIR =  os.path.dirname(os.path.realpath(os.path.__file__)) + "/data/"
+
+LOCAL_MUSIC_FILE =  TEST_DATA_DIR + "music.mp3"
+LOCAL_IMAGE_FILE = TEST_DATA_DIR + "image.jpg"
+
+URL_MUSIC_FILE = "https://s3-us-west-2.amazonaws.com/pv-audio-library/free-music/preview/Christmas/Kevin-MacLeod-Angels-We-Have-Heard-piano.mp3"
+URL_IMAGE_FILE = "https://s3-us-west-2.amazonaws.com/pv-styles/carol/carol_thumb.jpg"
 
 @ddt
 class PicovicoMusicTest(unittest.TestCase):
