@@ -9,20 +9,20 @@ from .. import decorators as pv_decorator
 class PicovicoBaseComponent(object):
     """ Picovico Base Component class. (Abstract)
     This class is the base for all other component classes and shouldn't be used alone.
-    
+
     Attributes:
         component(str): Name of component currently initiated.
     """
     __metaclass__ = abc.ABCMeta
     _names = ('get_{}', 'get_{}s', 'upload_{}_file', 'upload_{}_url', 'delete_{}', 'get_library_{}s')
     _components = ('style', 'music', 'photo', 'video')
-    
+
     def _api_call(self, method='get', **request_args):
         assert method and method in ('get', 'post', 'put', 'delete'), 'Only "get", "post", "put" and "delete" allowed.'
         assert ('url' in request_args and request_args['url'])
         assert (request_args and len(request_args) < 3)
         return getattr(self._pv_request, method)(**request_args)
-    
+
     def __init__(self, request_obj, name='video'):
         """ Authenticated request ibject for component access. """
         assert isinstance(request_obj, pv_base.PicovicoRequest)
@@ -33,11 +33,11 @@ class PicovicoBaseComponent(object):
         for name in self._names:
             meth_name = name.format(self.component)
             setattr(self, meth_name, getattr(self, '_{}'.format(meth_name.replace(self.component, 'component'))))
-    
+
     @property
     def component(self):
         return self.__component
-    
+
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def _get_component(self, id):
@@ -55,14 +55,15 @@ class PicovicoBaseComponent(object):
             'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper()))
         }
         return self._api_call(**req_args)
-    
+
     @pv_decorator.pv_not_implemented(_components[1:2])
     @pv_decorator.pv_auth_required
-    def _upload_component_file(self, filename):
+    def _upload_component_file(self, filename, data_headers=None):
         req_args = {
             'method': 'put',
             'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
             'filename': filename,
+            'data_headers': data_headers
         }
         return self._api_call(**req_args)
 
@@ -75,7 +76,7 @@ class PicovicoBaseComponent(object):
             'data': dict(url=url, **data),
         }
         return self._api_call(**req_args)
-    
+
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def _delete_component(self, id):

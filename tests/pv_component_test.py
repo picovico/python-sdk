@@ -7,7 +7,7 @@ from picovico import base as pv_base
 from picovico import exceptions as pv_exceptions
 
 class TestComponentMixin:
-    def test_component_property(self, success_response):
+    def test_component_property(self, success_response, method_calls):
         pv_component = PicovicoComponentMixin()
         with pytest.raises(AttributeError):
             pv_component.music_component
@@ -18,11 +18,14 @@ class TestComponentMixin:
         with mock.patch('picovico.base.requests.request') as mr:
             mr.return_value = success_response
             pv_component.get_library_musics()
-            mr.assert_called_with(method='get', url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_MUSICS))
+            get_call = method_calls.get('get').copy()
+            get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_MUSICS))
+            mr.assert_called_with(**get_call)
+            get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
             pv_component.get_library_styles()
-            mr.assert_called_with(method='get', url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
-        
-        
+            mr.assert_called_with(**get_call)
+
+
 class TestComponent:
     def test_component_methods(self):
         components = {k: None for k in ('music', 'photo', 'style', 'video')}
@@ -42,12 +45,12 @@ class TestComponent:
             photo_component.get_music()
         with pytest.raises(AttributeError):
             video_component.get_photos()
-    
+
     def test_photo_component(self):
         pv_comp = PicovicoPhoto(pv_base.PicovicoRequest())
         with pytest.raises(pv_exceptions.PicovicoAPINotAllowed):
             gm = pv_comp.get_photos()
-            
+
     def test_style_component(self):
         pv_comp = PicovicoStyle(pv_base.PicovicoRequest())
         with pytest.raises(NotImplementedError):

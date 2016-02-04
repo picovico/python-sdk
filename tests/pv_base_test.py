@@ -8,11 +8,11 @@ from picovico import urls
 from picovico import exceptions
 
 class TestPicovicoRequest:
-    def test_properties(self, headers):
+    def test_properties(self, response_messages):
         pv_api = api.PicovicoRequest()
         assert pv_api.headers is None
-        pv_api = api.PicovicoRequest(headers['valid'])
-        assert pv_api.headers == headers['valid']
+        pv_api = api.PicovicoRequest(response_messages['valid_header'])
+        assert pv_api.headers == response_messages['valid_header']
         assert pv_api.endpoint == urls.PICOVICO_BASE
         pv_api.headers = {'additional': "this is nothing."}
         assert 'X-VALID' in pv_api.headers
@@ -20,8 +20,8 @@ class TestPicovicoRequest:
         pv_api.endpoint = urls.ME
         assert pv_api.endpoint == parse.urljoin(urls.PICOVICO_BASE, urls.ME)
 
-    def test_request_args(self, headers):
-        pv_api = api.PicovicoRequest(headers['valid'])
+    def test_request_args(self, response_messages):
+        pv_api = api.PicovicoRequest(response_messages['valid_header'])
         args = pv_api._PicovicoRequest__get_args_for_url(urls.ME)
         assert 'headers' in args
         assert 'url' in args
@@ -43,7 +43,7 @@ class TestPicovicoRequest:
                 assert pv_api.request_args['method'] == 'put'
                 assert 'data' in pv_api.request_args
             assert success_response.json() == pv_api.delete(urls.ME)
-    
+
     def test_authentication_header(self, success_response):
         pv_req = api.PicovicoRequest()
         assert not pv_req.is_authenticated()
