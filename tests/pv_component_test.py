@@ -1,11 +1,13 @@
+import mock
 import pytest
+from six.moves.urllib import parse
 from picovico.components import *
 from picovico import urls as pv_urls
 from picovico import base as pv_base
 from picovico import exceptions as pv_exceptions
 
 class TestComponentMixin:
-    def test_component_property(self):
+    def test_component_property(self, success_response):
         pv_component = PicovicoComponentMixin()
         with pytest.raises(AttributeError):
             pv_component.music_component
@@ -13,7 +15,14 @@ class TestComponentMixin:
             pv_component.other_component
         pv_component._ready_component_property()
         assert pv_component.photo_component
-
+        with mock.patch('picovico.base.requests.request') as mr:
+            mr.return_value = success_response
+            pv_component.get_library_musics()
+            mr.assert_called_with(method='get', url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_MUSICS))
+            pv_component.get_library_styles()
+            mr.assert_called_with(method='get', url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
+        
+        
 class TestComponent:
     def test_component_methods(self):
         components = {k: None for k in ('music', 'photo', 'style', 'video')}

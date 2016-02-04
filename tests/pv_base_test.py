@@ -32,6 +32,7 @@ class TestPicovicoRequest:
             mr.return_value = success_response
             pv_api = api.PicovicoRequest()
             assert pv_api.get(urls.ME) == success_response.json()
+            mr.assert_called_once_with(method='get', url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
             assert success_response.json() == pv_api.post(urls.ME, data={'me': "myself"})
             with pytest.raises(AssertionError) as excinfo:
                 pv_api.post(urls.ME, data="hello")
@@ -42,3 +43,18 @@ class TestPicovicoRequest:
                 assert pv_api.request_args['method'] == 'put'
                 assert 'data' in pv_api.request_args
             assert success_response.json() == pv_api.delete(urls.ME)
+    
+    def test_authentication_header(self, success_response):
+        pv_req = api.PicovicoRequest()
+        assert not pv_req.is_authenticated()
+        header = {'X-Access-Key': None}
+        pv_req.headers = header
+        assert not pv_req.is_authenticated()
+        header.update({'X-Access-Key': 'Valid'})
+        assert not pv_req.is_authenticated()
+        header.update({'X-Access-Token': None})
+        assert not pv_req.is_authenticated()
+        header.update({'X-Access-Token': 'Valid'})
+        assert pv_req.is_authenticated()
+        header.update({'X-Access-Token': None})
+        assert not pv_req.is_authenticated()
