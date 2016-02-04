@@ -14,8 +14,8 @@ class PicovicoRequestError(Exception):
 									}
 							}
         Args:
-            status(int): HTTP status code
-            message(str): Readable message
+            status(int): HTTP status code.
+            message(str): Readable message.
             response(dict, json): Raw response.
 	'''
 
