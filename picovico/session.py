@@ -44,6 +44,9 @@ class PicovicoSessionMixin(object):
     @property
     def app_secret(self):
         return self.__app_secret
+        
+    def _set_app_secret(self, app_secret):
+        self.__app_secret = app_secret
 
     def set_access_tokens(self, access_key, access_token):
         '''
@@ -71,6 +74,5 @@ class PicovicoSessionMixin(object):
 
     def logout(self):
         '''Picovico: Logout user'''
-        self.access_key = None
-        self.access_token = None
+        self.set_access_tokens(None, None)
     

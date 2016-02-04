@@ -51,9 +51,9 @@ class PicovicoRequest(object):
     def is_authenticated(self):
         is_it = False
         if self.headers:
-            access_keys_exists = 'X-Access-Key' in self.headers and 'X-Access-Token' in self.headers  
-            access_values_exists = all((self.header['X-Access-Token'], self.headers['X-Access-Key']))
-            if access_keys_exists and access_values_exists:
+            access_key_exists = 'X-Access-Key' in self.headers and self.headers['X-Access-Key']
+            access_token_exists = 'X-Access-Token' in self.headers and self.headers['X-Access-Token'] 
+            if access_key_exists and access_token_exists:
                 is_it = True
         return is_it
 
