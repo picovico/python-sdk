@@ -14,10 +14,19 @@ class PicovicoRequest(object):
         Args:
             headers(dict): (Optional)Header to attach for request
     '''
-    __endpoint = pv_urls.PICOVICO_BASE
-
+    __base = pv_urls.PICOVICO_BASE
+    
     def __init__(self, headers=None):
         self.__headers = headers
+        self.__endpoint = self.base_url
+    
+    @property
+    def base_url(self):
+        return self.__base
+    
+    @base_url.setter
+    def base_url(self, url):
+        self.__base = url.lower()
 
     @property
     def endpoint(self):
@@ -28,7 +37,7 @@ class PicovicoRequest(object):
 
     @endpoint.setter
     def endpoint(self, url):
-        self.__endpoint = parse.urljoin(pv_urls.PICOVICO_BASE, url.lower())
+        self.__endpoint = parse.urljoin(self.base_url, url.lower())
 
     @property
     def headers(self):
