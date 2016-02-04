@@ -68,8 +68,13 @@ class PicovicoBaseComponent(object):
 
     @pv_decorator.pv_not_implemented(_components[1:2])
     @pv_decorator.pv_auth_required
-    def _upload_component_url(self, url):
-        pass
+    def _upload_component_url(self, **data):
+        req_args = {
+            'method': 'post',
+            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
+            'data': data,
+        }
+        return self._api_call(**req_args)
     
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required

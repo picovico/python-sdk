@@ -29,9 +29,10 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
         self._pv_request.headers = self.headers
         self._ready_component_property()
 
-    def authenticate(self, app_secret):
+    def authenticate(self, app_secret=None):
         assert app_secret, 'App secret provided by picovico is required'
-        self._set_app_secret(app_secret)
+        if app_secret is not None and not self.app_secret:
+            self._set_app_secret(app_secret)
         data={
             'app_id': self.app_id,
             'app_secret': self.app_secret,
