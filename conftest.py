@@ -20,7 +20,7 @@ def response_messages():
         'valid_auth_header': {'X-Access-Key': "key", 'X-Access-Token': "token"},
         'invalid_header': "Invalid",
     }
-    return copy.deepcopy(m)
+    return m
 
 def create_response(status_code, json_value):
     res = requests.Response()
@@ -52,4 +52,4 @@ def method_calls():
         'put': {'method': 'put', 'url': None},
         'delete': {'method': 'delete', 'url': None},
     }
-    return copy.deepcopy(gm)
+    return gm

@@ -24,7 +24,7 @@ class PicovicoBaseComponent(object):
         return getattr(self._pv_request, method)(**request_args)
 
     def __init__(self, request_obj, name='video'):
-        """ Authenticated request ibject for component access. """
+        """ Authenticated request object for component access. """
         assert isinstance(request_obj, pv_base.PicovicoRequest)
         if name not in self._components:
             raise pv_exceptions.PicovicoComponentNotSupported('This component is not supported.')
@@ -56,7 +56,7 @@ class PicovicoBaseComponent(object):
         }
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[1:2])
+    @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
     def _upload_component_file(self, filename, data_headers=None):
         req_args = {
@@ -67,7 +67,7 @@ class PicovicoBaseComponent(object):
         }
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[1:2])
+    @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
     def _upload_component_url(self, url, **data):
         req_args = {
