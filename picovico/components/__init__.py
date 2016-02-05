@@ -6,7 +6,7 @@ from .style import PicovicoStyle
 from .music import PicovicoMusic
 from .photo import PicovicoPhoto
 
-from .. import base as pv_base
+from .. import baserequest as pv_base
 
 
 class PicovicoComponentMixin(object):

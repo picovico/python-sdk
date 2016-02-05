@@ -4,7 +4,7 @@ from six.moves.urllib import parse
 from picovico.components import *
 from picovico.components import PicovicoComponentMixin
 from picovico import urls as pv_urls
-from picovico import base as pv_base
+from picovico import baserequest as pv_base
 from picovico import exceptions as pv_exceptions
 
 class TestComponentMixin:

@@ -2,7 +2,7 @@ import abc
 
 from .. import exceptions as pv_exceptions
 from .. import urls as pv_urls
-from .. import base as pv_base
+from .. import baserequest as pv_base
 from .. import decorators as pv_decorator
 
 

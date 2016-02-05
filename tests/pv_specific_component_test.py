@@ -2,7 +2,7 @@ import mock
 import pytest
 from six.moves.urllib import parse
 from picovico.components import *
-from picovico.base import PicovicoRequest
+from picovico.baserequest import PicovicoRequest
 from picovico import urls as pv_urls
 
 class TestPhotoComponent:
