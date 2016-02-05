@@ -16,11 +16,11 @@ class PicovicoComponentMixin(object):
     __metaclass__ = abc.ABCMeta
     def __init__(self):
         self._pv_request = pv_base.PicovicoRequest()
-        def get_specific_library(name):
-            pv_comp_base = PicovicoBaseComponent(self._pv_request, name)
-            return getattr(pv_comp_base, 'get_library_{}s'.format(name))
-        for k in PicovicoBaseComponent._components[:2]:
-            setattr(self, 'get_library_{}s'.format(k), get_specific_library(k))
+        #def get_specific_library(name):
+            #pv_comp_base = PicovicoBaseComponent(self._pv_request, name)
+            #return getattr(pv_comp_base, 'get_library_{}s'.format(name))
+        #for k in PicovicoBaseComponent._components[:2]:
+            #setattr(self, 'get_library_{}s'.format(k), get_specific_library(k))
         
     def _ready_component_property(self):
         self.__components = {}
@@ -35,4 +35,4 @@ class PicovicoComponentMixin(object):
             setattr(PicovicoComponentMixin, '{}_component'.format(k), property(get_func_from_name(k)))
 
 
-__all__ = ['PicovicoComponentMixin', 'PicovicoVideo', 'PicovicoMusic', 'PicovicoStyle', 'PicovicoPhoto']
+__all__ = ['PicovicoVideo', 'PicovicoMusic', 'PicovicoStyle', 'PicovicoPhoto']

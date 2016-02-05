@@ -14,7 +14,9 @@ class PicovicoBaseComponent(object):
         component(str): Name of component currently initiated.
     """
     __metaclass__ = abc.ABCMeta
-    _names = ('get_{}', 'get_{}s', 'upload_{}_file', 'upload_{}_url', 'delete_{}', 'get_library_{}s')
+    _names = ('get_{}', 'get_{}s',
+                'upload_{}_file', 'upload_{}_url',
+                'delete_{}', 'get_library_{}s', 'get_free_{}s')
     _components = ('style', 'music', 'photo', 'video')
 
     def _api_call(self, method='get', **request_args):
@@ -88,9 +90,15 @@ class PicovicoBaseComponent(object):
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
+    @pv_decorator.pv_auth_required
     def _get_library_components(self):
         req_args = {
             'method': 'get',
             'url': getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())),
         }
         return self._api_call(**req_args)
+
+    @pv_decorator.pv_not_implemented(_components[:2])
+    def _get_free_components(self):
+        free_req = pv_base.PicovicoRequest()
+        return free_req.get(url=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))

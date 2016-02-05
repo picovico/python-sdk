@@ -2,12 +2,13 @@ import mock
 import pytest
 from six.moves.urllib import parse
 from picovico.components import *
+from picovico.components import PicovicoComponentMixin
 from picovico import urls as pv_urls
 from picovico import base as pv_base
 from picovico import exceptions as pv_exceptions
 
 class TestComponentMixin:
-    def test_component_property(self, success_response, method_calls):
+    def test_component_property(self):
         pv_component = PicovicoComponentMixin()
         with pytest.raises(AttributeError):
             pv_component.music_component
@@ -15,15 +16,6 @@ class TestComponentMixin:
             pv_component.other_component
         pv_component._ready_component_property()
         assert pv_component.photo_component
-        with mock.patch('picovico.base.requests.request') as mr:
-            mr.return_value = success_response
-            pv_component.get_library_musics()
-            get_call = method_calls.get('get').copy()
-            get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_MUSICS))
-            mr.assert_called_with(**get_call)
-            get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
-            pv_component.get_library_styles()
-            mr.assert_called_with(**get_call)
 
 
 class TestComponent:
@@ -57,3 +49,17 @@ class TestComponent:
             pv_comp.upload_style_file(1)
         with pytest.raises(NotImplementedError):
             pv_comp.delete_style(1)
+
+    def test_library_and_free_component(self, success_response, method_calls, response_messages):
+        req = pv_base.PicovicoRequest(response_messages.get('valid_auth_header'))
+        style_component = PicovicoStyle(req)
+        with mock.patch('picovico.base.requests.request') as mr:
+            mr.return_value = success_response
+            get_call = method_calls.get('get').copy()
+            get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
+            get_call.update(headers=req.headers)
+            style_component.get_library_styles()
+            mr.assert_called_with(**get_call)
+            style_component.get_free_styles()
+            get_call.pop('headers')
+            mr.assert_called_with(**get_call)
