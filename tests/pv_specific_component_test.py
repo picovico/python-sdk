@@ -12,7 +12,7 @@ class TestPhotoComponent:
         req = PicovicoRequest(auth_header)
         ph_comp = PicovicoPhoto(req)
         assert ph_comp.component == 'photo'
-        with mock.patch('picovico.base.requests.request') as mr:
+        with mock.patch('picovico.baserequest.requests.request') as mr:
             mr.return_value = success_response
             args = ("something", "something_thumb")
             ph_comp.upload_photo_url(*args)
@@ -20,4 +20,4 @@ class TestPhotoComponent:
             post_request.update(data=dict(zip(('url', 'thumbnail_url'), args)))
             post_request.update(headers=auth_header)
             mr.assert_called_with(**post_request)
-        
+

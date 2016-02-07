@@ -1,5 +1,5 @@
 from .session import PicovicoSessionMixin
-from .base import PicovicoRequest
+from .baserequest import PicovicoRequest
 from .components import PicovicoComponentMixin
 from .decorators import pv_auth_required
 from . import urls as pv_urls
@@ -12,7 +12,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
         if self.is_authorized():
             self._ready_component_property()
 
-    
+
     def login(self, username, password):
         """ Picovico: login with username and password """
         assert username, 'username is required for login'

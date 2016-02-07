@@ -13,7 +13,7 @@ class TestPicovicoAPI:
         post_call = method_calls.get('post').copy()
         with pytest.raises(pv_exceptions.PicovicoAPINotAllowed):
             api.me()
-        with mock.patch('picovico.base.requests.request') as mr:
+        with mock.patch('picovico.baserequest.requests.request') as mr:
             mr.return_value = auth_response
             api.login(*calls[2:])
             post_call.update(data=dict(zip(calls, calls)), url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_LOGIN))
@@ -42,13 +42,13 @@ class TestPicovicoAPI:
         assert not api.is_authorized()
 
     def test_login_authenticate(self, auth_response):
-        with mock.patch('picovico.base.requests.request') as mr:
+        with mock.patch('picovico.baserequest.requests.request') as mr:
             mr.return_value = auth_response
             api = PicovicoAPI('app_id', 'device_id')
             assert not api.is_authorized()
             api.login('username', 'password')
             assert api.is_authorized()
-        with mock.patch('picovico.base.requests.request') as mr:
+        with mock.patch('picovico.baserequest.requests.request') as mr:
             mr.return_value = auth_response
             api = PicovicoAPI('app_id', 'device_id')
             assert not api.is_authorized()

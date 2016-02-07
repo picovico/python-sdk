@@ -3,7 +3,7 @@ import mock
 import six
 from six.moves.urllib import parse
 
-from picovico import base as api
+from picovico import baserequest as api
 from picovico import urls
 from picovico import exceptions
 
@@ -28,7 +28,7 @@ class TestPicovicoRequest:
         assert args['url'] == parse.urljoin(urls.PICOVICO_BASE, urls.ME)
 
     def test_api_methods(self, success_response):
-        with mock.patch('picovico.base.requests.request') as mr:
+        with mock.patch('picovico.baserequest.requests.request') as mr:
             mr.return_value = success_response
             pv_api = api.PicovicoRequest()
             assert pv_api.get(urls.ME) == success_response.json()
@@ -37,7 +37,7 @@ class TestPicovicoRequest:
             with pytest.raises(AssertionError) as excinfo:
                 pv_api.post(urls.ME, data="hello")
             assert success_response.json() == pv_api.put(urls.ME)
-            with mock.patch('picovico.base.open', mock.mock_open(read_data='bibble')):
+            with mock.patch('picovico.baserequest.open', mock.mock_open(read_data='bibble')):
                 pv_api.put(urls.ME, filename="fo", data_headers={'MUSIC_NAME': "Hello"}, )
                 assert 'MUSIC_NAME' in pv_api.headers
                 assert pv_api.request_args['method'] == 'put'

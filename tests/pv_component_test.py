@@ -53,7 +53,7 @@ class TestComponent:
     def test_library_and_free_component(self, success_response, method_calls, response_messages):
         req = pv_base.PicovicoRequest(response_messages.get('valid_auth_header'))
         style_component = PicovicoStyle(req)
-        with mock.patch('picovico.base.requests.request') as mr:
+        with mock.patch('picovico.baserequest.requests.request') as mr:
             mr.return_value = success_response
             get_call = method_calls.get('get').copy()
             get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
