@@ -1,5 +1,7 @@
 import abc
 
+import six
+
 from .base import PicovicoBaseComponent
 from .video import PicovicoVideo
 from .style import PicovicoStyle
@@ -29,7 +31,7 @@ class PicovicoComponentMixin(object):
                 return self.__components[name]
             return property_func
         classes = (PicovicoStyle, PicovicoMusic, PicovicoPhoto, PicovicoVideo)
-        component_class = dict(zip(PicovicoBaseComponent._components, classes))
+        component_class = dict(six.moves.zip(PicovicoBaseComponent._components, classes))
         for k in PicovicoBaseComponent._components:
             self.__components[k] = component_class[k](self._pv_request)
             setattr(PicovicoComponentMixin, '{}_component'.format(k), property(get_func_from_name(k)))
