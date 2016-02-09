@@ -1,6 +1,8 @@
 '''
 	Picovico: Picovico custom exception classes
 '''
+import six
+
 
 class PicovicoRequestError(Exception):
 	'''
@@ -49,6 +51,19 @@ class PicovicoAPINotAllowed(Exception):
 
 class PicovicoComponentNotSupported(Exception):
     pass
+
+class PicovicoProfileError(Exception):
+    """ Handle Picovico CLI errors with some code. """
+    def __init__(self, message, code=-1):
+        self.message = message
+        self.code = code
+
+    def __str__(self):
+		return  repr('{}'.format(self.message))
+
+class PicovicoCLIError(Exception):
+    pass
+        
 
 #utility to filter exceptions
 def raise_valid_exceptions(**error_response):
