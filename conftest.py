@@ -1,9 +1,7 @@
-import copy
-
+import six
 import pytest
 import requests
 import mock
-
 
 
 @pytest.fixture()
@@ -53,3 +51,10 @@ def method_calls():
         'delete': {'method': 'delete', 'url': None},
     }
     return gm
+
+@pytest.fixture()
+def profile_fp():
+    gfp = six.StringIO()
+    gfp.writelines(('[default]\n', 'APP_ID=app_id\n',))
+    gfp.seek(0)
+    return gfp
