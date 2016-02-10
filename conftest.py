@@ -53,8 +53,15 @@ def method_calls():
     return gm
 
 @pytest.fixture()
-def profile_fp():
+def profile_fp_default():
     gfp = six.StringIO()
-    gfp.writelines(('[default]\n', 'APP_ID=app_id\n',))
+    gfp.writelines(('[DEFAULT]\n', 'APP_ID=default_app_id\n',))
+    gfp.seek(0)
+    return gfp
+
+@pytest.fixture()
+def profile_fp_other():
+    gfp = six.StringIO()
+    gfp.writelines(('[OTHER]\n', 'APP_ID=other_app_id\n',))
     gfp.seek(0)
     return gfp
