@@ -2,7 +2,7 @@
 #import errno
 
 import six
-#import pytest
+import pytest
 #import mock
 
 #from picovico import exceptions as pv_exceptions
@@ -15,8 +15,8 @@ default_section_name = profile_utils.DEFAULT_PROFILE_SECTION_NAME
             #'Enter Application Secret: ',
             #'Enter Picovico Username: ',
             #'Enter Picovico Password[Will not be stored]: ')
-#return_args = ('MY_APP_ID', None, 'MY_APP_SECRET',
-                    #'MY_USERNAME', 'MY_PASSWORD')
+return_args = ('MY_APP_ID', None, 'MY_APP_SECRET',
+                    'MY_USERNAME', 'MY_PASSWORD')
 #return_value = dict(six.moves.zip(input_args, return_args))
 
 #def configure_mocked(*args, **kwargs):
@@ -112,33 +112,33 @@ class TestCliProfileUtils:
             assert val.name == value_to_test[0][0]
             assert val.value == value_to_test[0][1]
 
-    #def test_read_config_values(self, mocker, profile_fp_default, profile_fp_other):
-        #cfg = six.moves.configparser.SafeConfigParser()
-        #cfg.readfp(profile_fp_default)
-        #m = mocker.patch('picovico.clidriver.get_config')
-        #m.return_value = cfg
-        #config = cli.read_config_values(cli.DEFAULT_SECTION_NAME)
-        #assert config.APP_ID == 'default_app_id'
-        #cfg.readfp(profile_fp_other)
-        #mocker.stopall()
-        #m = mock.patch('picovico.clidriver.get_config')
-        #m.return_value = cfg
-        #config = cli.read_config_values('OTHER')
-        #assert config.APP_ID == 'other_app_id'
+    def test_get_profile(self, mocker, profile_fp_default, profile_fp_other):
+        cfg = six.moves.configparser.SafeConfigParser()
+        cfg.readfp(profile_fp_default)
+        m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        m.return_value = cfg
+        config = profile_utils.get_profile(default_section_name)
+        assert config.APP_ID == 'default_app_id'
+        cfg.readfp(profile_fp_other)
+        mocker.stopall()
+        m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        m.return_value = cfg
+        config = profile_utils.get_profile('OTHER')
+        assert config.APP_ID == 'other_app_id'
 
-    #def test_set_configs(self, mocker, profile_fp_default, profile_fp_other):
-        #TODO: solve profile.ini file writing
-        #cfg = six.moves.configparser.SafeConfigParser()
-        #cfg.readfp(profile_fp_default)
-        #old_cfg = cfg.items(cli.DEFAULT_SECTION_NAME)
-        #with pytest.raises(six.moves.configparser.NoOptionError):
-            #cfg.get(cli.DEFAULT_SECTION_NAME, 'DEVICE_ID')
-        #values = cli.create_conf_values(((a, return_args[i]) for i, a in enumerate(cli.NECESSARY_INFO)))
-        #m = mocker.patch('picovico.clidriver.get_config')
-        #m.return_value = cfg
-        #cli.set_configs(values)
-        #assert old_cfg != cfg.items(cli.DEFAULT_SECTION_NAME)
-        #assert cfg.get(cli.DEFAULT_SECTION_NAME, 'DEVICE_ID')
+    def test_set_profile(self, mocker, profile_fp_default, profile_fp_other):
+        cfg = six.moves.configparser.SafeConfigParser()
+        cfg.readfp(profile_fp_default)
+        old_cfg = cfg.items(default_section_name)
+        with pytest.raises(six.moves.configparser.NoOptionError):
+           cfg.get(default_section_name, 'DEVICE_ID')
+        values = profile_utils.create_profile_values(((a, return_args[i]) for i, a in enumerate(profile_utils.NECESSARY_INFO)))
+        m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        m.return_value = cfg
+        mocker.patch('picovico.cli.profile_utils.open')
+        profile_utils.set_profile(values, default_section_name)
+        assert old_cfg != cfg.items(default_section_name)
+        assert cfg.get(default_section_name, 'DEVICE_ID')
 
     #def test_write_access_info(self, mocker):
         #profiles = {k: None for k in cli.Profile._fields}

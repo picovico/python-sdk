@@ -19,7 +19,7 @@ Profile = collections.namedtuple('Profile', itertools.chain(chained_info, ('NAME
 
 def check_against_factory(cfg, profile_name, against, check_value=False):
     has_section = (profile_name == DEFAULT_PROFILE_SECTION_NAME)
-    if profile_name != DEFAULT_PROFILE_SECTION_NAME:
+    if not has_section:
         has_section = cfg.has_section(profile_name)
     if has_section:
         ok = all(cfg.has_option(profile_name, opt) for opt in against)
@@ -45,7 +45,7 @@ def create_profile_values(list_of_values):
     ret_val = [Conf._make(val) for val in list_of_values]
     return ret_val
 
-def set_profile(cfg, values_to_set, profile_name):
+def set_profile(values_to_set, profile_name):
     cfg = get_raw_profile(profile_name)
     for value in values_to_set:
         cfg.set(profile_name, value.name, str(value.value))
@@ -72,8 +72,8 @@ def get_raw_profile(profile_name=DEFAULT_PROFILE_SECTION_NAME):
 def get_profile(profile_name):
     cfg = get_raw_profile(profile_name)
     if not cfg.sections():
-       section = DEFAULT_SECTION_NAME
-    options = dict(cfg.items(section))
+       profile_name = DEFAULT_PROFILE_SECTION_NAME
+    options = dict(cfg.items(profile_name))
     Config = collections.namedtuple('Config', [m.upper() for m in six.iterkeys(options)])
     return Config._make(six.itervalues(options))
 
