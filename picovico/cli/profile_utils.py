@@ -69,7 +69,13 @@ def get_raw_profile(profile_name=DEFAULT_PROFILE_SECTION_NAME):
             cfg.write(fp)
     return cfg
 
-
+def get_profile(profile_name):
+    cfg = get_raw_profile(profile_name)
+    if not cfg.sections():
+       section = DEFAULT_SECTION_NAME
+    options = dict(cfg.items(section))
+    Config = collections.namedtuple('Config', [m.upper() for m in six.iterkeys(options)])
+    return Config._make(six.itervalues(options))
 
 
 
@@ -100,14 +106,6 @@ def get_raw_profile(profile_name=DEFAULT_PROFILE_SECTION_NAME):
     #for value in values_to_set:
         #cfg.set(section_name, value.attr, str(value.value))
     #cfg.write(open(filename, 'w'))
-
-#def read_config_values(section):
-    #cfg = get_config(section_name=section)
-    #if not cfg.sections():
-        #section = DEFAULT_SECTION_NAME
-    #options = dict(cfg.items(section))
-    #Config = collections.namedtuple('Config', [m.upper() for m in six.iterkeys(options)])
-    #return Config._make(six.itervalues(options))
 
 #def create_conf_values(list_of_values):
     #Conf = collections.namedtuple('Conf', 'attr value')
