@@ -1,11 +1,9 @@
 import pytest
 import mock
-import six
 from six.moves.urllib import parse
 
 from picovico import baserequest as api
 from picovico import urls
-from picovico import exceptions
 
 class TestPicovicoRequest:
     def test_properties(self, response_messages):
@@ -27,22 +25,24 @@ class TestPicovicoRequest:
         assert 'url' in args
         assert args['url'] == parse.urljoin(urls.PICOVICO_BASE, urls.ME)
 
-    def test_api_methods(self, success_response):
-        with mock.patch('picovico.baserequest.requests.request') as mr:
-            mr.return_value = success_response
-            pv_api = api.PicovicoRequest()
-            assert pv_api.get(urls.ME) == success_response.json()
-            mr.assert_called_once_with(method='get', url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
-            assert success_response.json() == pv_api.post(urls.ME, data={'me': "myself"})
-            with pytest.raises(AssertionError) as excinfo:
-                pv_api.post(urls.ME, data="hello")
-            assert success_response.json() == pv_api.put(urls.ME)
-            with mock.patch('picovico.baserequest.open', mock.mock_open(read_data='bibble')):
-                pv_api.put(urls.ME, filename="fo", data_headers={'MUSIC_NAME': "Hello"}, )
-                assert 'MUSIC_NAME' in pv_api.headers
-                assert pv_api.request_args['method'] == 'put'
-                assert 'data' in pv_api.request_args
-            assert success_response.json() == pv_api.delete(urls.ME)
+    def test_api_methods(self, mocker, success_response, method_calls):
+        mr = mocker.patch('picovico.baserequest.requests.request')
+        mr.return_value = success_response
+        pv_api = api.PicovicoRequest()
+        assert pv_api.get(urls.ME) == success_response.json()
+        get_call = method_calls.get('get').copy()
+        get_call.update(url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
+        assert mr.call_args[1] == get_call 
+        assert success_response.json() == pv_api.post(urls.ME, data={'me': "myself"})
+        with pytest.raises(AssertionError):
+            pv_api.post(urls.ME, data="hello")
+        assert success_response.json() == pv_api.put(urls.ME)
+        mocker.patch('picovico.baserequest.open', mock.mock_open(read_data='bibble'))
+        pv_api.put(urls.ME, filename="fo", data_headers={'MUSIC_NAME': "Hello"}, )
+        assert 'MUSIC_NAME' in pv_api.headers
+        assert pv_api.request_args['method'] == 'put'
+        assert 'data' in pv_api.request_args
+        assert success_response.json() == pv_api.delete(urls.ME)
 
     def test_authentication_header(self, success_response):
         pv_req = api.PicovicoRequest()

@@ -1,4 +1,3 @@
-import mock
 import pytest
 from six.moves.urllib import parse
 from picovico.components import *
@@ -50,16 +49,16 @@ class TestComponent:
         with pytest.raises(NotImplementedError):
             pv_comp.delete_style(1)
 
-    def test_library_and_free_component(self, success_response, method_calls, response_messages):
+    def test_library_and_free_component(self, mocker, success_response, method_calls, response_messages):
         req = pv_base.PicovicoRequest(response_messages.get('valid_auth_header'))
         style_component = PicovicoStyle(req)
-        with mock.patch('picovico.baserequest.requests.request') as mr:
-            mr.return_value = success_response
-            get_call = method_calls.get('get').copy()
-            get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
-            get_call.update(headers=req.headers)
-            style_component.get_library_styles()
-            mr.assert_called_with(**get_call)
-            style_component.get_free_styles()
-            get_call.pop('headers')
-            mr.assert_called_with(**get_call)
+        mr = mocker.patch('picovico.baserequest.requests.request')
+        mr.return_value = success_response
+        get_call = method_calls.get('get').copy()
+        get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
+        get_call.update(headers=req.headers)
+        style_component.get_library_styles()
+        assert mr.call_args[1] == get_call
+        style_component.get_free_styles()
+        get_call.pop('headers')
+        assert mr.call_args[1] == get_call
