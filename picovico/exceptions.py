@@ -64,7 +64,7 @@ def raise_valid_exceptions(**error_response):
         404: PicovicoNotFound,
         401: PicovicoUnauthorized,
     }
-    if status not in exception_map.keys():
+    if status not in exception_map:
         exc_args.update(status=status)
     exc_args.update(message=error_response.get('message', "There was a error."))
     if status >= 500:

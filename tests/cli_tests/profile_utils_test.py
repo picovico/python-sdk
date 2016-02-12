@@ -1,5 +1,6 @@
 #import os
-#import errno
+import contextlib
+import errno
 
 import six
 import pytest
@@ -9,7 +10,7 @@ import pytest
 from picovico.cli import profile_utils
 
 
-default_section_name = profile_utils.DEFAULT_PROFILE_SECTION_NAME
+default_section_name = profile_utils.DEFAULT_PROFILE_NAME
 #input_args = ('Enter Application Id provided: ',
             #'Enter Device Identifier->[default:{}]: '.format(cli.DEFAULT_DEVICE_ID),
             #'Enter Application Secret: ',
@@ -109,8 +110,8 @@ class TestCliProfileUtils:
         value_to_test = (('MY_ATTR', 'MY_VALUE'),)
         values = profile_utils.create_profile_values(value_to_test)
         for val in values:
-            assert val.name == value_to_test[0][0]
-            assert val.value == value_to_test[0][1]
+            assert val.NAME == value_to_test[0][0]
+            assert val.VALUE == value_to_test[0][1]
 
     def test_get_profile(self, mocker, profile_fp_default, profile_fp_other):
         cfg = six.moves.configparser.SafeConfigParser()
@@ -133,13 +134,33 @@ class TestCliProfileUtils:
         with pytest.raises(six.moves.configparser.NoOptionError):
            cfg.get(default_section_name, 'DEVICE_ID')
         values = profile_utils.create_profile_values(((a, return_args[i]) for i, a in enumerate(profile_utils.NECESSARY_INFO)))
+        mocker.patch('picovico.cli.file_utils.get_profile_file')
+        mocker.patch('picovico.cli.file_utils.get_file_obj')
         m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
         m.return_value = cfg
-        mocker.patch('picovico.cli.profile_utils.open')
         profile_utils.set_profile(values, default_section_name)
         assert old_cfg != cfg.items(default_section_name)
         assert cfg.get(default_section_name, 'DEVICE_ID')
 
+    def test_check_session_file(self, mocker):
+        data = {'ACCESS_KEY': 'my_access_key', 'ACCESS_TOKEN': 'my_access_token'}
+        mocker.patch('picovico.cli.file_utils.get_session_file')
+        mr = mocker.patch('picovico.cli.file_utils.open')
+        e = IOError()
+        e.errno = errno.ENOENT
+        mr.side_effect = e
+        assert not profile_utils.check_session_file()
+        e.errno = errno.EIO
+        with pytest.raises(IOError):
+            profile_utils.check_session_file()
+        mocker.stopall()
+        mr = mocker.patch('picovico.cli.file_utils.read_from_session_file')
+        mr.return_value = data
+        assert not profile_utils.check_session_file()
+        data.update(ID=1, PROFILE='default')
+        assert profile_utils.check_session_file()
+        data.update(ID=None, PROFILE=None)
+        assert not profile_utils.check_session_file()
     #def test_write_access_info(self, mocker):
         #profiles = {k: None for k in cli.Profile._fields}
         #profiles.update({

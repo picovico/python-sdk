@@ -29,20 +29,37 @@ def get_profile_file():
     
 #def get_profile_file():
     #profile_file = get_profile_file()
-    
+def get_file_obj(filename, mode='rb'):
+    try:
+        fp = open(filename, mode)
+    except IOError as e:
+        if e.errno != errno.ENOENT:
+            raise e
+        return None
+    else:
+        return fp
+        
 def get_session_file():
     return get_file_from_storage('session')
 
 def write_to_session_file(data):
     session_file = get_session_file()
-    with open(session_file, 'wb') as f:
-        json.dump(data, f)
+    f = get_file_obj(session_file, mode='wb')
+    if f:
+        with f:
+            json.dump(data, f)
 
+def delete_session_file():
+    session_file = get_session_file()
+    if os.path.isfile(session_file):
+        os.remove(session_file)
+    
 def read_from_session_file():
-    session_file = get_profile_file()
+    session_file = get_session_file()
     data = None
-    with open(session_file) as f:
-        data = json.load(f)
+    f = get_file_obj(session_file)
+    if f:
+        with f:
+            data = json.load(f)
     return data
-
 #def check_file_exists()

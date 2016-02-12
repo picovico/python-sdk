@@ -1,5 +1,5 @@
 #import os
-#import errno
+import errno
 import itertools
 import collections
 
@@ -13,12 +13,13 @@ from . import file_utils
 NECESSARY_INFO = ('APP_ID', 'DEVICE_ID')
 AUTHENTICATE_INFO = ('APP_SECRET',)
 LOGIN_INFO = ('USERNAME', 'PASSWORD')
-DEFAULT_PROFILE_SECTION_NAME = six.moves.configparser.DEFAULTSECT
-chained_info = itertools.chain(NECESSARY_INFO, AUTHENTICATE_INFO, LOGIN_INFO)
-Profile = collections.namedtuple('Profile', itertools.chain(chained_info, ('NAME',)))
+SESSION_INFO = ('ACCESS_KEY', 'ACCESS_TOKEN', 'ID', 'PROFILE')
+DEFAULT_PROFILE_NAME = six.moves.configparser.DEFAULTSECT
+ALL_INFO = itertools.chain(NECESSARY_INFO, AUTHENTICATE_INFO, LOGIN_INFO)
+#Profile = collections.namedtuple('Profile', itertools.chain(chained_info, ('NAME',)))
 
 def check_against_factory(cfg, profile_name, against, check_value=False):
-    has_section = (profile_name == DEFAULT_PROFILE_SECTION_NAME)
+    has_section = (profile_name == DEFAULT_PROFILE_NAME)
     if not has_section:
         has_section = cfg.has_section(profile_name)
     if has_section:
@@ -40,45 +41,95 @@ def has_authenticate_info(cfg, profile_name):
 def check_authenticate_info_value(cfg, profile_name):
     return check_against_factory(cfg, profile_name, AUTHENTICATE_INFO, check_value=True)
 
+def _create_namedtuple(name, dict_to_make):
+    Factory = collections.namedtuple(name, [m.upper() for m in six.iterkeys(dict_to_make)])
+    return Factory._make(six.itervalues(dict_to_make))
+
 def create_profile_values(list_of_values):
-    Conf = collections.namedtuple('Conf', 'name value')
-    ret_val = [Conf._make(val) for val in list_of_values]
+    ret_val = [_create_namedtuple('Conf', dict(six.moves.zip(('name', 'value'), val))) for val in list_of_values]
     return ret_val
 
 def set_profile(values_to_set, profile_name):
     cfg = get_raw_profile(profile_name)
+    if isinstance(values_to_set, dict):
+        copied_value = values_to_set.copy()
+        values_to_set = create_profile_values(six.iteritems(copied_value))
     for value in values_to_set:
-        cfg.set(profile_name, value.name, str(value.value))
+        cfg.set(profile_name, value.NAME, str(value.VALUE))
     profile_file = file_utils.get_profile_file()
-    with open(profile_file, 'ab+') as f:
-        cfg.write(f)
+    f = file_utils.get_file_obj(profile_file, mode='w')
+    if f:
+        with f:
+            cfg.write(f)
+            return True
+    return False
 
-def get_raw_profile(profile_name=DEFAULT_PROFILE_SECTION_NAME):
+def write_new_profile_info(cfg, profile_name):
     profile_file = file_utils.get_profile_file()
-    fp = open(profile_file, 'ab+')
-    cfg = six.moves.configparser.SafeConfigParser()
-    with fp:
-        cfg.readfp(fp)
-        if profile_name != DEFAULT_PROFILE_SECTION_NAME \
+    fp = file_utils.get_file_obj(profile_file, mode='w+')
+    if fp:
+        write = False
+        if profile_name != DEFAULT_PROFILE_NAME \
             and profile_name not in cfg.sections():
             cfg.add_section(profile_name)
-            cfg.write(fp)
+            write = True
         if not check_necessary_info_values(cfg, profile_name):
             for opt in NECESSARY_INFO:
                 cfg.set(profile_name, opt, '')
-            cfg.write(fp)
+            write = True
+        if write:
+            with fp:
+                cfg.write(fp)
+    #if not check_necessary_info_values(cfg, profile_name):
+        #for opt in NECESSARY_INFO:
+            #cfg.set(profile_name, opt, '')
+                #cfg.write(fp)
+
+def get_raw_profile(profile_name=DEFAULT_PROFILE_NAME):
+    profile_file = file_utils.get_profile_file()
+    fp = file_utils.get_file_obj(profile_file)
+    cfg = None
+    if fp:
+        cfg = six.moves.configparser.SafeConfigParser()
+        #cfg.optionxform = str
+        with fp:
+            cfg.readfp(fp)
+        write_new_profile_info(cfg, profile_name)
     return cfg
+
+def remove_profile_value(profile_name, option):
+    cfg = get_raw_profile(profile_name)
+    cfg.remove_option(profile_name, option)
 
 def get_profile(profile_name):
     cfg = get_raw_profile(profile_name)
     if not cfg.sections():
-       profile_name = DEFAULT_PROFILE_SECTION_NAME
+       profile_name = DEFAULT_PROFILE_NAME
     options = dict(cfg.items(profile_name))
-    Config = collections.namedtuple('Config', [m.upper() for m in six.iterkeys(options)])
-    return Config._make(six.itervalues(options))
+    options.update(name=profile_name)
+    return _create_namedtuple('Profile', options)
 
+def get_all_profiles():
+    cfg = get_raw_profile()
+    profiles = cfg.sections()
+    if check_necessary_info_values(cfg, DEFAULT_PROFILE_NAME):
+        profiles.append(DEFAULT_PROFILE_NAME)
+    return profiles
 
+def check_session_file():
+    data = file_utils.read_from_session_file()
+    if data:
+        ok = all(k in data for k in SESSION_INFO)
+        if ok:
+            ok = all(six.itervalues(data))
+        return ok
+    return False
 
+def get_session_info():
+    if check_session_file():
+        data = file_utils.read_from_session_file()
+        return _create_namedtuple('Session', data)
+        
 
 #def get_configure_profile(profile_name=None, auth=False, login=False):
     #profile_info = {}
