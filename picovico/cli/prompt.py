@@ -1,3 +1,4 @@
+import sys
 import warnings
 import pprint
 
@@ -12,8 +13,10 @@ def show_input(msg):
 def show_print(msg):
     six.print_(msg)
 
-def show_warning(warn_text):
-    warnings.warn(warn_text)
+def show_warning(warn_text, stop=False):
+    warnings.warn(warn_text, UserWarning, stacklevel=10)
+    if stop:
+        sys.exit(0)
 
 def generic_prompt(version=VERSION, profile_name=None):
     show_print('Picovico API [{}]'.format(version))
@@ -32,8 +35,6 @@ def configure_prompt(version=VERSION):
     with configure.'''
     show_print(text)
     return configure_necessary_info()
-
-# def show_results(data):
 
 def configure_necessary_info():
     app_id = show_input('Enter Application Id provided: ')
@@ -74,3 +75,27 @@ def show_action_result(action, result, profile_name):
     show_print('Your Action: {}'.format(action))
     show_print('Result:')
     show_print(pprint.pprint(result))
+
+def show_action_message(profile_name, message):
+    generic_prompt(profile_name)
+    show_print(message)
+
+def show_action_success(action, profile_name):
+    msg = 'Your Action: {} was succesfully completed.'.format(action)
+    show_action_message(profile_name, msg)
+
+def show_action_error(action, profile_name, status, message):
+    error_names = {
+        401: 'PicovicoUnAuthorized',
+        404: 'PicovicoNotFound',
+    }
+    error_names.update({x: 'PicovicoServerError' for  x in six.moves.range(start=500, stop=505)})
+    msg = '{0}: {1}'.format(error_names, message)
+    show_action_message(profile_name, msg)
+
+
+def show_no_session(profile_name):
+    msg = 'No session for profile: {}'.format(profile_name)
+    msg += '\nEither login or authenticate this profile.'
+    prompt.show_warning(msg, True)
+

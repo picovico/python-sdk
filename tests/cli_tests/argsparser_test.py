@@ -1,7 +1,8 @@
-from picovico.cli.argsparser import parser
+from picovico.cli.argsparser import get_parser
 
-parse = parser.parse_args
+parser = get_parser()
 
 class TestPVCLIArgs:
     def test_args_functionality(self):
-        parser.print_help()
+        pass
+

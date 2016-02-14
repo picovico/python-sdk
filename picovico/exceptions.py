@@ -43,8 +43,18 @@ class PicovicoUnauthorized(PicovicoNotFound):
     def __init__(self, message=None, response=None):
         super(PicovicoNotFound, self).__init__(status=401, message=message, response=response)
 
+
 class PicovicoServerError(PicovicoRequestError):
-    pass
+    """ Same  as request error but for server. """
+    def __init__(self, status=None, message=None, response=None):
+		self.status = status
+		self.message = message
+		self.raw_response = response
+
+    def __str__(self):
+		return  repr({'error':{'status':self.status,'message': self.message}, \
+                        'response': self.raw_response})
+
 
 class PicovicoAPINotAllowed(Exception):
     pass

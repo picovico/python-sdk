@@ -118,13 +118,13 @@ class TestCliProfileUtils:
         cfg.readfp(profile_fp_default)
         m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
         m.return_value = cfg
-        config = profile_utils.get_profile(default_section_name)
+        config = profile_utils.get_profile(default_section_name, info=False)
         assert config.APP_ID == 'default_app_id'
         cfg.readfp(profile_fp_other)
         mocker.stopall()
         m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
         m.return_value = cfg
-        config = profile_utils.get_profile('OTHER')
+        config = profile_utils.get_profile('OTHER', info=False)
         assert config.APP_ID == 'other_app_id'
 
     def test_set_profile(self, mocker, profile_fp_default, profile_fp_other):
