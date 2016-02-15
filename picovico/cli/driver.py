@@ -141,34 +141,29 @@ def call_api_actions(action, profile_name, **arguments):
             prompt.show_action_success(action, profile_name)
 
 def component_commands():
-    components = PicovicoBaseComponent._components
-    exclude_for_delete_component = (components[0],)
-    has_free_component = components[:2]
-    upload_components = {
-        'music': {'file': ['--filename'], 'url': ['--url', '--preview']},
-        'photo': {'file': ['--filename'], 'url': ['--url', '--thumbnail']}
+    # components = PicovicoBaseComponent._components
+    # exclude_for_delete_component = (components[0],)
+    # has_free_component = components[:2]
+    # upload_components = {
+        # 'music': {'file': ['--filename'], 'url': ['--url', '--preview']},
+        # 'photo': {'file': ['--filename'], 'url': ['--url', '--thumbnail']}
+    # }
+    components = {
+        'music': {'get-{}s': [], 'get-{}': [{'name': '--music-id', 'required': True}], 'upload-{}-file': [{'name': '--filename', 'required': True}], 'upload-{}-url': [{'name': '--{}'.format(opt), 'required': True} for opt in ('url', 'preview')], 'delete-{}':  [{'name': '--music-id', 'required': True}], 'get-free-{}s': []},
+        'style': {'get-{}s': [], 'get-{}': [], 'get-free-{}s': []},
+        'photo': {'get-{}s': [], 'get-{}': [{'name': '--photo-id', 'required': True}], 'upload-{}-file': [{'name': '--filename', 'required': True}], 'upload-{}-url': [{'name': '--{}'.format(opt), 'required': True} for opt in ('url', 'tumbnail')], 'delete-{}':  [{'name': '--photo-id', 'required': True}]},
+        'video': {'get-{}s': [], 'get-{}': [{'name': '--video-id', 'required': True}], 'delete-{}':  [{'name': '--video-id', 'required': True}]}
     }
     component_map = []
-    for component in PicovicoBaseComponent._components:
-        command = 'get-{}s'.format(component)
-        action = command.replace('-', '_')
-        component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
-        if component not in exclude_for_delete_component:
-            command = 'get-{}'.format(component)
+    for component, actions in six.iteritems(components):
+        for method, options in six.iteritems(actions):
+            command = method.format(component)
             action = command.replace('-', '_')
-            component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': action, 'component': '{}_component'.format(component)})
-            command = 'delete-{}'.format(component)
-            action = command.replace('-', '_')
-            component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': action, 'component': '{}_component'.format(component)})
-        if component in six.iterkeys(upload_components):
-            for k, v in six.iteritems(upload_components[component]):
-                command = 'upload-{0}-{1}'.format(component, k)
+            component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
+            if options:
+                command = method.format(component)
                 action = command.replace('-', '_')
-                component_map.append({'command': command, 'options': [{'name': opt, 'required': True} for opt in v], 'action': action, 'component': '{}_component'.format(component)})
-    for component in has_free_component:
-        command = 'get-free-{}s'.format(component)
-        action = command.replace('-', '_')
-        component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
+                component_map.append({'command': command, 'options':  options, 'action': action, 'component': '{}_component'.format(component)})
     return component_map
 
 def get_cli_commands():
@@ -179,7 +174,7 @@ def get_cli_commands():
         {'command': 'authenticate', 'options': None},
         {'command': 'my-profile', 'options': None},
     ]
-    
+
     components = component_commands()
     commands = itertools.chain(commands, [{'command': d['command'], 'options': d['options']} for d in components])
     all_commands = [profile_utils._create_namedtuple('CliCommandsConfig', d) for d in commands]

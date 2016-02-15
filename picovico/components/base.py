@@ -42,11 +42,13 @@ class PicovicoBaseComponent(object):
 
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
-    def _get_component(self, id):
+    def _get_component(self, **kwargs):
+        assert len(kwargs) == 1 and id in kwargs, '{} is required'.format(id)
+        id =  '{}_id'.format(self.component)
         req_args = {
             'method': 'get',
             'url': getattr(pv_urls, 'MY_SINGLE_{}'.format(self.component.upper()), None),
-            '{}_id'.format(id): id
+            id : kwargs.pop(id)
         }
         return self._api_call(**req_args)
 
@@ -82,11 +84,13 @@ class PicovicoBaseComponent(object):
 
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
-    def _delete_component(self, id):
+    def _delete_component(self, **kwargs):
+        id =  '{}_id'.format(self.component)
+        assert len(kwargs) == 1 and id in kwargs, '{} is required'.format(id)
         req_args = {
             'method': 'get',
             'url': getattr(pv_urls, 'MY_SINGLE_{}'.format(self.component.upper())),
-            '{}_id'.format(id): id
+            id: kwargs.pop(id)
         }
         return self._api_call(**req_args)
 
