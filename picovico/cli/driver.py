@@ -113,7 +113,8 @@ def logout(profile_name):
     file_utils.delete_session_file()
 
 def get_action_from_command(action, profile_name):
-    action_map = action_map.get(action)
+    action_maps = cli_map_command_to_actions()
+    action_map = action_maps.get(action)
     current_action = action_map.get('action')
     component = action_map.get('component', None)
     if component:
@@ -124,7 +125,6 @@ def get_action_from_command(action, profile_name):
 
 @cli_dec.pv_cli_check_configure
 def call_api_actions(action, profile_name, **arguments):
-    action_map = cli_map_command_to_actions()
     current_action = get_action_from_command(action, profile_name)
     try:
         result = api_action(**arguments)
@@ -142,16 +142,20 @@ def component_commands():
     has_free_component = components[:2]
     component_map = []
     for component in PicovicoBaseComponent._components:
-        command = 'get_{}s'.format(component)
-        component_map.append({'command': command, 'options': None, 'action': command, 'component': '{}_component'.format(component)})
+        command = 'get-{}s'.format(component)
+        action = 'get_{}s'.format(component)
+        component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
         if component not in exclude_for_delete_component:
-            command = 'get_{}'.format(component)
-            component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': command, 'component': '{}_component'.format(component)})
-            command = 'delete_{}'.format(component)
-            component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': command, 'component': '{}_component'.format(component)})
+            command = 'get-{}'.format(component)
+            action = 'get_{}'.format(component)
+            component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': action, 'component': '{}_component'.format(component)})
+            command = 'delete-{}'.format(component)
+            action = 'delete_{}'.format(component)
+            component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': action, 'component': '{}_component'.format(component)})
     for component in has_free_component:
-        command = 'get_free_{}s'.format(component)
-        component_map.append({'command': command, 'options': None, 'action': command, 'component': '{}_component'.format(component)})
+        command = 'get-free-{}s'.format(component)
+        action = 'get_free_{}s'.format(component)
+        component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
     return component_map
 
 def get_cli_commands():
@@ -160,7 +164,7 @@ def get_cli_commands():
         {'command': 'login', 'options': None},
         {'command': 'logout', 'options': None},
         {'command': 'authenticate', 'options': None},
-        {'command': 'my_profile', 'options': None},
+        {'command': 'my-profile', 'options': None},
     ]
     components = component_commands()
     commands = itertools.chain(commands, [{'command': d['command'], 'options': d['options']} for d in components])
@@ -173,7 +177,7 @@ def cli_map_command_to_actions():
         'login': {'action': login},
         'logout': {'action': logout},
         'authenticate': {'action': authenticate},
-        'my_profile': {'action': my_profile},
+        'my-profile': {'action': my_profile},
     }
     components = component_commands()
     command_action_map.update({d['action']: {'action': d['action'], 'component': d['component']} for d in components})
