@@ -30,4 +30,6 @@ def picovico_parse_args():
         arguments.pop('use')
         if ns.use:
             arguments.update({ns.use: True})
-    cli_driver.call_api_actions(action, ns.profile[0], **arguments)
+    if ns.profile:
+        ns.profile = ns.profile[0]
+    cli_driver.call_api_actions(action, ns.profile, **arguments)

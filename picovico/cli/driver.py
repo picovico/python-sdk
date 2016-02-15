@@ -125,7 +125,7 @@ def get_action_from_command(action, profile_name):
 @cli_dec.pv_cli_check_configure
 def call_api_actions(action, profile_name, **arguments):
     action_map = cli_map_command_to_actions()
-    current_action = get_action_from_command(action, profile)
+    current_action = get_action_from_command(action, profile_name)
     try:
         result = api_action(**arguments)
     except (pv_api_exceptions.PicovicoRequestError, pv_api_exceptions.PicovicoServerError) as  e:
