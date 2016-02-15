@@ -97,18 +97,22 @@ def my_profile(profile_name):
     api = prepare_api_object(profile_name, session=True)
     return api.me()
 
-@cli_dec.pv_cli_check_authenticate
-def login(profile_name, profile=None):
-    username, password = retry_once_for_assertions(prompt.configure_login_info, coerce_password=True)
+@cli_dec.pv_cli_check_info('login')
+def login(profile_name, username=None, password=None, profile=None, prompt=True):
+    if prompt and not (username and password):
+        username, password = retry_once_for_assertions(prompt.configure_login_info, coerce_password=True)
+    if username and not password:
+        password = retry_once_for_assertions(prompt.configure_password_info)
     auth_action('login', profile or profile_name, username=username, password=password)
 
-@cli_dec.pv_cli_check_login
-def authenticate(profile_name, profile=None):
-    app_secret = retry_once_for_assertions(prompt.configure_secret_info)
+@cli_dec.pv_cli_check_info('authenticate')
+def authenticate(profile_name, app_secret=None, profile=None, prompt=True):
+    if prompt and not app_secret:
+        app_secret = retry_once_for_assertions(prompt.configure_secret_info)
     auth_action('authenticate', profile or profile_name, app_secret=app_secret)
 
 def logout(profile_name):
-    api = prepare_api_object(profile_name)
+    api = prepare_api_object(profile_name, session=True)
     api.logout()
     file_utils.delete_session_file()
 
@@ -125,7 +129,7 @@ def get_action_from_command(action, profile_name):
 
 @cli_dec.pv_cli_check_configure
 def call_api_actions(action, profile_name, **arguments):
-    current_action = get_action_from_command(action, profile_name)
+    api_action = get_action_from_command(action, profile_name)
     try:
         result = api_action(**arguments)
     except (pv_api_exceptions.PicovicoRequestError, pv_api_exceptions.PicovicoServerError) as  e:
@@ -140,32 +144,42 @@ def component_commands():
     components = PicovicoBaseComponent._components
     exclude_for_delete_component = (components[0],)
     has_free_component = components[:2]
+    upload_components = {
+        'music': {'file': ['--filename'], 'url': ['--url', '--preview']},
+        'photo': {'file': ['--filename'], 'url': ['--url', '--thumbnail']}
+    }
     component_map = []
     for component in PicovicoBaseComponent._components:
         command = 'get-{}s'.format(component)
-        action = 'get_{}s'.format(component)
+        action = command.replace('-', '_')
         component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
         if component not in exclude_for_delete_component:
             command = 'get-{}'.format(component)
-            action = 'get_{}'.format(component)
+            action = command.replace('-', '_')
             component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': action, 'component': '{}_component'.format(component)})
             command = 'delete-{}'.format(component)
-            action = 'delete_{}'.format(component)
+            action = command.replace('-', '_')
             component_map.append({'command': command, 'options': [{'name': '--{}-id'.format(component), 'required': True}], 'action': action, 'component': '{}_component'.format(component)})
+        if component in six.iterkeys(upload_components):
+            for k, v in six.iteritems(upload_components[component]):
+                command = 'upload-{0}-{1}'.format(component, k)
+                action = command.replace('-', '_')
+                component_map.append({'command': command, 'options': [{'name': opt, 'required': True} for opt in v], 'action': action, 'component': '{}_component'.format(component)})
     for component in has_free_component:
         command = 'get-free-{}s'.format(component)
-        action = 'get_free_{}s'.format(component)
+        action = command.replace('-', '_')
         component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
     return component_map
 
 def get_cli_commands():
     commands = [
-        {'command': 'configure', 'options': [{'name': '--use', 'choices': ('login', 'authenticate'), 'required': False}]},
+        {'command': 'configure', 'options': [{'name': '--include', 'choices': ('login', 'authenticate'), 'required': False}]},
         {'command': 'login', 'options': None},
         {'command': 'logout', 'options': None},
         {'command': 'authenticate', 'options': None},
         {'command': 'my-profile', 'options': None},
     ]
+    
     components = component_commands()
     commands = itertools.chain(commands, [{'command': d['command'], 'options': d['options']} for d in components])
     all_commands = [profile_utils._create_namedtuple('CliCommandsConfig', d) for d in commands]

@@ -64,9 +64,10 @@ class PicovicoBaseComponent(object):
         req_args = {
             'method': 'put',
             'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
-            'filename': filename,
-            'data_headers': data_headers
+            'filename': filename
         }
+        if data_headers:
+            req_args.update(data_headers=data_headers)
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[1:3])

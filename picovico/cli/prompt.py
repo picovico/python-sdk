@@ -49,7 +49,7 @@ def password_save_query():
     save_password = show_input('Would You like to save password as well ?(Y or n)  ')
     yes_value = 'Yes'
     if save_password in (yes_value[0], yes_value[0].lower(), yes_value.lower(), yes_value.upper(), yes_value):
-        return password_input_values()
+        return configure_password_info()
 
 def configure_password_info():
     password =  show_input('Enter Picovico Password: ')
@@ -61,7 +61,7 @@ def configure_login_info(coerce_password=False, query_password=True):
     if query_password and not coerce_password:
         password = password_save_query()
     elif coerce_password and not query_password:
-        password = password_input_values()
+        password = configure_password_info()
     assert username, 'Username is required'
     return username, password
 
@@ -89,7 +89,8 @@ def show_action_error(action, profile_name, status, message):
         401: 'PicovicoUnAuthorized',
         404: 'PicovicoNotFound',
     }
-    error_names.update({x: 'PicovicoServerError' for  x in six.moves.range(start=500, stop=505)})
+    error_names.update({x: 'PicovicoServerError' for  x in six.moves.range(start=500, stop=503)})
+    error_name = error_names.get(status)
     msg = '{0}: {1}'.format(error_names, message)
     show_action_message(profile_name, msg)
 
@@ -98,4 +99,9 @@ def show_no_session(profile_name):
     msg = 'No session for profile: {}'.format(profile_name)
     msg += '\nEither login or authenticate this profile.'
     prompt.show_warning(msg, True)
+    
+def show_auth_login_msg(formatargs):
+    auth_login_msg = '''You are using {0} method but have {1} stored.
+                        Your {1} will be overridden.'''
+    prompt.show_warning(msg.format(*formatargs))
 

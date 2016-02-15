@@ -52,6 +52,10 @@ def create_profile_values(list_of_values):
     ret_val = [_create_namedtuple('Conf', dict(six.moves.zip(('name', 'value'), val))) for val in list_of_values]
     return ret_val
 
+def is_in_profile(values_to_check, profile_name):
+    cfg = get_raw_profile(profile_name)
+    return check_against_factory(cfg, profile_name, values_to_check, check_value=True)
+
 def set_profile(values_to_set, profile_name):
     cfg = get_raw_profile(profile_name)
     if isinstance(values_to_set, dict):
@@ -141,6 +145,30 @@ def get_auth_names(profile_name):
     cfg = get_raw_profile(profile_name, info=True)
     is_available = {
         check_authenticate_info_value(cfg, profile_name): AUTHENTICATE_INFO,
-        check_authenticate_info_value(cfg, profile_name): LOGIN_INFO
+        check_login_info_value(cfg, profile_name, both=True): LOGIN_INFO,
+        check_login_info_value(cfg, profile_name): (LOGIN_INFO[0],)
     }
     return is_available.get(True, None)
+    
+def get_check_and_removal(name, profile_name):
+    auth_names = get_auth_names(profile_name)
+    profile = get_profile(profile_name)
+    names = ('login', 'authenticate')
+    to_remove = (AUTHENTICATE_INFO[0], LOGIN_INFO[0])
+    to_check = (LOGIN_INFO, AUTHENTICATE_INFO)
+    if not names.index(name):
+        names = names[::-1]
+        to_remove = to_remove[::-1]
+        to_check = to_check[::-1]
+    check_map = dict(zip(names, to_check))
+    removal_map = dict(zip(names, to_remove))
+    remove = removal_map.get(name)
+    check = check_map.get(name)
+    keyargs = {'prompt': True, 'profile': profile}
+    if auth_names:
+        if any(k in check for k in auth_names):
+            keyargs.update(prompt=False)
+            keyargs.update({k.lower(): getattr(profile, k, None) for k in check})
+        elif not any(k in remove for k in auth_names):
+            remove = None
+    return keyargs, remove, names

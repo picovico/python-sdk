@@ -24,12 +24,12 @@ def picovico_parse_args():
     ns = parser.parse_args()
     arguments = ns.__dict__.copy()
     arguments.pop('profile')
-    if len(arguments) and 'use' not in arguments:
+    if len(arguments) and 'include' not in arguments:
         arguments = {k: v for k, v in arguments.items()}
-    elif 'use' in arguments:
-        arguments.pop('use')
-        if ns.use:
-            arguments.update({ns.use: True})
+    elif 'include' in arguments:
+        arguments.pop('include')
+        if ns.include:
+            arguments.update({ns.include: True})
     if ns.profile:
         ns.profile = ns.profile[0]
     cli_driver.call_api_actions(action, ns.profile, **arguments)
