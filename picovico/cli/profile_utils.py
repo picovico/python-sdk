@@ -145,11 +145,13 @@ def get_auth_names(profile_name):
     cfg = get_raw_profile(profile_name, info=True)
     is_available = {
         check_authenticate_info_value(cfg, profile_name): AUTHENTICATE_INFO,
-        check_login_info_value(cfg, profile_name, both=True): LOGIN_INFO,
-        check_login_info_value(cfg, profile_name): (LOGIN_INFO[0],)
     }
+    if check_login_info_value(cfg, profile_name):
+        is_available.update({True: (LOGIN_INFO[0],)})
+        if check_login_info_value(cfg, profile_name, both=True):
+            is_available.update({True: LOGIN_INFO})
     return is_available.get(True, None)
-    
+
 def get_check_and_removal(name, profile_name):
     auth_names = get_auth_names(profile_name)
     profile = get_profile(profile_name)
