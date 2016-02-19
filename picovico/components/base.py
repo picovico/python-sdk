@@ -56,7 +56,7 @@ class PicovicoBaseComponent(object):
     def _get_components(self):
         req_args = {
             'method': 'get',
-            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper()))
+            'url': getattr(pv_urls, 'MY_{}S'.format(self.component.upper()))
         }
         return self._api_call(**req_args)
 
@@ -65,7 +65,7 @@ class PicovicoBaseComponent(object):
     def _upload_component_file(self, filename, data_headers=None):
         req_args = {
             'method': 'put',
-            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
+            'url': getattr(pv_urls, 'MY_{}S'.format(self.component.upper())),
             'filename': filename
         }
         if data_headers:
@@ -77,7 +77,7 @@ class PicovicoBaseComponent(object):
     def _upload_component_url(self, url, **data):
         req_args = {
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
+            'url': getattr(pv_urls, 'MY_{}S'.format(self.component.upper())),
             'data': dict(url=url, **data),
         }
         return self._api_call(**req_args)

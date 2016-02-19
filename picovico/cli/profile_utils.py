@@ -110,11 +110,9 @@ def remove_profile_value(profile_name, option):
 
 def get_profile(profile_name, info=True):
     cfg = get_raw_profile(profile_name)
-    new = False
     if not cfg:
         cfg = six.moves.configparser.SafeConfigParser()
         write_new_profile_info(cfg, profile_name)
-        new = True
     if not cfg.sections():
        profile_name = DEFAULT_PROFILE_NAME
     if info:

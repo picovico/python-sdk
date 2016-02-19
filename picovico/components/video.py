@@ -42,3 +42,13 @@ class PicovicoVideo(PicovicoBaseComponent):
             'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_DUPLICATE'.format(video_id)),
         }
         return self._api_call(**req_args)
+
+    @pv_decorator.pv_auth_required
+    def begin_project(self, name=None):
+        req_args = {
+            'method': 'post',
+            'url': pv_urls.MY_VIDEOS
+            'data': {'name': name or 'Untitled From Picovico Client.'}
+        }
+        return self._api_call(**req_args)
+        
