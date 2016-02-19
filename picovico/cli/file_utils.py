@@ -62,4 +62,6 @@ def read_from_session_file():
         with f:
             data = json.load(f)
     return data
-#def check_file_exists()
+
+def get_log_file(profile_name):
+    return get_file_from_storage('picovico_{}_log'.format(profile_name.lower()))

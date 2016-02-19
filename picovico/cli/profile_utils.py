@@ -102,7 +102,11 @@ def get_raw_profile(profile_name=DEFAULT_PROFILE_NAME):
 def remove_profile_value(profile_name, option):
     cfg = get_raw_profile(profile_name)
     if cfg and cfg.has_option(profile_name, option):
-        cfg.remove_option(profile_name, option)
+        if cfg.remove_option(profile_name, option):
+            profile_file = file_utils.get_profile_file()
+            fp = file_utils.get_file_obj(profile_file, mode='w+')
+            with fp:
+                cfg.write(fp)
 
 def get_profile(profile_name, info=True):
     cfg = get_raw_profile(profile_name)
@@ -113,7 +117,7 @@ def get_profile(profile_name, info=True):
         new = True
     if not cfg.sections():
        profile_name = DEFAULT_PROFILE_NAME
-    if info and not new:
+    if info:
         assert check_necessary_info_values(cfg, profile_name)
     options = dict(cfg.items(profile_name))
     options.update(name=profile_name)
@@ -142,12 +146,12 @@ def get_session_info():
         return _create_namedtuple('Session', data)
 
 def get_auth_names(profile_name):
-    cfg = get_raw_profile(profile_name, info=True)
+    cfg = get_raw_profile(profile_name)
     is_available = {
         check_authenticate_info_value(cfg, profile_name): AUTHENTICATE_INFO,
     }
     if check_login_info_value(cfg, profile_name):
-        is_available.update({True: (LOGIN_INFO[0],)})
+        is_available.update({True: LOGIN_INFO[:1]})
         if check_login_info_value(cfg, profile_name, both=True):
             is_available.update({True: LOGIN_INFO})
     return is_available.get(True, None)
@@ -156,18 +160,19 @@ def get_check_and_removal(name, profile_name):
     auth_names = get_auth_names(profile_name)
     profile = get_profile(profile_name)
     names = ('login', 'authenticate')
-    to_remove = (AUTHENTICATE_INFO[0], LOGIN_INFO[0])
-    to_check = (LOGIN_INFO, AUTHENTICATE_INFO)
-    if not names.index(name):
-        names = names[::-1]
-        to_remove = to_remove[::-1]
-        to_check = to_check[::-1]
-    check_map = dict(zip(names, to_check))
-    removal_map = dict(zip(names, to_remove))
-    remove = removal_map.get(name)
-    check = check_map.get(name)
-    keyargs = {'prompt': True, 'profile': profile}
+    keyargs = {'do_prompt': True, 'profile': profile}
+    remove = None
     if auth_names:
+        to_remove = (AUTHENTICATE_INFO[0], LOGIN_INFO[0])
+        to_check = (LOGIN_INFO, AUTHENTICATE_INFO)
+        if not names.index(name):
+            names = names[::-1]
+            to_remove = to_remove[::-1]
+            to_check = to_check[::-1]
+        check_map = dict(zip(names, to_check))
+        removal_map = dict(zip(names, to_remove))
+        remove = removal_map.get(name)
+        check = check_map.get(name)
         if any(k in check for k in auth_names):
             keyargs.update(prompt=False)
             keyargs.update({k.lower(): getattr(profile, k, None) for k in check})

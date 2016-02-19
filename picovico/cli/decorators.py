@@ -36,7 +36,7 @@ def pv_cli_check_configure(func):
     @functools.wraps(func)
     def wrapper(action, profile_name, *args, **kwargs):
         profile_name = profile_name or profile_utils.DEFAULT_PROFILE_NAME
-        if action != 'configure':
+        if prompt.check_profile(action):
             try:
                 profile = profile_utils.get_profile(profile_name, info=True)
             except AssertionError:
@@ -64,3 +64,22 @@ def pv_cli_check_info(funcname):
             return f
         return wrapper
     return check
+
+def pv_cli_check_for_configure(func):
+    @functools.wraps(func)
+    def wrapper(profile_name, *args, **kwargs):
+        profile_name = profile_name or profile_utils.DEFAULT_PROFILE_NAME
+        has_login = kwargs.get('login', False)
+        has_authenticate = kwargs.get('authenticate', False)
+        auth_names = profile_utils.get_auth_names(profile_name)
+        override = None
+        if has_authenticate and not has_login:
+            against = profile_utils.AUTHENTICATE_INFO
+            override = profile_utils.LOGIN_INFO
+        if has_login and not has_authenticate:
+            against = profile_utils.LOGIN_INFO
+            override = profile_utils.AUTHENTICATE_INFO
+        if auth_names and any(k in auth_names for k in against):
+            kwargs.update(override=override)
+        return func(profile-name, *args, **kwargs)
+    return wrapper

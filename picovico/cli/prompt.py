@@ -4,24 +4,33 @@ import pprint
 
 import six
 
+
 DEFAULT_DEVICE_ID = 'com.pvcli.sdk'
 VERSION = '2.5'
+
 
 def show_input(msg):
     return six.moves.input(msg)
 
+
 def show_print(msg):
     six.print_(msg)
 
+
 def show_warning(warn_text, stop=False):
-    warnings.warn(warn_text, UserWarning, stacklevel=10)
+    def pv_warning_format(message, category, filename, lineno, file=None, line=None):
+        return '%s: %s' % (category.__name__, message)
+    warnings.formatwarning = pv_warning_format
+    warnings.warn(warn_text, UserWarning)
     if stop:
         sys.exit(0)
+
 
 def generic_prompt(version=VERSION, profile_name=None):
     show_print('Picovico API [{}]'.format(version))
     if profile_name:
         show_print('Using Profile: {}'.format(profile_name))
+
 
 def configure_prompt(version=VERSION):
     generic_prompt(version)
@@ -36,6 +45,14 @@ def configure_prompt(version=VERSION):
     show_print(text)
     return configure_necessary_info()
 
+def retry_once_for_assertions(func, **kwargs):
+    try:
+        value = func(**kwargs)
+    except AssertionError as e:
+        show_warning(e.message+'\n')
+        value = func(**kwargs)
+    return value
+
 def configure_necessary_info():
     app_id = show_input('Enter Application Id provided: ')
     device_id = show_input('Enter Device Identifier->[default:{}]: '.format(DEFAULT_DEVICE_ID))
@@ -43,18 +60,22 @@ def configure_necessary_info():
     device_id = device_id or DEFAULT_DEVICE_ID
     return app_id, device_id
 
+
 def password_save_query():
     show_warning('''Saving password may lead to exposure of password.
-                    You can always enter password when required.''')
+                    You can always enter password when required.\n''')
     save_password = show_input('Would You like to save password as well ?(Y or n)  ')
     yes_value = 'Yes'
-    if save_password in (yes_value[0], yes_value[0].lower(), yes_value.lower(), yes_value.upper(), yes_value):
+    if save_password in (yes_value[0], yes_value[0].lower(),
+                        yes_value.lower(), yes_value.upper(), yes_value):
         return configure_password_info()
 
+
 def configure_password_info():
-    password =  show_input('Enter Picovico Password: ')
+    password = show_input('Enter Picovico Password: ')
     assert password, 'Password is required.'
     return password
+
 
 def configure_login_info(coerce_password=False, query_password=True):
     username = show_input('Enter Picovico Username: ')
@@ -65,43 +86,54 @@ def configure_login_info(coerce_password=False, query_password=True):
     assert username, 'Username is required'
     return username, password
 
+
 def configure_secret_info():
     app_secret = show_input('Enter Application Secret Provided: ')
     assert app_secret, 'Secret is required.'
     return app_secret
 
+
 def show_action_result(action, result, profile_name):
-    generic_prompt(profile_name)
+    generic_prompt(profile_name=profile_name)
     show_print('Your Action: {}'.format(action))
     show_print('Result:')
     show_print(pprint.pprint(result))
 
+
 def show_action_message(profile_name, message):
-    generic_prompt(profile_name)
+    generic_prompt(profile_name=profile_name)
     show_print(message)
+
 
 def show_action_success(action, profile_name):
     msg = 'Your Action: {} was succesfully completed.'.format(action)
     show_action_message(profile_name, msg)
+
 
 def show_action_error(action, profile_name, status, message):
     error_names = {
         401: 'PicovicoUnAuthorized',
         404: 'PicovicoNotFound',
     }
-    error_names.update({x: 'PicovicoServerError' for  x in six.moves.range(start=500, stop=503)})
+    error_names.update({x: 'PicovicoServerError' for x in six.moves.range(start=500, stop=503)})
     error_name = error_names.get(status)
-    msg = '{0}: {1}'.format(error_names, message)
+    msg = '{0}: {1}'.format(error_name, message)
     show_action_message(profile_name, msg)
 
 
 def show_no_session(profile_name):
     msg = 'No session for profile: {}'.format(profile_name)
     msg += '\nEither login or authenticate this profile.'
-    prompt.show_warning(msg, True)
-    
-def show_auth_login_msg(formatargs):
-    auth_login_msg = '''You are using {0} method but have {1} stored.
-                        Your {1} will be overridden.'''
-    prompt.show_warning(msg.format(*formatargs))
+    show_warning(msg, True)
 
+
+def show_auth_login_msg(formatargs):
+    msg = '''You are using {0} method but have {1} stored.
+            Your {1} information will be deleted.'''
+    show_warning(msg.format(*formatargs))
+
+def check_profile(name):
+    check = {
+        'configure': False
+    }
+    return check.get(name, True)

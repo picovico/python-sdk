@@ -24,6 +24,7 @@ class TestCliActions:
             driver.configure()
         mni.side_effect = None
         call_args = dict(zip(('APP_ID', 'DEVICE_ID'), (mni.return_value)))
+        call_args.update(LOG=False)
         mgap = mocker.patch('picovico.cli.profile_utils.get_all_profiles')
         mgap.return_value = (profiles[0],)
         msc = mocker.patch('picovico.cli.profile_utils.set_profile')
