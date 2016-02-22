@@ -7,6 +7,7 @@ from . import decorators as cli_dec
 from . import log as cli_logger
 from . import profile_utils
 from . import prompt
+from . import project_driver as proj_driver
 from .. import PicovicoAPI
 from ..components.base import PicovicoBaseComponent
 from .. import exceptions as pv_api_exceptions
@@ -205,7 +206,8 @@ def get_cli_commands():
     ]
 
     components = component_commands()
-    commands = itertools.chain(commands, [{'command': d['command'], 'options': d['options']} for d in components])
+    project_commands = proj_driver.get_project_commands()
+    commands = itertools.chain([project_commands], commands, [{'command': d['command'], 'options': d['options']} for d in components])
     all_commands = [profile_utils._create_namedtuple('CliCommandsConfig', d) for d in commands]
     return all_commands
 

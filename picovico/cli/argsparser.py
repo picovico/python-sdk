@@ -3,6 +3,10 @@ import argparse
 
 from . import driver as cli_driver
 
+#def create_project_group(parser):
+    #actions = proj_driver.get_project_commands()
+    #group = parser.add_group('project')
+
 def get_parser():
     actions = cli_driver.get_cli_commands()
     parser = argparse.ArgumentParser(prog='picovico-client')

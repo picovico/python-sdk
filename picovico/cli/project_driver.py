@@ -1,5 +1,6 @@
-def create_project_command():
-   command = {
+def get_project_commands():
+    project_components = ('music', 'style', 'photo', 'quality', 'text')
+    command = {
         'command': 'project', 
         'options': [
                 {
@@ -7,21 +8,22 @@ def create_project_command():
                     'required': False
                 },
                 {
-                    'name': '--musics',
-                    'required': False
+                    'name': 'begin',
+                    #'required': False,
+                    'action': 'store_true'
                 },
                 {
-                    'name': '--photos',
-                    'required': False
-                },
-                {
-                    'name': '--texts',
+                    'name': '--quality',
                     'required': False
                 },
                 {
                     'name': '--name',
                     'required': False
-                },
+                }
             ],
         #//'action':
         }
+    for a in project_components:
+        com = {'name': 'add-{}'.format(a)}
+        command['options'].append(com)
+    return command
