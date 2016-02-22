@@ -47,7 +47,7 @@ class PicovicoVideo(PicovicoBaseComponent):
     def begin_project(self, name=None):
         req_args = {
             'method': 'post',
-            'url': pv_urls.MY_VIDEOS
+            'url': pv_urls.MY_VIDEOS,
             'data': {'name': name or 'Untitled From Picovico Client.'}
         }
         return self._api_call(**req_args)

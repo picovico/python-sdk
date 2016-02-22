@@ -14,7 +14,7 @@ class TestPhotoComponent:
         mr.return_value = success_response
         args = ("something", "something_thumb")
         ph_comp.upload_photo_url(*args)
-        post_request.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.MY_PHOTO))
+        post_request.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.MY_PHOTOS))
         post_request.update(data=dict(zip(('url', 'thumbnail_url'), args)))
         post_request.update(headers=auth_header)
         assert mr.call_args[1] == post_request

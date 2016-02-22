@@ -32,7 +32,8 @@ class TestPicovicoRequest:
         assert pv_api.get(urls.ME) == success_response.json()
         get_call = method_calls.get('get').copy()
         get_call.update(url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
-        assert mr.call_args[1] == get_call 
+        mr.assert_called_with(**get_call)
+        #assert mr.call_args[1] == get_call 
         assert success_response.json() == pv_api.post(urls.ME, data={'me': "myself"})
         with pytest.raises(AssertionError):
             pv_api.post(urls.ME, data="hello")
