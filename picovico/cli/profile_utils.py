@@ -17,7 +17,7 @@ def check_against_factory(cfg, profile_name, against, check_value=False):
     has_section = (profile_name == DEFAULT_PROFILE_NAME)
     if not has_section:
         has_section = cfg.has_section(profile_name)
-    if has_section:
+    if has_section:     
         ok = all(cfg.has_option(profile_name, opt) for opt in against)
         if check_value and ok:
             ok = all(cfg.get(profile_name, opt) for opt in against)
@@ -45,8 +45,9 @@ def check_login_info_value(cfg, profile_name, both=False):
     return check_against_factory(cfg, profile_name, check_against, check_value=True)
 
 def _create_namedtuple(name, dict_to_make):
-    Factory = collections.namedtuple(name, [m.upper() for m in six.iterkeys(dict_to_make)])
-    return Factory._make(six.itervalues(dict_to_make))
+    key_transformation = {k.upper(): v for k, v in six.iteritems(dict_to_make)}
+    Factory = collections.namedtuple(name, six.iterkeys(key_transformation))
+    return Factory(**key_transformation)
 
 def create_profile_values(list_of_values):
     ret_val = [_create_namedtuple('Conf', dict(six.moves.zip(('name', 'value'), val))) for val in list_of_values]

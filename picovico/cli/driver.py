@@ -126,25 +126,26 @@ def get_action_from_command(action, profile_name):
     return current_action
 
 @cli_dec.pv_cli_check_configure
-def call_api_actions(action, profile_name, **kwargs):
-    api_action = get_action_from_command(action, profile_name)
+def call_api_actions(action=None, profile=None, **kwargs):
+    assert action, 'State your command'
+    api_action = get_action_from_command(action, profile)
     if action in custom_command:
         if kwargs:
-            kwargs.update({'profile_name': profile_name})
+            kwargs.update({'profile_name': profile})
         else:
-            kwargs = {'profile_name': profile_name}
+            kwargs = {'profile_name': profile}
     try:
         result = api_action(**kwargs)
     except (pv_api_exceptions.PicovicoRequestError, pv_api_exceptions.PicovicoServerError) as  e:
-        prompt.show_action_error(action, profile_name, e.status, e.message)
+        prompt.show_action_error(action, profile, e.status, e.message)
     else:
         if result:
-            prompt.show_action_result(action, result, profile_name)
+            prompt.show_action_result(action, result, profile)
         else:
-            prompt.show_action_success(action, profile_name)
-    profile = profile_utils.get_profile(profile_name)
-    if profile.LOG and action not in custom_command:
-        cli_logger.log_actions(profile_name, action, result, **kwargs)
+            prompt.show_action_success(action, profile)
+    prof = profile_utils.get_profile(profile)
+    if prof.LOG and action not in custom_command:
+        cli_logger.log_actions(prof.NAME, action, result, **kwargs)
 
 def create_component_commands():
     #components = {
@@ -206,9 +207,10 @@ def get_cli_commands():
     ]
 
     components = component_commands()
-    project_commands = proj_driver.get_project_commands()
-    commands = itertools.chain([project_commands], commands, [{'command': d['command'], 'options': d['options']} for d in components])
+    commands = itertools.chain(commands, [{'command': d['command'], 'options': d['options']} for d in components])
     all_commands = [profile_utils._create_namedtuple('CliCommandsConfig', d) for d in commands]
+    project_commands = proj_driver.get_project_cli_commands()
+    all_commands = itertools.chain(all_commands, project_commands)
     return all_commands
 
 def cli_map_command_to_actions():
@@ -219,6 +221,7 @@ def cli_map_command_to_actions():
         'authenticate': {'action': authenticate},
         'my-profile': {'action': my_profile},
         'flush-log': {'action': cli_logger.flush_log},
+        'project': {'action': proj_driver.project_cli_action}
     }
     components = component_commands()
     command_action_map.update({d['action']: {'action': d['action'], 'component': d['component']} for d in components})

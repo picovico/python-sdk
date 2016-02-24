@@ -33,8 +33,11 @@ class TestPicovicoRequest:
         get_call = method_calls.get('get').copy()
         get_call.update(url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
         mr.assert_called_with(**get_call)
-        #assert mr.call_args[1] == get_call 
-        assert success_response.json() == pv_api.post(urls.ME, data={'me': "myself"})
+        pv_api.post(urls.ME, data={'me': "myself"})
+        post_call = method_calls.get('post').copy()
+        post_call.update(url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
+        post_call.update(data={'me': "myself"})
+        mr.assert_called_with(**post_call)
         with pytest.raises(AssertionError):
             pv_api.post(urls.ME, data="hello")
         assert success_response.json() == pv_api.put(urls.ME)
@@ -44,7 +47,7 @@ class TestPicovicoRequest:
         assert pv_api.request_args['method'] == 'put'
         assert 'data' in pv_api.request_args
         assert success_response.json() == pv_api.delete(urls.ME)
-
+        
     def test_authentication_header(self, success_response):
         pv_req = api.PicovicoRequest()
         assert not pv_req.is_authenticated()
