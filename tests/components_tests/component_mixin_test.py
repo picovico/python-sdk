@@ -61,5 +61,4 @@ class TestComponent:
         assert mr.call_args[1] == get_call
         style_component.get_free_styles()
         get_call.pop('headers')
-        # mr.assert_called_with(**get_call)
-        assert mr.call_args[1] == get_call
+        mr.assert_called_with(**get_call)

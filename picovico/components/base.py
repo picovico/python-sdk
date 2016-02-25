@@ -22,7 +22,7 @@ class PicovicoBaseComponent(object):
     def _api_call(self, method='get', **request_args):
         assert method and method in ('get', 'post', 'put', 'delete'), 'Only "get", "post", "put" and "delete" allowed.'
         assert ('url' in request_args and request_args['url'])
-        assert (request_args and len(request_args) < 3)
+        assert (1 <= len(request_args) < 3)
         return getattr(self._pv_request, method)(**request_args)
 
     def __init__(self, request_obj, name='video'):
@@ -88,7 +88,7 @@ class PicovicoBaseComponent(object):
         id =  '{}_id'.format(self.component)
         assert len(kwargs) == 1 and id in kwargs, '{} is required'.format(id)
         req_args = {
-            'method': 'get',
+            'method': 'delete',
             'url': getattr(pv_urls, 'MY_SINGLE_{}'.format(self.component.upper())),
             id: kwargs.pop(id)
         }

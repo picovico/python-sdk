@@ -44,11 +44,15 @@ class PicovicoVideo(PicovicoBaseComponent):
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
-    def begin_project(self, name=None):
+    def new(self, name=None):
         req_args = {
             'method': 'post',
             'url': pv_urls.MY_VIDEOS,
             'data': {'name': name or 'Untitled From Picovico Client.'}
         }
         return self._api_call(**req_args)
+    
+    @pv_decorator.pv_auth_required
+    def save(self, vdd):
+        pass
         
