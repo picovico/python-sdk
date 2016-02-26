@@ -1,8 +1,6 @@
 import pytest
-from six.moves.urllib import parse
 from picovico.components import *
 from picovico.components import PicovicoComponentMixin
-from picovico import urls as pv_urls
 from picovico import baserequest as pv_base
 from picovico import exceptions as pv_exceptions
 
@@ -28,7 +26,7 @@ class TestComponent:
         #style_component = components.get('style')
         #video_component = components.get('video')
         #photo_component = components.get('photo')
-        
+
     def test_photo_component(self):
         pv_comp = PicovicoPhoto(pv_base.PicovicoRequest())
         with pytest.raises(pv_exceptions.PicovicoAPINotAllowed):
@@ -41,17 +39,15 @@ class TestComponent:
         with pytest.raises(NotImplementedError):
             pv_comp.delete(1)
 
-    def test_library_and_free_component(self, mocker, response, method_calls, headers):
+    def test_library_and_free_component(self, request_mock, response, method_calls, headers, pv_urls):
         req = pv_base.PicovicoRequest(headers.AUTH)
         style_component = PicovicoStyle(req)
-        mr = mocker.patch('picovico.baserequest.requests.request')
-        mr.return_value = response.SUCCESS.OK
-        get_call = method_calls.GET.copy()
-        get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.MY_STYLES))
-        get_call.update(headers=req.headers)
+        request_mock.return_value = response.SUCCESS.OK
+        get_call = method_calls.GET_AUTH.copy()
+        get_call.update(url=pv_urls.MY_STYLES)
         style_component.get_library()
-        mr.assert_called_with(**get_call)
+        request_mock.assert_called_with(**get_call)
         style_component.get_free()
         get_call.pop('headers')
-        get_call.update(url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_STYLES))
-        mr.assert_called_with(**get_call)
+        get_call.update(url=pv_urls.PICOVICO_STYLES)
+        request_mock.assert_called_with(**get_call)

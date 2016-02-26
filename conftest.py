@@ -6,7 +6,7 @@ import requests
 import mock
 
 from picovico.baserequest import PicovicoRequest
-from picovico import urls 
+from picovico import urls
 
 urljoin = six.moves.urllib.parse.urljoin
 
@@ -55,27 +55,14 @@ def messages():
     error_msg = _create_namedtuple('ErrorMsg', error_msg)
     success_msg = {
         'ok': {'message': "This is success response."},
-        'auth': {'access_key': "valid_key", 'access_token': "valid_token"},
+        'auth': {'access_key': "key", 'access_token': "token"},
     }
     success_msg = _create_namedtuple('SuccessMsg', success_msg)
-    
+
     m = {
         'success': success_msg,
         'error': error_msg,
     }
-    #m = {
-        #'server_error': {'error': {'status': 501, 'message': "This is server error."}},
-        #'error': {'error': {'status': 400, 'message': "This is bad request error."}},
-        #'auth_error': {'error': {'status': 401, 'message': "This is unauthorized error."}},
-        #'notfound_error': {'error': {'status': 404, 'message': "This is not found error."}},
-        #'some_error': {'status':415, 'message': "This is some error"},
-        #'success': {'message': "This is success response."},
-        #'success_auth': {'access_key': "valid_key", 'access_token': "valid_token"},
-        #'valid_header': {'X-VALID': "This is valid header."},
-        #'valid_auth_header': {'X-Access-Key': "key", 'X-Access-Token': "token"},
-        #'invalid_header': "Invalid",
-        #'new_video': {'id': "NEWVIDEO"}
-    #}
     return _create_namedtuple('FakeResponseMsg', m)
 
 def create_response(status_code, json_value):
@@ -85,21 +72,6 @@ def create_response(status_code, json_value):
     res.json.return_value = json_value
     return res
 
-#@pytest.fixture()
-#def success_response(response_messages):
-    #res = create_response(200, response_messages['success'])
-    #return res
-
-#@pytest.fixture()
-#def auth_response(response_messages):
-    #res = create_response(200, response_messages['success_auth'])
-    #return res
-
-#@pytest.fixture()
-#def error_response(response_messages):
-    #res = create_response(400, response_messages['bad'])
-    #return res
-
 def create_fp(content):
     gfp = six.StringIO()
     gfp.writelines(content)
@@ -107,13 +79,15 @@ def create_fp(content):
     return gfp
 
 @pytest.fixture()
-def method_calls():
-    gm = {
-        'get': {'method': 'get', 'url': None},
-        'post': {'method': 'post', 'url': None},
-        'put': {'method': 'put', 'url': None},
-        'delete': {'method': 'delete', 'url': None},
-    }
+def method_calls(headers):
+    methods = ('get', 'post', 'put', 'delete')
+    gm = {}
+    for meth in methods:
+        key = '{}_auth'.format(meth)
+        val = {'method': meth, 'url': None}
+        gm[meth] = val.copy()
+        val.update(headers=headers.AUTH)
+        gm[key] = val
     return _create_namedtuple('FakeMethodArgs', gm)
 
 @pytest.fixture()
@@ -123,24 +97,14 @@ def profile_fp():
         'other': create_fp(('[OTHER]\n', 'APP_ID=other_app_id\n',))
     }
     return _create_namedtuple('FakeProfileFiles', fp)
-    #gfp = six.StringIO()
-    #gfp.writelines()
-    #gfp.seek(0)
-    #return gfp
 
-#@pytest.fixture()
-#def profile_fp_other():
-    #gfp = six.StringIO()
-    #gfp.writelines(('[OTHER]\n', 'APP_ID=other_app_id\n',))
-    #gfp.seek(0)
-    #return gfp
 @pytest.fixture()
 def video_response(video_msg):
     vid_resp = {
         'new': create_response(200, video_msg.NEW)
     }
     return _create_namedtuple('FakeVideoResponse', vid_resp)
-    
+
 @pytest.fixture()
 def response(messages, video_response):
     ok_resp = {
@@ -159,10 +123,15 @@ def response(messages, video_response):
     }
     return _create_namedtuple('FakeResponse', res)
 
-@pytest.fixture
+@pytest.fixture()
 def pv_request():
     req = {
         'auth': _create_request(True),
         'noauth': _create_request()
     }
     return _create_namedtuple('FakeRequest', req)
+
+@pytest.fixture()
+def request_mock(mocker):
+    mr = mocker.patch('picovico.baserequest.requests.request')
+    return mr
