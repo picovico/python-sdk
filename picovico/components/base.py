@@ -100,7 +100,7 @@ class PicovicoBaseComponent(object):
     def get_library(self):
         req_args = self.create_request_args(**{
             'method': 'get',
-            'url': 'MY_{}S'.format(self.component.upper()),
+            'url_attr': 'MY_{}S'.format(self.component.upper()),
         })
         return self._api_call(**req_args)
 
