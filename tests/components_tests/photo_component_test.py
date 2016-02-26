@@ -4,6 +4,10 @@ from picovico.baserequest import PicovicoRequest
 from picovico import urls as pv_urls
 
 class TestPhotoComponent:
+    def test_create_request_args(self):
+        req_args = PicovicoPhoto.create_request_args(music_id='hello')
+        assert 'music_id' in req_args
+
     def test_upload_url(self, mocker, headers, response, method_calls):
         post_request = method_calls.POST.copy()
         auth_header = headers.AUTH.copy()

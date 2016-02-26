@@ -15,10 +15,10 @@ class PicovicoVideo(PicovicoBaseComponent):
             144p video preview is available for the style.
             Rendering state of the video will not be changed.
         '''
-        req_args = {
+        req_args = elf.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_PREVIEW'.format(video_id)),
-        }
+            'url_attr': 'MY_SINGLE_VIDEO_PREVIEW'.format(video_id),
+        })
         return self._api_call(**req_args)
         
     @pv_decorator.pv_auth_required
@@ -26,10 +26,10 @@ class PicovicoVideo(PicovicoBaseComponent):
         '''
             Picovico: Sends the actual rendering request to rendering engine
         '''
-        req_args = {
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_CREATE'.format(video_id)),
-        }
+            'url_attr': 'MY_SINGLE_VIDEO_CREATE'.format(video_id),
+        })
         return self._api_call(**req_args)
         
     @pv_decorator.pv_auth_required
@@ -37,22 +37,28 @@ class PicovicoVideo(PicovicoBaseComponent):
         '''
             Picovico: Duplicates any video and saves it to the new draft or overrides if any exists.
         '''
-        req_args = {
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_DUPLICATE'.format(video_id)),
-        }
+            'url': 'MY_SINGLE_VIDEO_DUPLICATE'.format(video_id),
+        })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
     def new(self, name=None):
-        req_args = {
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': pv_urls.MY_VIDEOS,
+            'url_attr': 'MY_VIDEOS',
             'data': {'name': name or 'Untitled From Picovico Client.'}
-        }
+        })
         return self._api_call(**req_args)
     
     @pv_decorator.pv_auth_required
-    def save(self, vdd):
+    def save(self):
         pass
+        #self.vdd = {
+            #'style': self.style
+        #}
         
+        #req_args = {
+            #'method': 
+        #}

@@ -24,7 +24,7 @@ def _create_request(auth=False):
 
 @pytest.fixture()
 def pv_urls():
-    url = {k: urljoin(urls.PICOVICO_BASE, k) for k in dir(urls) if not k.startswith('_')}
+    url = {k: urljoin(urls.PICOVICO_BASE, getattr(urls, k)) for k in dir(urls) if not k.startswith('_')}
     return _create_namedtuple('PicovicoURL', url)
 
 @pytest.fixture()
