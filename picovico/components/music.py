@@ -6,5 +6,5 @@ class PicovicoMusic(PicovicoBaseComponent):
     def __init__(self, request_obj):
         super(PicovicoMusic, self).__init__(request_obj, 'music')
 
-    def _upload_component_url(self, url, preview):
-        return super(PicovicoMusic, self)._upload_component_url(url, preview_url=preview)
+    def upload_url(self, url, preview):
+        return super(PicovicoMusic, self).upload_url(url, preview_url=preview)

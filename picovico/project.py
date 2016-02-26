@@ -18,6 +18,10 @@ class PicovicoProject(object):
         return getattr(self._pv_request, method)(**kwargs)
     
     @property
+    def video(self):
+        return self.__video
+    
+    @property
     def style(self):
         return self.__style
         
@@ -60,6 +64,7 @@ class PicovicoProject(object):
         if name is not None:
             self.name = name
         res = self.video_component.new(self.name)
+        self.__video = res['video_id']
 
     def discard(self):
         pass

@@ -6,19 +6,18 @@ from picovico import urls as pv_urls
 from picovico import exceptions as pv_exceptions
 
 class TestPicovicoAPI:
-    def test_auth_decoration(self, mocker, auth_response, method_calls):
+    def test_auth_decoration(self, mocker, response, method_calls):
         calls = ('app_id', 'device_id', 'username', 'password')
         api = PicovicoAPI(*calls[:2])
-        post_call = method_calls.get('post').copy()
+        post_call = method_calls.POST.copy()
         with pytest.raises(pv_exceptions.PicovicoAPINotAllowed):
             api.me()
         mr = mocker.patch('picovico.baserequest.requests.request')
-        mr.return_value = auth_response
+        mr.return_value = response.SUCCESS.AUTH
         api.login(*calls[2:])
         post_call.update(data=dict(zip(calls, calls)), url=parse.urljoin(pv_urls.PICOVICO_BASE, pv_urls.PICOVICO_LOGIN))
-        assert mr.call_args[1] == post_call
+        mr.assert_called_with(**post_call)
         api.me()
-        #mr.assert_called_with(**post_call)
         assert 'headers' in mr.call_args[1]
 
     def test_api_proxy(self):
@@ -31,15 +30,15 @@ class TestPicovicoAPI:
         api.logout()
         assert not api.is_authorized()
 
-    def test_login_authenticate(self, mocker, auth_response):
+    def test_login_authenticate(self, mocker, response):
         mr = mocker.patch('picovico.baserequest.requests.request')
-        mr.return_value = auth_response
+        mr.return_value = response.SUCCESS.AUTH
         api = PicovicoAPI('app_id', 'device_id')
         assert not api.is_authorized()
         api.login('username', 'password')
         assert api.is_authorized()
         mr = mocker.patch('picovico.baserequest.requests.request')
-        mr.return_value = auth_response
+        mr.return_value = response.SUCCESS.AUTH
         api = PicovicoAPI('app_id', 'device_id')
         assert not api.is_authorized()
         api.authenticate('app_secret')

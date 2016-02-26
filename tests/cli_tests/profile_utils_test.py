@@ -25,20 +25,21 @@ return_args = ('MY_APP_ID', None, 'MY_APP_SECRET',
         #return return_value.get(args[0])
 
 class TestCliProfileUtils:
-    def test_has_necessary_configs(self, profile_fp_default):
+    def test_has_necessary_configs(self, profile_fp):
+        default_fp = profile_fp.DEFAULT
         cfg = six.moves.configparser.SafeConfigParser()
-        cfg.readfp(profile_fp_default)
+        cfg.readfp(default_fp)
         assert not profile_utils.has_necessary_info(cfg, default_section_name)
         assert not profile_utils.check_necessary_info_values(cfg, default_section_name)
-        profile_fp_default.write('DEVICE_ID=device_id\n')
-        profile_fp_default.seek(0)
-        cfg.readfp(profile_fp_default)
+        default_fp.write('DEVICE_ID=device_id\n')
+        default_fp.seek(0)
+        cfg.readfp(default_fp)
         assert profile_utils.has_necessary_info(cfg, default_section_name)
         assert profile_utils.check_necessary_info_values(cfg, default_section_name)
 
-    #def test_optional_configs(self, profile_fp_default):
+    #def test_optional_configs(self, default_fp):
         #cfg = six.moves.configparser.SafeConfigParser()
-        #cfg.readfp(profile_fp_default)
+        #cfg.readfp(default_fp)
         #with pytest.raises(pv_exceptions.PicovicoProfileError) as exc:
             #cli.has_optional_secret_configs(cfg)
         #assert exc.value.code == 5
@@ -48,22 +49,22 @@ class TestCliProfileUtils:
         #with pytest.raises(pv_exceptions.PicovicoProfileError) as exc:
             #cli.has_optional_configs(cfg,both=True)
         #assert exc.value.code == 5
-        #profile_fp_default.write('APP_SECRET=app_secret\n')
-        #profile_fp_default.seek(0)
-        #cfg.readfp(profile_fp_default)
+        #default_fp.write('APP_SECRET=app_secret\n')
+        #default_fp.seek(0)
+        #cfg.readfp(default_fp)
         #assert cli.has_optional_secret_configs(cfg)
         #with pytest.raises(pv_exceptions.PicovicoProfileError) as exc:
             #cli.has_optional_username_configs(cfg)
         #assert cli.has_optional_configs(cfg)
         #up = ('[DEFAULT]\n', 'ACCESS_KEY=access_key\n', 'ACCESS_TOKEN=access_token\n')
-        #profile_fp_default.write(up[1])
-        #profile_fp_default.seek(0)
-        #cfg.readfp(profile_fp_default)
+        #default_fp.write(up[1])
+        #default_fp.seek(0)
+        #cfg.readfp(default_fp)
         #with pytest.raises(pv_exceptions.PicovicoProfileError) as exc:
             #cli.has_optional_token_configs(cfg)
-        #profile_fp_default.write(up[2])
-        #profile_fp_default.seek(0)
-        #cfg.readfp(profile_fp_default)
+        #default_fp.write(up[2])
+        #default_fp.seek(0)
+        #cfg.readfp(default_fp)
         #assert cli.has_optional_token_configs(cfg)
         #cfg = six.moves.configparser.SafeConfigParser()
         #fp = six.StringIO()
@@ -113,23 +114,27 @@ class TestCliProfileUtils:
             assert val.NAME == value_to_test[0][0]
             assert val.VALUE == value_to_test[0][1]
 
-    def test_get_profile(self, mocker, profile_fp_default, profile_fp_other):
+    def test_get_profile(self, mocker, profile_fp):
+        default_fp = profile_fp.DEFAULT
+        other_fp = profile_fp.OTHER
         cfg = six.moves.configparser.SafeConfigParser()
-        cfg.readfp(profile_fp_default)
+        cfg.readfp(default_fp)
         m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
         m.return_value = cfg
         config = profile_utils.get_profile(default_section_name, info=False)
         assert config.APP_ID == 'default_app_id'
-        cfg.readfp(profile_fp_other)
+        cfg.readfp(other_fp)
         mocker.stopall()
         m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
         m.return_value = cfg
         config = profile_utils.get_profile('OTHER', info=False)
         assert config.APP_ID == 'other_app_id'
 
-    def test_set_profile(self, mocker, profile_fp_default, profile_fp_other):
+    def test_set_profile(self, mocker, profile_fp):
+        default_fp = profile_fp.DEFAULT
+        other_fp = profile_fp.OTHER
         cfg = six.moves.configparser.SafeConfigParser()
-        cfg.readfp(profile_fp_default)
+        cfg.readfp(default_fp)
         old_cfg = cfg.items(default_section_name)
         with pytest.raises(six.moves.configparser.NoOptionError):
            cfg.get(default_section_name, 'DEVICE_ID')

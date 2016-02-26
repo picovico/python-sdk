@@ -9,7 +9,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         super(PicovicoVideo, self).__init__(request_obj, 'video')
 
     @pv_decorator.pv_auth_required
-    def preview_video(self, video_id):
+    def preview(self, video_id):
         '''
             Picovico: Make a preview request for the project. 
             144p video preview is available for the style.
@@ -22,7 +22,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         return self._api_call(**req_args)
         
     @pv_decorator.pv_auth_required
-    def create_video(self, video_id):
+    def create(self, video_id):
         '''
             Picovico: Sends the actual rendering request to rendering engine
         '''
@@ -33,7 +33,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         return self._api_call(**req_args)
         
     @pv_decorator.pv_auth_required
-    def duplicate_video(self, video_id):
+    def duplicate(self, video_id):
         '''
             Picovico: Duplicates any video and saves it to the new draft or overrides if any exists.
         '''
