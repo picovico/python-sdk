@@ -6,7 +6,8 @@ from picovico import urls as pv_urls
 from picovico import exceptions as pv_exceptions
 
 class TestPicovicoAPI:
-    def test_auth_decoration(self, request_mock, response, method_calls, pv_urls):
+    def test_auth_decoration(self, mock_obj, response, method_calls, pv_urls):
+        request_mock  = mock_obj.REQUEST
         calls = ('app_id', 'device_id', 'username', 'password')
         api = PicovicoAPI(*calls[:2])
         post_call = method_calls.POST.copy()
@@ -32,7 +33,8 @@ class TestPicovicoAPI:
         api.logout()
         assert not api.is_authorized()
 
-    def test_login_authenticate(self, request_mock, response):
+    def test_login_authenticate(self, mock_obj, response):
+        request_mock = mock_obj.REQUEST
         request_mock.return_value = response.SUCCESS.AUTH
         api = PicovicoAPI('app_id', 'device_id')
         assert not api.is_authorized()

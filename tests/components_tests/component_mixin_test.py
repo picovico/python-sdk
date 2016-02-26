@@ -39,7 +39,8 @@ class TestComponent:
         with pytest.raises(NotImplementedError):
             pv_comp.delete(1)
 
-    def test_library_and_free_component(self, request_mock, response, method_calls, headers, pv_urls):
+    def test_library_and_free_component(self, mock_obj, response, method_calls, headers, pv_urls):
+        request_mock = mock_obj.REQUEST
         req = pv_base.PicovicoRequest(headers.AUTH)
         style_component = PicovicoStyle(req)
         request_mock.return_value = response.SUCCESS.OK

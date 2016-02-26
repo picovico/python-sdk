@@ -62,6 +62,8 @@ class PicovicoAPINotAllowed(Exception):
 class PicovicoComponentNotSupported(Exception):
     pass
 
+class PicovicoProjectNotAllowed(Exception):
+    pass
 #utility to filter exceptions
 def raise_valid_exceptions(**error_response):
     status = error_response.pop('status_code')

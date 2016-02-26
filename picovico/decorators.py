@@ -24,7 +24,15 @@ def pv_not_implemented(against):
             return func(self, *args, **kwargs)
         return wrapper
     return func_wrapper
-        
+
+#for  project whether its  already begun or  not
+def pv_project_check_begin(func):
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        if not self.video:
+            raise pv_exceptions.PicovicoProjectNotAllowed('You should first begin the project')
+        return func(self, *args, **kwargs)
+    return wrapper
 #def pv_auth_exempt(func):
     #""" Picovico: Authentication exemption decorator to be used with mixins. """
     #@functools.wraps(func)

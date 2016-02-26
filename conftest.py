@@ -132,6 +132,9 @@ def pv_request():
     return _create_namedtuple('FakeRequest', req)
 
 @pytest.fixture()
-def request_mock(mocker):
-    mr = mocker.patch('picovico.baserequest.requests.request')
-    return mr
+def mock_obj(mocker):
+    mob = {
+        'request': mocker.patch('picovico.baserequest.requests.request'),
+        'obj': mocker
+    }
+    return _create_namedtuple('MockFactory', mob)

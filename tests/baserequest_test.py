@@ -6,7 +6,7 @@ from picovico import baserequest as api
 from picovico import urls
 
 class TestPicovicoRequest:
-    def test_properties(self, headers):
+    def test_properties(self, headers, pv_urls):
         pv_api = api.PicovicoRequest()
         assert pv_api.headers is None
         pv_api = api.PicovicoRequest(headers.VALID)
@@ -16,29 +16,31 @@ class TestPicovicoRequest:
         assert 'X-VALID' in pv_api.headers
         assert 'additional' in pv_api.headers
         pv_api.endpoint = urls.ME
-        assert pv_api.endpoint == parse.urljoin(urls.PICOVICO_BASE, urls.ME)
+        assert pv_api.endpoint == pv_urls.ME
 
-    def test_request_args(self, headers):
+    def test_request_args(self, headers, pv_urls):
         pv_api = api.PicovicoRequest(headers.VALID)
-        args = pv_api._PicovicoRequest__get_args_for_url(urls.ME)
+        args = pv_api._PicovicoRequest__get_args_for_url('get', urls.ME)
         assert 'headers' in args
         assert 'url' in args
-        assert args['url'] == parse.urljoin(urls.PICOVICO_BASE, urls.ME)
+        assert args['url'] == pv_urls.ME
 
-    def test_api_methods(self, mocker, response, method_calls, request_mock):
+    def test_api_methods(self, response, method_calls, pv_urls, mock_obj):
+        request_mock = mock_obj.REQUEST
+        mocker = mock_obj.OBJ
         request_mock.return_value = response.SUCCESS.OK
         pv_api = api.PicovicoRequest()
         get_call = method_calls.GET.copy()
-        get_call.update(url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
+        get_call.update(url=pv_urls.ME)
         pv_api.get(url=urls.ME)
         request_mock.assert_called_with(**get_call)
-        pv_api.post(urls.ME, data={'me': "myself"})
+        pv_api.post(urls.ME, post_data={'me': "myself"})
         post_call = method_calls.POST.copy()
-        post_call.update(url=parse.urljoin(urls.PICOVICO_BASE, urls.ME))
+        post_call.update(url=pv_urls.ME)
         post_call.update(data={'me': "myself"})
         request_mock.assert_called_with(**post_call)
         with pytest.raises(AssertionError):
-            pv_api.post(urls.ME, data="hello")
+            pv_api.post(urls.ME, post_data="hello")
         mocker.patch('picovico.baserequest.open', mock.mock_open(read_data='bibble'))
         pv_api.put(urls.ME, filename="fo", data_headers={'MUSIC_NAME': "Hello"}, )
         assert 'MUSIC_NAME' in pv_api.headers

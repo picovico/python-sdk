@@ -80,7 +80,7 @@ class PicovicoBaseComponent(object):
         req_args = self.create_request_args(**{
             'method': 'post',
             'url_attr': 'MY_{}S'.format(self.component.upper()),
-            'data': dict(url=url, **data),
+            'post_data': dict(url=url, **data),
         })
         return self._api_call(**req_args)
 
