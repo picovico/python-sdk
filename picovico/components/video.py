@@ -5,15 +5,9 @@ from .. import urls as pv_urls
 
 class PicovicoVideo(PicovicoBaseComponent):
     """ Picovico Video Component class. """
-    # def __init__(self, request_obj):
-        # super(PicovicoVideo, self).__init__(request_obj, 'video')
-    _plural_url_attrs = PicovicoBaseComponent._plural_url_attrs[:1]
-
-    def get_url_attr(self, key=None):
-        urls = {k: 'MY_SINGLE_VIDEO' for k in self._single_url_attrs}
-        for k in self._plural_url_attrs:
-            urls[k] = 'MY_VIDEOS'
-        return urls.get(key, None) if key else urls
+    @property
+    def component(self):
+        return 'video'
 
     @pv_decorator.pv_auth_required
     def preview(self, video_id):

@@ -92,10 +92,12 @@ class PicovicoProject(object):
         self.video_component.preview(self.video)
 
 
-    # def populate_vdd(self):
-        # _vdd = {}
-        # self._vdd.update(name=self.name)
-        # self._vdd.update(style=self.style)
+    def populate_vdd(self):
+        vdd = {}
+        vdd.update(name=self.vdd.name)
+        vdd.update(style=self.vdd.style)
+        vdd.update(quality=self.vdd.quality)
+
         # self._vdd.update(assets=json.dumps(self.assets))
 
 

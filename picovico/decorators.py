@@ -19,9 +19,7 @@ def pv_not_implemented(against):
     def func_wrapper(func):
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
-            class_name = type(self).__name__.lower()
-            print class_name
-            if not any(class_name.endswith(a) for a in against):
+            if self.component not in against:
                 raise NotImplementedError
             return func(self, *args, **kwargs)
         return wrapper
