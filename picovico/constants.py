@@ -15,3 +15,5 @@ QUALITY = namedtuple('Quality',_quality.keys())(**_quality)
 
 _asset = ('image', 'music', 'video', 'audio', 'text')
 ASSETS = namedtuple('Asset', [a.upper() for a in _asset])._make(_asset)
+
+VIDEO_NAME = 'Untitled Video From SDK'

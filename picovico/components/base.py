@@ -15,6 +15,8 @@ class PicovicoBaseComponent(object):
     """
     __metaclass__ = abc.ABCMeta
     _components = ('style', 'music', 'photo', 'video')
+    _single_url_attrs = ('one', 'delete')
+    _plural_url_attrs = ('all', 'upload_file', 'upload_url')
 
     @staticmethod
     def create_request_args(method='get', url_attr='PICOVICO_STYLES', **kwargs):
@@ -31,34 +33,38 @@ class PicovicoBaseComponent(object):
         assert (1 <= len(request_args) < 3)
         return getattr(self._pv_request, method)(**request_args)
 
+    @abc.abstractmethod
+    def get_url_attr(self, key=None):
+        raise NotImplementedError
+
     def __init__(self, request_obj, name='video'):
         """ Authenticated request object for component access. """
         assert isinstance(request_obj, pv_base.PicovicoRequest)
-        if name not in self._components:
-            raise pv_exceptions.PicovicoComponentNotSupported('This component is not supported.')
-        self.__component = name
+        # if name not in self._components:
+            # raise pv_exceptions.PicovicoComponentNotSupported('This component is not supported.')
+        # self.__component = name
         self._pv_request = request_obj
 
-    @property
-    def component(self):
-        return self.__component
+    # @property
+    # def component(self):
+        # return self.__component
 
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
-    def get_one(self, id):
+    def one(self, id):
         id_name =  '{}_id'.format(self.component)
         req_args = self.create_request_args(**{
             'method': 'get',
-            'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
+            'url_attr': self.get_url_attr('one'),
             id_name : id
         })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
-    def get_all(self):
+    def all(self):
         req_args = self.create_request_args(**{
             'method': 'get',
-            'url_attr': 'MY_{}S'.format(self.component.upper())
+            'url_attr': self.get_url_attr('all')
         })
         return self._api_call(**req_args)
 
@@ -67,7 +73,7 @@ class PicovicoBaseComponent(object):
     def upload_file(self, filename, data_headers=None):
         req_args = self.create_request_args(**{
             'method': 'put',
-            'url_attr': 'MY_{}S'.format(self.component.upper()),
+            'url_attr': self.get_url_attr('upload_file'),
             'filename': filename
         })
         if data_headers:
@@ -79,7 +85,7 @@ class PicovicoBaseComponent(object):
     def upload_url(self, url, **data):
         req_args = self.create_request_args(**{
             'method': 'post',
-            'url_attr': 'MY_{}S'.format(self.component.upper()),
+            'url_attr': self.get_url_attr('upload_url'),
             'post_data': dict(url=url, **data),
         })
         return self._api_call(**req_args)
@@ -90,7 +96,7 @@ class PicovicoBaseComponent(object):
         id_name =  '{}_id'.format(self.component)
         req_args = self.create_request_args(**{
             'method': 'delete',
-            'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
+            'url_attr': self.get_url_attr('delete'),
             id_name: id
         })
         return self._api_call(**req_args)
@@ -100,11 +106,12 @@ class PicovicoBaseComponent(object):
     def get_library(self):
         req_args = self.create_request_args(**{
             'method': 'get',
-            'url_attr': 'MY_{}S'.format(self.component.upper()),
+            'url_attr': self.get_url_attr('library'),
         })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
     def get_free(self):
         free_req = pv_base.PicovicoRequest()
-        return free_req.get(url=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))
+        url_attr = self.get_url_attr('free')
+        return free_req.get(url=getattr(pv_urls, url_attr))

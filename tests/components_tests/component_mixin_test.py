@@ -30,7 +30,7 @@ class TestComponent:
     def test_photo_component(self):
         pv_comp = PicovicoPhoto(pv_base.PicovicoRequest())
         with pytest.raises(pv_exceptions.PicovicoAPINotAllowed):
-            gm = pv_comp.get_all()
+            gm = pv_comp.all()
 
     def test_style_component(self):
         pv_comp = PicovicoStyle(pv_base.PicovicoRequest())

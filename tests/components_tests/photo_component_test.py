@@ -15,7 +15,6 @@ class TestPhotoComponent:
         auth_header = headers.AUTH.copy()
         req = PicovicoRequest(auth_header)
         ph_comp = PicovicoPhoto(req)
-        assert ph_comp.component == 'photo'
         args = ("something", "something_thumb")
         ph_comp.upload_url(*args)
         post_request.update(url=pv_urls.MY_PHOTOS)
