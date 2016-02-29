@@ -155,7 +155,7 @@ def get_auth_names(profile_name):
             is_available.update({True: LOGIN_INFO})
     return is_available.get(True, None)
 
-def get_check_and_removal(name, profile_name):
+def get_auth_check_and_removal(name, profile_name):
     auth_names = get_auth_names(profile_name)
     profile = get_profile(profile_name)
     names = ('login', 'authenticate')

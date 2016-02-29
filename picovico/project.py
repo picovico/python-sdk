@@ -83,7 +83,8 @@ class PicovicoProject(object):
         self.video_component.delete(self.video)
 
     def save(self):
-        self.video_component.save(self.video)
+        vdd = self.populate_vdd()
+        self.video_component.save(self.video, vdd)
 
     def render(self):
         self.video_component.render(self.video)
@@ -91,15 +92,14 @@ class PicovicoProject(object):
     def preview(self):
         self.video_component.preview(self.video)
 
-
     def populate_vdd(self):
         vdd = {}
         vdd.update(name=self.vdd.name)
         vdd.update(style=self.vdd.style)
         vdd.update(quality=self.vdd.quality)
-
+        vdd.update(assets=json.dumps(self.vdd.assets))
+        return vdd
         # self._vdd.update(assets=json.dumps(self.assets))
-
 
     @staticmethod
     def time_counter(assets):
@@ -172,4 +172,16 @@ class PicovicoProject(object):
     def add_photo_file(self, filename, caption=None):
         res = self.__component_actions('photo', 'upload_file', filename=filename)
         self.add_photo(res['id'], caption)
+    
+    @pv_decorator.pv_project_check_begin
+    def clear_assets(self):
+        self.vdd.assets = []
+    #def remove_asset(self, asset_type, asset_id, title):
+        #assets = self.vdd.assets
+        #for asset in assets:
+            #id = asset.get('asset_id', None)
+            #_type = asset.get('asset_type')
+            #_title = asset.get('data').get('title', None)
+            #if asset_type == _type and (_title == title or id == asset_id):
+                 
 

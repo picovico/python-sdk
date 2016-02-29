@@ -1,6 +1,7 @@
 from .base import PicovicoBaseComponent
 from .. import decorators as pv_decorator
 from .. import urls as pv_urls
+from .. import constants as pv_constants
 
 
 class PicovicoVideo(PicovicoBaseComponent):
@@ -49,13 +50,19 @@ class PicovicoVideo(PicovicoBaseComponent):
         req_args = self.create_request_args(**{
             'method': 'post',
             'url_attr': 'MY_VIDEOS',
-            'data': {'name': name or 'Untitled From Picovico Client.'}
+            'post_data': {'name': name or pv_constants.VIDEO_NAME}
         })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
-    def save(self):
-        pass
+    def save(self, vdd):
+        req_args = self.create_request_args(**{
+            'method': 'post',
+            'url_attr': 'MY_VIDEOS',
+            'post_data': vdd
+        })
+        return self._api_call(**req_args)
+        
         #self.vdd = {
             #'style': self.style
         #}

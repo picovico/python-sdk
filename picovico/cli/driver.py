@@ -8,6 +8,7 @@ from . import log as cli_logger
 from . import profile_utils
 from . import prompt
 from . import project_driver as proj_driver
+from . import utils as pv_utility
 from .. import PicovicoAPI
 from ..components.base import PicovicoBaseComponent
 from .. import exceptions as pv_api_exceptions
@@ -18,29 +19,6 @@ custom_command = ('login', 'logout', 'authenticate', 'configure', 'my_profile')
                         # 'delete_photo', 'get_videos', 'get_video',
                         # 'delete_video', 'get_styles', 'get_free_styles')
 # no_auth_actions = ('get_free_styles', 'get_free_musics')
-
-def prepare_api_object(profile_name, session=False):
-    profile_name = profile_name or profile_utils.DEFAULT_PROFILE_NAME
-    profile = profile_utils.get_profile(profile_name, info=True)
-    api = PicovicoAPI(profile.APP_ID, profile.DEVICE_ID)
-    if session:
-        sess = profile_utils.get_session_info()
-        if sess and sess.PROFILE == profile.NAME:
-            api.set_access_tokens(sess.access_key, sess.ACCESS_TOKEN)
-        else:
-            auth_names = profile_utils.get_auth_names(profile.NAME)
-            if not auth_names:
-                prompt.show_no_session(profile.NAME)
-            action = {
-                profile_utils.LOGIN_INFO: 'login',
-                profile_utils.AUTHENTICATE_INFO: 'authenticate',
-            }.get(auth_names, None)
-            if not all(getattr(profile, k, None) for k in auth_names):
-                prompt.show_no_session(profile.NAME)
-            else:
-                arguments = {k.lower(): getattr(profile, k) for k in auth_names}
-                api = auth_action(action, profile, **arguments)
-    return api
 
 def configure_login_authenticate(profile_name, login=False, authenticate=False):
     info = {}
@@ -77,22 +55,8 @@ def configure(profile_name=None, login=False, authenticate=False, log=False):
     else:
         prompt.show_print('Something unknown happened. Rerun configure')
 
-
-def auth_action(funcname, profile_name, **kwargs):
-    profile_name = getattr(profile_name, 'NAME', profile_name)
-    api = prepare_api_object(profile_name)
-    getattr(api, funcname)(**kwargs)
-    if api.is_authorized():
-        data = {
-            'ACCESS_KEY': api.access_key,
-            'ACCESS_TOKEN': api.access_token,
-            'PROFILE': profile_name
-        }
-        file_utils.write_to_session_file(data)
-    return api
-
 def my_profile(profile_name=None):
-    api = prepare_api_object(profile_name, session=True)
+    api = pv_utility.prepare_api_object(profile_name, session=True)
     return api.me()
 
 @cli_dec.pv_cli_check_info('login')
@@ -101,16 +65,16 @@ def login(profile_name=None, username=None, password=None, profile=None, do_prom
         username, password = prompt.retry_once_for_assertions(prompt.configure_login_info, coerce_password=True)
     if username and not password:
         password = prompt.retry_once_for_assertions(prompt.configure_password_info)
-    auth_action('login', profile or profile_name, username=username, password=password)
+    pv_utility.auth_action('login', profile or profile_name, username=username, password=password)
 
 @cli_dec.pv_cli_check_info('authenticate')
 def authenticate(profile_name=None, app_secret=None, profile=None, do_prompt=True):
     if do_prompt and not app_secret:
         app_secret = prompt.retry_once_for_assertions(prompt.configure_secret_info)
-    auth_action('authenticate', profile or profile_name, app_secret=app_secret)
+    pv_utility.auth_action('authenticate', profile or profile_name, app_secret=app_secret)
 
 def logout(profile_name=None):
-    api = prepare_api_object(profile_name, session=True)
+    api = pv_utility.prepare_api_object(profile_name, session=True)
     api.logout()
     file_utils.delete_session_file()
 
@@ -120,7 +84,7 @@ def get_action_from_command(action, profile_name):
     current_action = action_map.get('action')
     component = action_map.get('component', None)
     if component:
-        api = prepare_api_object(profile_name, session=True)
+        api = pv_utility.prepare_api_object(profile_name, session=True)
         component = getattr(api, component)
         current_action = getattr(component, current_action)
     return current_action

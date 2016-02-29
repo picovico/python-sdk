@@ -50,7 +50,7 @@ def pv_cli_check_info(funcname):
         @functools.wraps(func)
         def wrapper(profile_name, *args, **kwargs):
             profile_name = profile_name or profile_utils.DEFAULT_PROFILE_NAME
-            keyargs, removal, formatargs = profile_utils.get_check_and_removal(funcname, profile_name)
+            keyargs, removal, formatargs = profile_utils.get_auth_check_and_removal(funcname, profile_name)
             if kwargs:
                 kwargs.update(keyargs)
             else:
