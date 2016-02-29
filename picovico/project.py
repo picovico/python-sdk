@@ -4,6 +4,7 @@ import collections
 from . import exceptions as pv_exceptions
 from . import components as pv_components
 from . import constants as pv_constants
+from . import decorators as pv_decorator
 
 class PicovicoProject(object):
 
@@ -74,9 +75,8 @@ class PicovicoProject(object):
         # self.__assets.append(val)
 
     def begin(self, name=None):
-        if name is not None:
-            self.vdd.name = name
-        res = self.video_component.new(self.name)
+        self.add_name(name)
+        res = self.video_component.new(self.vdd.name)
         self.__video = res['id']
 
     def discard(self):
@@ -84,7 +84,8 @@ class PicovicoProject(object):
 
     def save(self):
         vdd = self.populate_vdd()
-        self.video_component.save(self.video, vdd)
+        if vdd:
+            self.video_component.save(self.video, vdd)
 
     def render(self):
         self.video_component.render(self.video)
@@ -128,6 +129,19 @@ class PicovicoProject(object):
         if time:
             asset.update(self.time_counter(self.vdd.assets))
         self.vdd.assets.append(asset)
+        
+    @pv_decorator.pv_project_check_begin
+    def add_style(self, style_name):
+        assert style_name, 'Empty Style not allowed.'
+        self.vdd._replace(style=style_name)
+        
+    @pv_decorator.pv_project_check_begin
+    def add_quality(self, val):
+        assert val in pv_constants.QUALITY, '{} is not supported.'.format(val)
+        self.vdd._replace(quality=val)
+        
+    def add_name(self, val):
+        self.vdd._replace(name=val or pv_constants.VIDEO_NAME)
     #def __create_music_asset(self, music_id):
         #self.
 
@@ -147,7 +161,7 @@ class PicovicoProject(object):
         self.__add_asset(text_asset)
 
     @pv_decorator.pv_project_check_begin
-    def add_photo(self, photo_id, caption=None)
+    def add_photo(self, photo_id, caption=None):
         photo_data = {'caption': caption} if caption else None
         photo_asset = self.create_asset_dict('photo', photo_id, photo_data)
         self.__add_asset(photo_asset)

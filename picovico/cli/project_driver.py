@@ -1,6 +1,8 @@
 import six
 
+from . import utils as pv_utility
 from . import profile_utils
+from .. import project as pv_project
 
 def get_project_command():
     subcommands = ('begin', 'define', 'render', 'preview', 'discard', 'save')
@@ -35,15 +37,18 @@ def get_project_cli_commands():
     command = get_project_command()
     return (profile_utils._create_namedtuple('CliCommandsConfig', command),)
 
-def map_project_command():
-    mappings = {
-        'begin': 'begin_video',
-        'render': 'render_video',
-        'preview': 'preview_video',
-        'save': 'save_video',
-        'discard': 'discard_video',
-        'define': 'define_video'
-    }
+#def map_project_command():
+    #mappings = {
+        #'begin': 'begin_video',
+        #'render': 'render_video',
+        #'preview': 'preview_video',
+        #'save': 'save_video',
+        #'discard': 'discard_video',
+        #'define': 'define_video'
+    #}
     
-def project_cli_actions(**kwargs):
-    pass
+def project_cli_action(profile, **kwargs):
+    project_action = kwargs.get('project')
+    api = pv_utility.prepare_api_object(profile_name=profile, session=True)
+    action = getattr(api.project, project_action)
+    action(**kwargs)

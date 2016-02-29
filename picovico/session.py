@@ -15,6 +15,7 @@ class PicovicoSessionMixin(object):
         '''
             Picovico: Constructor that initialize the app_id and app_secret.
         '''
+        super(PicovicoSessionMixin, self).__init__()
         self.__app_id = app_id
         self.__app_secret = app_secret
         self.__access_key = None

@@ -3,15 +3,16 @@ from .baserequest import PicovicoRequest
 from .components import PicovicoComponentMixin
 from .decorators import pv_auth_required
 from . import urls as pv_urls
+from . import project as pv_project
 
 class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
 
     def __init__(self, app_id, device_id, app_secret=None):
         super(PicovicoAPI, self).__init__(app_id, device_id=device_id, app_secret=app_secret)
-        PicovicoComponentMixin.__init__(self)
+        #PicovicoComponentMixin.__init__(self)
+        self.__project = pv_project.PicovicoProject(self._pv_request)
         if self.is_authorized():
             self._ready_component_property()
-
 
     def login(self, username, password):
         """ Picovico: login with username and password """
@@ -47,3 +48,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
     @pv_auth_required
     def me(self):
         return self._pv_request.get(url=pv_urls.ME)
+
+    @property
+    def project(self):
+        return self.__project   
