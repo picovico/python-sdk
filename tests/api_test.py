@@ -1,8 +1,6 @@
 import pytest
-from six.moves.urllib import parse
 
 from picovico import PicovicoAPI
-from picovico import urls as pv_urls
 from picovico import exceptions as pv_exceptions
 
 class TestPicovicoAPI:
@@ -18,9 +16,9 @@ class TestPicovicoAPI:
         post_call.update(data=dict(zip(calls, calls)), url=pv_urls.PICOVICO_LOGIN)
         request_mock.assert_called_with(**post_call)
         api.me()
-        post_call = method_calls.GET_AUTH.copy()
-        post_call.update(url=pv_urls.ME)
-        request_mock.assert_called_with(**post_call)
+        me_call = method_calls.GET_AUTH.copy()
+        me_call.update(url=pv_urls.ME)
+        request_mock.assert_called_with(**me_call)
 
 
     def test_api_proxy(self):
@@ -44,3 +42,12 @@ class TestPicovicoAPI:
         assert not api.is_authorized()
         api.authenticate('app_secret')
         assert api.is_authorized()
+        
+    def test_project_property(self, mock_obj):
+        mocker = mock_obj.OBJ
+        api = PicovicoAPI('app_id', 'device_id')
+        assert not api.project
+        mocker.patch.object(PicovicoAPI, 'is_authorized', return_value=True)
+        mocker.patch('picovico.PicovicoRequest.is_authenticated', return_value=True)
+        api = PicovicoAPI('app_id', 'device_id')
+        assert api.project
