@@ -6,22 +6,18 @@ from . import components as pv_components
 from . import constants as pv_constants
 from . import decorators as pv_decorator
 
+Vdd = collections.namedtuple('VideoDefinitionData', ('name', 'style', 'quality', 'assets', 'privacy', 'credits'))
+
 class PicovicoProject(object):
-
-    # __quality = pv_constants.QUALITY.STANDARD
-
     def __init__(self, request_obj):
+        if not request_obj.is_authenticated():
+            raise pv_exceptions.PicovicoProjectNotAllowed('You cannot initiate project without authenticating.')
         self.photo_component = pv_components.PicovicoPhoto(request_obj)
         self.video_component = pv_components.PicovicoVideo(request_obj)
         self.music_component = pv_components.PicovicoMusic(request_obj)
         self.style_component = pv_components.PicovicoStyle(request_obj)
-        Vdd = collections.namedtuple('VideoDefinitionData', ('assets', 'style', 'name', 'quality'))
-        self.__vdd = Vdd([], None, pv_constants.VIDEO_NAME, pv_constants.QUALITY.STANDARD)
-
-    # def __api_call(self, **kwargs):
-        # assert all(k in kwargs for k in ('method', 'url'))
-        # method = kwargs.pop('method')
-        # return getattr(self._pv_request, method)(**kwargs)
+        self.__vdd = Vdd(pv_constants.VIDEO_NAME, None, pv_constants.QUALITY.STANDARD, None, pv_constants.PRIVACY.PRIVATE, None)
+        self.__video = None
 
     @property
     def vdd(self):
@@ -31,51 +27,8 @@ class PicovicoProject(object):
     def video(self):
         return self.__video
 
-    # @property
-    # def style(self):
-        # return self.__style
-
-    # @style.setter
-    # def style(self, value):
-        # assert value, 'Style name is required.'
-        # #if value:
-            # #style = self.style_component.get(value)
-        # self.__style = value
-
-
-    # @property
-    # def name(self):
-        # return self.__name
-
-
-    # @name.setter
-    # def name(self, val):
-        # val = val or 'Untitled Video'
-        # self.__name = val
-
-
-    # @property
-    # def quality(self):
-        # return self.__quality
-
-
-    # @quality.setter
-    # def quality(self, val):
-        # assert val in pv_constants.QUALITY, '{} is not supported.'.format(val)
-        # self.__quality = val
-
-
-    # @property
-    # def assets(self):
-        # return self.__assets
-
-    # @assets.setter
-    # def assets(self, val):
-        # assert isinstance(val, dict)
-        # self.__assets.append(val)
-
     def begin(self, name=None):
-        self.add_name(name)
+        self.set_name(name)
         res = self.video_component.new(self.vdd.name)
         self.__video = res['id']
 
@@ -99,12 +52,14 @@ class PicovicoProject(object):
         vdd.update(style=self.vdd.style)
         vdd.update(quality=self.vdd.quality)
         vdd.update(assets=json.dumps(self.vdd.assets))
+        vdd.update(privacy=self.vdd.privacy)
+        if self.vdd.credits:
+            vdd.update(credit=json.dumps(self.vdd.credits))
         return vdd
-        # self._vdd.update(assets=json.dumps(self.assets))
 
     @staticmethod
     def time_counter(assets):
-        start = len(assets)
+        start = 0 if not assets else len(assets)*5
         return {
             'start_time': start,
             'end_time': start+5
@@ -122,40 +77,56 @@ class PicovicoProject(object):
             asset_dict.update(asset_id=asset_id)
         if data:
             asset_dict.update(data=data)
-        # AssetClass = collections.namedtuple('{}Asset'.format('asset_type'), asset_dict.keys())
         return asset_dict
 
-    def __add_asset(self, asset, time=False):
+    def __add_asset(self, asset, time=True):
         if time:
             asset.update(self.time_counter(self.vdd.assets))
+        if self.vdd.assets is None:
+            self.__replace_vdd_data(assets=[])
         self.vdd.assets.append(asset)
         
+    def __replace_vdd_data(self, **kwargs):
+        self.__vdd = self.vdd._replace(**kwargs)
+
     @pv_decorator.pv_project_check_begin
-    def add_style(self, style_name):
-        assert style_name, 'Empty Style not allowed.'
-        self.vdd._replace(style=style_name)
+    def set_style(self, value):
+        assert value, 'Empty Style not allowed.'
+        self.__replace_vdd_data(style=value)
         
     @pv_decorator.pv_project_check_begin
-    def add_quality(self, val):
-        assert val in pv_constants.QUALITY, '{} is not supported.'.format(val)
-        self.vdd._replace(quality=val)
-        
-    def add_name(self, val):
-        self.vdd._replace(name=val or pv_constants.VIDEO_NAME)
-    #def __create_music_asset(self, music_id):
-        #self.
+    def set_quality(self, value):
+        assert value in pv_constants.QUALITY, '{0} is not supported. Choose [{1}]'.format(value, ','.join(str(q) for q in pv_constants.QUALITY))
+        self.__replace_vdd_data(quality=value)
+    
+    def set_name(self, value):
+        if value:
+            self.__replace_vdd_data(name=value)
 
     @pv_decorator.pv_project_check_begin
     def add_music(self, music_id):
         """ Picovico: If user already knows the music id. """
         music_asset = self.create_asset_dict('music', music_id)
-        self.__add_asset(music_asset)
+        self.__add_asset(music_asset, time=False)
 
     @pv_decorator.pv_project_check_begin
-    def add_text(self, title=None, text=None):
+    def set_privacy(self, value):
+        assert value in pv_constants.PRIVACY, 'Privacy can be [{}]'.format(','.join(pv_constants.PRIVACY))
+        self.__replace_vdd_data(privacy=value)
+        
+    @pv_decorator.pv_project_check_begin
+    def add_credit(self, name, value):
+        assert all((name, value)), 'Credit should be two texts'
+        if self.vdd.credits is None:
+            self.__replace_vdd_data(credits=[])
+        self.vdd.credits.append((name, value))
+        
+    @pv_decorator.pv_project_check_begin
+    def add_text(self, title=None, body=None):
+        assert any((title, body)), 'Title or Text is required'
         text_data = {
             'title': title,
-            'text': text
+            'text': body
         }
         text_asset = self.create_asset_dict('text', data=text_data)
         self.__add_asset(text_asset)
@@ -189,13 +160,8 @@ class PicovicoProject(object):
     
     @pv_decorator.pv_project_check_begin
     def clear_assets(self):
-        self.vdd.assets = []
-    #def remove_asset(self, asset_type, asset_id, title):
-        #assets = self.vdd.assets
-        #for asset in assets:
-            #id = asset.get('asset_id', None)
-            #_type = asset.get('asset_type')
-            #_title = asset.get('data').get('title', None)
-            #if asset_type == _type and (_title == title or id == asset_id):
-                 
+        self.__replace_vdd_data(assets=None)
 
+    @pv_decorator.pv_project_check_begin
+    def clear_credits(self):
+        self.__replace_vdd_data(credits=None)

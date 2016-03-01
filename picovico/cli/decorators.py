@@ -34,8 +34,9 @@ def pv_cli_check_login(func):
 
 def pv_cli_check_configure(func):
     @functools.wraps(func)
-    def wrapper(action, profile_name, *args, **kwargs):
-        profile_name = profile_name or profile_utils.DEFAULT_PROFILE_NAME
+    def wrapper(*args, **kwargs):
+        action = kwargs.get('action')
+        profile_name = kwargs.get('profile', None) or profile_utils.DEFAULT_PROFILE_NAME
         if prompt.check_profile(action):
             try:
                 profile = profile_utils.get_profile(profile_name, info=True)

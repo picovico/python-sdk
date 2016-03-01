@@ -10,9 +10,10 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
     def __init__(self, app_id, device_id, app_secret=None):
         super(PicovicoAPI, self).__init__(app_id, device_id=device_id, app_secret=app_secret)
         #PicovicoComponentMixin.__init__(self)
-        self.__project = pv_project.PicovicoProject(self._pv_request)
+        self.__project = None
         if self.is_authorized():
             self._ready_component_property()
+            self.__ready_project()
 
     def login(self, username, password):
         """ Picovico: login with username and password """
@@ -29,7 +30,8 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
                     access_token=response.get('access_token'))
         self._pv_request.headers = self.headers
         self._ready_component_property()
-
+        self.__ready_project()
+        
     def authenticate(self, app_secret=None):
         assert app_secret, 'App secret provided by picovico is required'
         if app_secret is not None and not self.app_secret:
@@ -44,6 +46,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
                 access_token=response.get('access_token'))
         self._pv_request.headers = self.headers
         self._ready_component_property()
+        self.__ready_project()
 
     @pv_auth_required
     def me(self):
@@ -51,4 +54,9 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
 
     @property
     def project(self):
-        return self.__project   
+        return self.__project
+
+    
+    def __ready_project(self):
+        if self.is_authorized():
+            self.__project = pv_project.PicovicoProject(self._pv_request)

@@ -44,5 +44,5 @@ def picovico_parse_args():
         arguments.pop('include')
         if ns.include:
             arguments.update({ns.include: True})
-    print arguments
-    #cli_driver.call_api_actions(**arguments)
+    #print arguments
+    cli_driver.call_api_actions(**arguments)

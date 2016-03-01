@@ -59,14 +59,11 @@ class PicovicoRequest(object):
         return args
 
     def is_authenticated(self):
-        is_it = False
+        check = False
         if self.headers:
-            access_key_exists = 'X-Access-Key' in self.headers and self.headers['X-Access-Key']
-            access_token_exists = 'X-Access-Token' in self.headers and self.headers['X-Access-Token']
-            if access_key_exists and access_token_exists:
-                is_it = True
-        return is_it
-
+            check = all(k in self.headers and self.headers[k] for k in ('X-Access-Key', 'X-Access-Token'))
+        return check
+        
     def get(self, url):
         self.request_args = self.__get_args_for_url('get', url)
         return self.__respond()
