@@ -163,74 +163,27 @@ def check_component_args(**kwargs):
     elif component == 'credit':
         check_credit_component(**kwargs)
         
-def check_define_arg_combination(**kwargs):
-    project_action = kwargs.get('project')
-    methods = []
-    if project_action == 'define':
-        check_component_args(**kwargs)
-    
-#def prepare_kwargs(**kwargs):
-    #methods = []
-    #for comp in define_components:
-        #d = {}
-        #if comp in kwargs and kwargs[comp]:
-            #val = kwargs.get(comp)
-            #if comp in project_components:
-                #d.update(method='add_{}'.format(comp))
-            #else:
-                #d.update(argument=val)
-                #d.update(method='set_{}'.format(comp))
-        #if d:
-            #methods.append(profile_utils._create_namedtuple('MethodArgs', d))
-    #return methods
-
-#def prepare_method_arguments(names, **kwargs):
-    #meth_args = []
-    #for name in names:
-        #d = {}
-        #val = kwargs.get(name)
-        #if val:
-            #if name in project_components:
-                #d.update(method='set_{}'.format(name))
-            #else:
-                #d.update(method='add_{}'.format(name))
-            
-        
-
-#def get_action_map(action_name, **kwargs):
-    #if action_name in ('define', 'begin'):
-        #action = subcommands.get(action_name, None)
-    
-#def get_action_map(action, **kwargs):
-    #all_methods = []
-    
-    
-
-#def map_project_command():
-    #mappings = {
-        #'begin': 'begin_video',
-        #'render': 'render_video',
-        #'preview': 'preview_video',
-        #'save': 'save_video',
-        #'discard': 'discard_video',
-        #'define': 'define_video'
-    #}
-#def prepare_from_kwargs(**kwargs):
-    #asset = kwargs.get('')
+def get_current_project(**kwargs):
+    api = pv_utility.prepare_api_object(profile_name=profile, session=True)
+    project_data = file_utils.read_from_project_file()
+    if project_data:
+        pass
+    return api
 
 def project_cli_action(profile, **kwargs):
     project_action = kwargs.get('project')
     methods = []
-    api = pv_utility.prepare_api_object(profile_name=profile, session=True)
+    api = get_current_project(**kwargs)
     if project_action in ('define', 'begin'):
         if project_action == 'define':
-            check_define_arg_combination(**kwargs)
+            check_component_args(**kwargs)
         methods = prepare_method_args(**kwargs)
     else:
         getattr(api.project, project_action)()
     for act in methods:
         action = getattr(api.project, act.METHOD)
         action(**act.ARGUMENTS)
+    file_utils.write_to_project_file(api.project.vdd._as_dict())
     #action = getattr(api.project, project_action)
     #arguments = prepare_from_kwargs(**kwargs)
     #action(**kwargs)
