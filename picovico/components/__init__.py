@@ -20,15 +20,8 @@ class PicovicoComponentMixin(object):
         super(PicovicoComponentMixin, self).__init__()
         self._pv_request = pv_base.PicovicoRequest()
         
-        #def get_specific_library(name):
-            #pv_comp_base = PicovicoBaseComponent(self._pv_request, name)
-            #return getattr(pv_comp_base, 'get_library_{}s'.format(name))
-        #for k in PicovicoBaseComponent._components[:2]:
-            #setattr(self, 'get_library_{}s'.format(k), get_specific_library(k))
-        
     def _ready_component_property(self):
         self.__components = collections.namedtuple('Component', PicovicoBaseComponent._components)
-        components = {}
         def get_func_from_name(name):
             def property_func(self):
                 return getattr(self.__components, name)

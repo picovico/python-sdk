@@ -17,13 +17,13 @@ class PicovicoBaseComponent(object):
     _components = ('style', 'music', 'photo', 'video')
 
     @staticmethod
-    def create_request_args(method='get', url_attr='PICOVICO_STYLES', **kwargs):
-        req_args = {
-            'method': method,
-            'url': getattr(pv_urls, url_attr)
-        }
-        req_args.update(kwargs)
-        return req_args
+    def create_request_args(**kwargs):
+        url_attr = kwargs.pop('url_attr', 'PICOVICO_STYLES')
+        if 'method' not in kwargs:
+            kwargs.update(method='get')
+        req_url = getattr(pv_urls, url_attr)
+        kwargs.update(url=req_url)
+        return kwargs
 
     def _api_call(self, method='get', **request_args):
         assert method and method in ('get', 'post', 'put', 'delete'), 'Only "get", "post", "put" and "delete" allowed.'
@@ -39,16 +39,19 @@ class PicovicoBaseComponent(object):
     @abc.abstractproperty
     def component(self):
         raise NotImplementedError
+    
+    def __sanitize_single_url(self, url, url_args):
+        return url.format(**url_args)
 
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def one(self, id):
-        id_name =  '{}_id'.format(self.component)
+        url_args =  {'{}_id'.format(self.component): id}
         req_args = self.create_request_args(**{
             'method': 'get',
             'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
-            id_name : id
         })
+        req_args.update(url=self.__sanitize_single_url(req_args.pop('url'), url_args))
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
@@ -84,12 +87,12 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def delete(self, id):
-        id_name =  '{}_id'.format(self.component)
+        url_args =  {'{}_id'.format(self.component): id}
         req_args = self.create_request_args(**{
             'method': 'delete',
             'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
-            id_name: id
         })
+        req_args.update(url=self.__sanitize_single_url(req_args.pop('url'), url_args))
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])

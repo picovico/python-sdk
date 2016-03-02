@@ -18,13 +18,6 @@ class TestPicovicoRequest:
         pv_api.endpoint = urls.ME
         assert pv_api.endpoint == pv_urls.ME
 
-    def test_request_args(self, headers, pv_urls):
-        pv_api = api.PicovicoRequest(headers.VALID)
-        args = pv_api._PicovicoRequest__get_args_for_url('get', urls.ME)
-        assert 'headers' in args
-        assert 'url' in args
-        assert args['url'] == pv_urls.ME
-
     def test_api_methods(self, response, method_calls, pv_urls, mock_obj):
         request_mock = mock_obj.REQUEST
         mocker = mock_obj.OBJ
@@ -44,8 +37,8 @@ class TestPicovicoRequest:
         mocker.patch('picovico.baserequest.open', mock.mock_open(read_data='bibble'))
         pv_api.put(urls.ME, filename="fo", data_headers={'MUSIC_NAME': "Hello"}, )
         assert 'MUSIC_NAME' in pv_api.headers
-        assert pv_api.request_args['method'] == 'put'
-        assert 'data' in pv_api.request_args
+        assert pv_api.request_args.method == 'put'
+        assert pv_api.request_args.data
 
     def test_authentication_header(self):
         pv_req = api.PicovicoRequest()

@@ -9,6 +9,13 @@ class PicovicoVideo(PicovicoBaseComponent):
     @property
     def component(self):
         return 'video'
+    
+    def _api_call(self, **kwargs):
+        id = kwargs.get('video_id', None)
+        if id:
+            url = kwargs.get('url')
+            kwargs.update(url=url.format(video_id=id))
+        return super(PicovicoVideo, self)._api_call(**kwargs)
 
     @pv_decorator.pv_auth_required
     def preview(self, video_id):
@@ -17,11 +24,11 @@ class PicovicoVideo(PicovicoBaseComponent):
             144p video preview is available for the style.
             Rendering state of the video will not be changed.
         '''
-        req_args = elf.create_request_args(**{
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url_attr': 'MY_SINGLE_VIDEO_PREVIEW'.format(video_id),
+            'url_attr': 'MY_SINGLE_VIDEO_PREVIEW',
         })
-        return self._api_call(**req_args)
+        return self._api_call(video_id=video_id, **req_args)
 
     @pv_decorator.pv_auth_required
     def create(self, video_id):
@@ -30,9 +37,9 @@ class PicovicoVideo(PicovicoBaseComponent):
         '''
         req_args = self.create_request_args(**{
             'method': 'post',
-            'url_attr': 'MY_SINGLE_VIDEO_CREATE'.format(video_id),
+            'url_attr': 'MY_SINGLE_VIDEO_CREATE',
         })
-        return self._api_call(**req_args)
+        return self._api_call(video_id=video_id, **req_args)
 
     @pv_decorator.pv_auth_required
     def duplicate(self, video_id):
@@ -41,9 +48,9 @@ class PicovicoVideo(PicovicoBaseComponent):
         '''
         req_args = self.create_request_args(**{
             'method': 'post',
-            'url': 'MY_SINGLE_VIDEO_DUPLICATE'.format(video_id),
+            'url_attr': 'MY_SINGLE_VIDEO_DUPLICATE',
         })
-        return self._api_call(**req_args)
+        return self._api_call(video_id=video_id, **req_args)
 
     @pv_decorator.pv_auth_required
     def new(self, name=None):

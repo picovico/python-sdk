@@ -5,8 +5,8 @@ import pytest
 import requests
 import mock
 
-from picovico.baserequest import PicovicoRequest
 from picovico import urls
+from picovico.baserequest import PicovicoRequest
 
 urljoin = six.moves.urllib.parse.urljoin
 
@@ -84,7 +84,7 @@ def method_calls(headers):
     gm = {}
     for meth in methods:
         key = '{}_auth'.format(meth)
-        val = {'method': meth, 'url': None}
+        val = {'method': meth, 'url': None, 'data': None, 'headers': None}
         gm[meth] = val.copy()
         val.update(headers=headers.AUTH)
         gm[key] = val
