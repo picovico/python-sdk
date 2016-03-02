@@ -15,11 +15,11 @@ project_components = {
 define_components = itertools.chain(a for a in pv_project.Vdd._fields if a not in ('assets', 'credits'))
 subcommands = {
     'begin': ('name', 'style', 'quality'),
-    'define': define_components,
-    'render': None,
-    'preview': None,
-    'discard': None,
-    'save': None,
+    'define': itertools.chain(define_components, ('video',)),
+    'render': ('video',),
+    'preview': ('video',),
+    'discard': ('video',),
+    'save': ('video',),
 }
 
 def get_project_command():
@@ -162,18 +162,55 @@ def check_component_args(**kwargs):
         check_text_component(**kwargs)
     elif component == 'credit':
         check_credit_component(**kwargs)
-        
-def get_current_project(**kwargs):
+
+def populate_vdd_to_project(project_obj, vdd):
+    assets = vdd.pop('assets')
+    credits = vdd.pop('credits')
+    if assets:
+        project_obj._add_assets(assets)
+    if credits:
+        project_obj._add_credits(credits)
+    for key in vdd:
+        add_attr = getattr(project_obj, 'add_{}'.format(key), None)
+        attr = getattr(project_obj, 'set_{}'.format(key), add_attr) 
+        if attr and vdd[key]:
+            attr(**vdd[key])
+
+def get_project_api(**kwargs):
     api = pv_utility.prepare_api_object(profile_name=profile, session=True)
+    video_id = kwargs.get('video', None)
     project_data = file_utils.read_from_project_file()
-    if project_data:
-        pass
+    if video_id:
+        data = project_data.get(video_id, None)
+    else:
+        data = project_data if len(project_data) == 1 else None
+        video_id = ''.join(data.keys()) if data else None
+    api.project.video = video_id
+    populate_vdd_to_project(api.project, data[video_id])
     return api
+
+def project_save_format(project):
+    project_format = {project.video: {}}
+    for attr in pv_project.Vdd._fields:
+        inside = {}
+        if attr not in ('credits', 'assets'):
+            inside[attr] = {'value': getattr(project.vdd, attr)}
+        project_format[project.video].update(inside)
+    project_format[project.video].update(credits=project.vdd.credits)
+    project_format[project.video].update(assets=project.vdd.assets)
+    return project_format
+
+def save_project_data(project):
+    project_data = file_utils.read_from_project_file()
+    new_data = project_save_format(project)
+    if project_data:
+        new_data.update(project_data)
+    file_utils.write_to_project_file(new_data)
 
 def project_cli_action(profile, **kwargs):
     project_action = kwargs.get('project')
     methods = []
-    api = get_current_project(**kwargs)
+    api = get_project_api(**kwargs)
     if project_action in ('define', 'begin'):
         if project_action == 'define':
             check_component_args(**kwargs)
@@ -183,7 +220,7 @@ def project_cli_action(profile, **kwargs):
     for act in methods:
         action = getattr(api.project, act.METHOD)
         action(**act.ARGUMENTS)
-    file_utils.write_to_project_file(api.project.vdd._as_dict())
+    save_project_data(project)
     #action = getattr(api.project, project_action)
     #arguments = prepare_from_kwargs(**kwargs)
     #action(**kwargs)

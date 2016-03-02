@@ -26,6 +26,11 @@ class PicovicoProject(object):
     @property
     def video(self):
         return self.__video
+    
+    @video.setter
+    def video(self, id):
+        self.__video = id
+
 
     def begin(self, name=None):
         self.set_name(name)
@@ -78,7 +83,17 @@ class PicovicoProject(object):
         if data:
             asset_dict.update(data=data)
         return asset_dict
+    
+    def _add_assets(self, assets):
+        """ Picovico: Not recommended for users but can be used to populate whole assets """
+        assert isinstance(assets, list), 'assets should be list'
+        self.__replace_vdd_data(assets=assets)
 
+    def _add_credits(self, credits):
+        """ Picovico: Not recommended for users but can be used to populate whole assets """
+        assert isinstance(credits, list), 'assets should be list'
+        self.__replace_vdd_data(credits=credits)
+    
     def __add_asset(self, asset, time=True):
         if time:
             asset.update(self.time_counter(self.vdd.assets))
