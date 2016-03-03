@@ -1,56 +1,88 @@
 import pytest
 import mock
-from six.moves.urllib import parse
 
-from picovico import baserequest as api
 from picovico import urls
+from picovico import exceptions as pv_exceptions
+from picovico import constants as pv_constants
+from picovico.baserequest import RequestArg, PicovicoRequest
+
 
 class TestPicovicoRequest:
-    def test_properties(self, headers, pv_urls):
-        pv_api = api.PicovicoRequest()
-        assert pv_api.headers is None
-        pv_api = api.PicovicoRequest(headers.VALID)
-        assert pv_api.headers == headers.VALID
-        assert pv_api.endpoint == urls.PICOVICO_BASE
-        pv_api.headers = {'additional': "this is nothing."}
-        assert 'X-VALID' in pv_api.headers
-        assert 'additional' in pv_api.headers
-        pv_api.endpoint = urls.ME
-        assert pv_api.endpoint == pv_urls.ME
-
-    def test_api_methods(self, response, method_calls, pv_urls, mock_obj):
-        request_mock = mock_obj.REQUEST
-        mocker = mock_obj.OBJ
-        request_mock.return_value = response.SUCCESS.OK
-        pv_api = api.PicovicoRequest()
-        get_call = method_calls.GET.copy()
+    def test_properties(self, pv_headers, pv_urls):
+        pv_request = PicovicoRequest()
+        assert pv_request.headers is None
+        pv_request = PicovicoRequest(pv_headers.VALID)
+        assert pv_request.headers == pv_headers.VALID
+        assert pv_request.url == pv_request.host
+        pv_request.headers = {'additional': "this is nothing."}
+        assert 'X-VALID' in pv_request.headers and 'additional' in pv_request.headers
+        pv_request.url = urls.ME
+        assert pv_request.url == pv_urls.ME
+    
+    def test_get_request_args(self):
+        req_args = PicovicoRequest.get_request_args('get')
+        assert req_args and isinstance(req_args, RequestArg)
+        assert req_args.method == 'get'
+        assert req_args.data is None
+        req_args = PicovicoRequest.get_request_args('post', 'Hello')
+        assert req_args.method == 'post'
+        assert req_args.data
+    
+    def test_respond(self, pv_mocks, pv_urls, pv_act_request_args, pv_response, pv_messages):
+        request_mock = pv_mocks.REQUEST
+        request_mock.return_value = pv_response.SUCCESS.OK
+        pv_request = PicovicoRequest()
+        pv_request.request_args = RequestArg(method='get', data=None)
+        res = pv_request._PicovicoRequest__respond(urls.ME)
+        assert pv_request.url == pv_urls.ME
+        get_call = pv_act_request_args.GET.copy()
         get_call.update(url=pv_urls.ME)
-        pv_api.get(url=urls.ME)
         request_mock.assert_called_with(**get_call)
-        pv_api.post(urls.ME, post_data={'me': "myself"})
-        post_call = method_calls.POST.copy()
-        post_call.update(url=pv_urls.ME)
-        post_call.update(data={'me': "myself"})
-        request_mock.assert_called_with(**post_call)
-        with pytest.raises(AssertionError):
-            pv_api.post(urls.ME, post_data="hello")
-        mocker.patch('picovico.baserequest.open', mock.mock_open(read_data='bibble'))
-        pv_api.put(urls.ME, filename="fo", data_headers={'MUSIC_NAME': "Hello"}, )
-        assert 'MUSIC_NAME' in pv_api.headers
-        assert pv_api.request_args.method == 'put'
-        assert pv_api.request_args.data
+        assert res == pv_messages.SUCCESS.OK
+        request_mock.return_value = pv_response.ERROR.BAD
+        with pytest.raises(pv_exceptions.PicovicoRequestError):
+            pv_request._PicovicoRequest__respond(urls.ME)
+    
+    @pytest.mark.parametrize('method', pv_constants.ALLOWED_METHODS)
+    def test_methods(self, pv_mocks, pv_urls, method):
+        mocker = pv_mocks.OBJ
+        respond_mock = mocker.patch.object(PicovicoRequest, '_PicovicoRequest__respond')
+        pv_req = PicovicoRequest()
+        method_func = getattr(pv_req, method)
+        argument = {}
+        data = None
+        if method not in ('get', 'delete'):
+            if method == 'post':
+                argument.update(post_data='hello')
+                with pytest.raises(AssertionError):
+                    method_func(urls.ME, **argument)
+                data = {'k': 'v'}
+                argument.update(post_data=data)
+            else:
+                data = 'putdata' 
+                mocker.patch('picovico.baserequest.open', mock.mock_open(read_data=data))
+                argument.update(filename='helo')
+        method_func(urls.ME) if not argument else method_func(urls.ME, **argument)
+        respond_mock.assert_called_with(urls.ME)
+        assert pv_req.request_args.method == method
+        if method != 'put':
+            assert pv_req.request_args.data == data
+        else:
+            assert pv_req.request_args.data.read() == data
 
-    def test_authentication_header(self):
-        pv_req = api.PicovicoRequest()
+    def test_authentication_header(self, pv_headers):
+        pv_req = PicovicoRequest()
         assert not pv_req.is_authenticated()
-        header = {'X-Access-Key': None}
+        header = pv_headers.VALID.copy()
+        header.update({'X-Access-Key': 'Valid'})
         pv_req.headers = header
         assert not pv_req.is_authenticated()
+        header.update({'X-Access-Token': None})
+        assert not pv_req.is_authenticated()
+        header.update({'X-Access-Token': 'Valid', 'X-Access-Key': None})
+        assert not pv_req.is_authenticated()
+        header.pop('X-Access-Token')
         header.update({'X-Access-Key': 'Valid'})
         assert not pv_req.is_authenticated()
-        header.update({'X-Access-Token': None})
-        assert not pv_req.is_authenticated()
-        header.update({'X-Access-Token': 'Valid'})
+        pv_req.headers = pv_headers.AUTH.copy()
         assert pv_req.is_authenticated()
-        header.update({'X-Access-Token': None})
-        assert not pv_req.is_authenticated()

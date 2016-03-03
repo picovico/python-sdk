@@ -25,8 +25,8 @@ return_args = ('MY_APP_ID', None, 'MY_APP_SECRET',
         #return return_value.get(args[0])
 
 class TestCliProfileUtils:
-    def test_has_necessary_configs(self, profile_fp):
-        default_fp = profile_fp.DEFAULT
+    def test_has_necessary_configs(self, pv_profile_fp):
+        default_fp = pv_profile_fp.DEFAULT
         cfg = six.moves.configparser.SafeConfigParser()
         cfg.readfp(default_fp)
         assert not profile_utils.has_necessary_info(cfg, default_section_name)
@@ -114,9 +114,9 @@ class TestCliProfileUtils:
             assert val.NAME == value_to_test[0][0]
             assert val.VALUE == value_to_test[0][1]
 
-    def test_get_profile(self, mocker, profile_fp):
-        default_fp = profile_fp.DEFAULT
-        other_fp = profile_fp.OTHER
+    def test_get_profile(self, mocker, pv_profile_fp):
+        default_fp = pv_profile_fp.DEFAULT
+        other_fp = pv_profile_fp.OTHER
         cfg = six.moves.configparser.SafeConfigParser()
         cfg.readfp(default_fp)
         m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
@@ -130,9 +130,9 @@ class TestCliProfileUtils:
         config = profile_utils.get_profile('OTHER', info=False)
         assert config.APP_ID == 'other_app_id'
 
-    def test_set_profile(self, mocker, profile_fp):
-        default_fp = profile_fp.DEFAULT
-        other_fp = profile_fp.OTHER
+    def test_set_profile(self, mocker, pv_profile_fp):
+        default_fp = pv_profile_fp.DEFAULT
+        other_fp = pv_profile_fp.OTHER
         cfg = six.moves.configparser.SafeConfigParser()
         cfg.readfp(default_fp)
         old_cfg = cfg.items(default_section_name)

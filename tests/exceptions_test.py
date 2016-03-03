@@ -3,12 +3,12 @@ import pytest
 from picovico import exceptions
 
 class TestPicovicoException:
-    def test_raise_valid_exception(self, messages):
-        server_error = messages.ERROR.SERVER
-        auth_error = messages.ERROR.AUTH
-        notfound_error = messages.ERROR.NOTFOUND
-        some_error = messages.ERROR.RANDOM
-        bad_error = messages.ERROR.BAD
+    def test_raise_valid_exception(self, pv_messages):
+        server_error = pv_messages.ERROR.SERVER
+        auth_error = pv_messages.ERROR.AUTH
+        notfound_error = pv_messages.ERROR.NOTFOUND
+        some_error = pv_messages.ERROR.RANDOM
+        bad_error = pv_messages.ERROR.BAD
         with pytest.raises(exceptions.PicovicoServerError) as excinfo:
             exceptions.raise_valid_exceptions(status_code=501, **server_error)
         assert excinfo.value.status >= 500

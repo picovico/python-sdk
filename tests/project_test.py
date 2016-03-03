@@ -24,13 +24,13 @@ class TestProject:
         project.set_name('New Video')
         assert project.vdd.name == 'New Video'
     
-    def test_project_begin_decorator(self, pv_request):
-        project = pv_project.PicovicoProject(pv_request.AUTH)
-        with pytest.raises(pv_exceptions.PicovicoProjectNotAllowed):
-            project.set_style('My New Style')
+    #def test_project_begin_decorator(self, pv_request):
+        #project = pv_project.PicovicoProject(pv_request.AUTH)
+        #with pytest.raises(pv_exceptions.PicovicoProjectNotAllowed):
+            #project.set_style('My New Style')
     
-    def test_set_style_quality(self, pv_request, mock_obj):
-        mocker = mock_obj.OBJ
+    def test_set_style_quality(self, pv_request, pv_mocks):
+        mocker = pv_mocks.OBJ
         mocker.patch.object(pv_project.PicovicoProject, 'video')
         project = pv_project.PicovicoProject(pv_request.AUTH)
         assert project.vdd.style != 'My Style'
@@ -42,8 +42,8 @@ class TestProject:
         assert project.vdd.quality == pv_constants.QUALITY.MEDIUM
         
     
-    def test_assets_functionality(self, pv_request, mock_obj):
-        mocker = mock_obj.OBJ
+    def test_assets_functionality(self, pv_request, pv_mocks):
+        mocker = pv_mocks.OBJ
         mocker.patch.object(pv_project.PicovicoProject, 'video')
         project = pv_project.PicovicoProject(pv_request.AUTH)
         assert not project.vdd.assets
