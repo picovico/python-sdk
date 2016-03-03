@@ -19,3 +19,5 @@ ASSETS = namedtuple('Asset', [a.upper() for a in _asset])._make(_asset)
 VIDEO_NAME = 'Untitled Video From SDK'
 _privacy = ('public', 'private')
 PRIVACY = namedtuple('VideoPrivacy', map(str.upper, _privacy))._make(_privacy)
+
+ALLOWED_METHODS = ('get', 'put', 'post', 'delete')

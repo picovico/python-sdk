@@ -2,6 +2,7 @@ import abc
 
 from .. import exceptions as pv_exceptions
 from .. import urls as pv_urls
+from .. import constants as pv_constants
 from .. import baserequest as pv_base
 from .. import decorators as pv_decorator
 
@@ -22,13 +23,13 @@ class PicovicoBaseComponent(object):
         if 'method' not in kwargs:
             kwargs.update(method='get')
         req_url = getattr(pv_urls, url_attr)
-        kwargs.update(url=req_url)
+        kwargs.update(path=req_url)
         return kwargs
 
     def _api_call(self, method='get', **request_args):
-        assert method and method in ('get', 'post', 'put', 'delete'), 'Only "get", "post", "put" and "delete" allowed.'
-        assert ('url' in request_args and request_args['url'])
-        assert (1 <= len(request_args) < 3)
+        assert method and method in pv_constants.ALLOWED_METHODS, 'Only {} allowed.'.format(','.join(pv_constants.ALLOWED_METHODS))
+        assert ('path' in request_args and request_args['path'])
+        assert (1 <= len(request_args) <= 3)
         return getattr(self._pv_request, method)(**request_args)
 
     def __init__(self, request_obj):
@@ -51,7 +52,7 @@ class PicovicoBaseComponent(object):
             'method': 'get',
             'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
         })
-        req_args.update(url=self.__sanitize_single_url(req_args.pop('url'), url_args))
+        req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
@@ -92,7 +93,7 @@ class PicovicoBaseComponent(object):
             'method': 'delete',
             'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
         })
-        req_args.update(url=self.__sanitize_single_url(req_args.pop('url'), url_args))
+        req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
@@ -107,4 +108,4 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[:2])
     def get_free(self):
         free_req = pv_base.PicovicoRequest()
-        return free_req.get(url=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))
+        return free_req.get(path=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))

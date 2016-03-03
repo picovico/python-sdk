@@ -1,5 +1,3 @@
-import sys
-import json
 import collections
 
 import requests
@@ -9,7 +7,9 @@ from six.moves.urllib import parse
 from . import urls as pv_urls
 from . import exceptions as pv_exceptions
 
-RequestArg = collections.namedtuple('RequestArg', ('method', 'data', 'headers', 'url'))
+
+RequestArg = collections.namedtuple('RequestArg', ('method', 'data'))
+
 
 class PicovicoRequest(object):
     '''
@@ -17,30 +17,29 @@ class PicovicoRequest(object):
         Args:
             headers(dict): (Optional)Header to attach for request
     '''
-    __base = pv_urls.PICOVICO_BASE
-
     def __init__(self, headers=None):
+        self.__host = pv_urls.PICOVICO_BASE
         self.__headers = headers
-        self.__endpoint = self.base_url
+        self.__url = self.host
 
     @property
-    def base_url(self):
-        return self.__base
+    def host(self):
+        return self.__host
 
-    @base_url.setter
-    def base_url(self, url):
-        self.__base = url.lower()
+    @host.setter
+    def host(self, url):
+        self.__host = url.lower()
 
     @property
-    def endpoint(self):
+    def url(self):
         """
             Picovico: Read Only endpoint of API
         """
-        return self.__endpoint
+        return self.__url
 
-    @endpoint.setter
-    def endpoint(self, url):
-        self.__endpoint = parse.urljoin(self.base_url, url.lower())
+    @url.setter
+    def url(self, endpoint):
+        self.__url = parse.urljoin(self.host, endpoint.lower())
 
     @property
     def headers(self):
@@ -53,11 +52,12 @@ class PicovicoRequest(object):
         else:
             self.__headers = value
 
-    def __get_args_for_url(self, method_name, url, data=None):
-        self.endpoint = url
-        args =  {'url': self.endpoint, 'data': data}
-        args.update(method=method_name)
-        args.update(headers=self.headers)
+    @staticmethod
+    def get_request_args(method_name, req_data=None):
+        args = {
+            'method': method_name,
+            'data': req_data
+        }
         return RequestArg(**args)
 
     def is_authenticated(self):
@@ -66,16 +66,16 @@ class PicovicoRequest(object):
             check = all(k in self.headers and self.headers[k] for k in ('X-Access-Key', 'X-Access-Token'))
         return check
         
-    def get(self, url):
-        self.request_args = self.__get_args_for_url('get', url)
-        return self.__respond()
+    def get(self, path):
+        self.request_args = self.get_request_args('get')
+        return self.__respond(path)
 
-    def post(self, url, post_data):
+    def post(self, path, post_data):
         assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
-        self.request_args = self.__get_args_for_url('post', url, data=post_data)
-        return self.__respond()
+        self.request_args = self.get_request_args('post', post_data)
+        return self.__respond(path)
 
-    def  put(self, url, filename=None, data_headers=None):
+    def  put(self, path, filename=None, data_headers=None):
         if data_headers is not None:
             assert isinstance(data_headers, dict), 'data headers should be of {"key": "value"} format'
             self.headers = data_headers
@@ -84,20 +84,23 @@ class PicovicoRequest(object):
             assert isinstance(filename, six.string_types), 'Filename should be valid name'
             with open(filename, 'r') as f:
                 put_data = f
-        self.request_args = self.__get_args_for_url('put', url, data=put_data)
-        return self.__respond()
+        self.request_args = self.get_request_args('put', put_data)
+        return self.__respond(path)
 
-    def delete(self, url):
-        self.request_args = self.__get_args_for_url('delete', url)
-        return self.__respond()
+    def delete(self, path):
+        self.request_args = self.get_request_args('delete')
+        return self.__respond(path)
 
-    def __respond(self):
+    def __respond(self, path):
         '''
             Picovico: Returns json response.
             Checks if response is not 400 or 500.
             Raises error based on response status code.
         '''
+        self.url = path
         request_args = self.request_args._asdict()
+        request_args.update(url=self.url)
+        request_args.update(headers=self.headers)
         response = requests.request(**request_args)
         json_response = response.json()
         if not response.ok:

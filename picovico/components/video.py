@@ -11,10 +11,10 @@ class PicovicoVideo(PicovicoBaseComponent):
         return 'video'
     
     def _api_call(self, **kwargs):
-        id = kwargs.get('video_id', None)
+        id = kwargs.pop('video_id', None)
         if id:
-            url = kwargs.get('url')
-            kwargs.update(url=url.format(video_id=id))
+            url_path = kwargs.get('path')
+            kwargs.update(path=url_path.format(video_id=id))
         return super(PicovicoVideo, self)._api_call(**kwargs)
 
     @pv_decorator.pv_auth_required
@@ -63,6 +63,7 @@ class PicovicoVideo(PicovicoBaseComponent):
 
     @pv_decorator.pv_auth_required
     def save(self, vdd):
+        assert isinstance(vdd, dict), 'Simply assure vdd provided is dictionary format.'
         req_args = self.create_request_args(**{
             'method': 'post',
             'url_attr': 'MY_VIDEOS',

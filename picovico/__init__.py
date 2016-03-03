@@ -25,7 +25,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
             'app_id' : self.app_id,
             'device_id': self.device_id
         }
-        response = self._pv_request.post(url=pv_urls.PICOVICO_LOGIN, post_data=data)
+        response = self._pv_request.post(path=pv_urls.PICOVICO_LOGIN, post_data=data)
         self.set_access_tokens(access_key=response.get('access_key'),
                     access_token=response.get('access_token'))
         self._pv_request.headers = self.headers
@@ -41,7 +41,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
             'app_secret': self.app_secret,
             'device_id': self.device_id
         }
-        response = self._pv_request.post(url=pv_urls.PICOVICO_APP, post_data=data)
+        response = self._pv_request.post(path=pv_urls.PICOVICO_APP, post_data=data)
         self.set_access_tokens(access_key=response.get('access_key'),
                 access_token=response.get('access_token'))
         self._pv_request.headers = self.headers
@@ -50,7 +50,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
 
     @pv_auth_required
     def me(self):
-        return self._pv_request.get(url=pv_urls.ME)
+        return self._pv_request.get(path=pv_urls.ME)
 
     @property
     def project(self):
