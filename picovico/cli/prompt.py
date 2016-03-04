@@ -133,7 +133,4 @@ def show_auth_login_msg(formatargs):
     show_warning(msg.format(*formatargs))
 
 def check_profile(name):
-    check = {
-        'configure': False
-    }
-    return check.get(name, True)
+    return True if name != 'configure' else False

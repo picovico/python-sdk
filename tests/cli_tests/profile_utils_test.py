@@ -1,14 +1,9 @@
-#import os
-import contextlib
-import errno
-
 import six
 import pytest
-#import mock
 
-#from picovico import exceptions as pv_exceptions
 from picovico.cli import profile_utils
 
+ConfigParser = six.moves.configparser.SafeConfigParser
 
 default_section_name = profile_utils.DEFAULT_PROFILE_NAME
 #input_args = ('Enter Application Id provided: ',
@@ -18,24 +13,116 @@ default_section_name = profile_utils.DEFAULT_PROFILE_NAME
             #'Enter Picovico Password[Will not be stored]: ')
 return_args = ('MY_APP_ID', None, 'MY_APP_SECRET',
                     'MY_USERNAME', 'MY_PASSWORD')
+profiles = (default_section_name, 'NONDEFAULT')
 #return_value = dict(six.moves.zip(input_args, return_args))
 
 #def configure_mocked(*args, **kwargs):
     #if args[0] in return_value:
         #return return_value.get(args[0])
+def mocked_cfg(mocker):
+    return mocker.MagicMock(spec=ConfigParser)
 
 class TestCliProfileUtils:
-    def test_has_necessary_configs(self, pv_profile_fp):
-        default_fp = pv_profile_fp.DEFAULT
-        cfg = six.moves.configparser.SafeConfigParser()
-        cfg.readfp(default_fp)
-        assert not profile_utils.has_necessary_info(cfg, default_section_name)
-        assert not profile_utils.check_necessary_info_values(cfg, default_section_name)
-        default_fp.write('DEVICE_ID=device_id\n')
-        default_fp.seek(0)
-        cfg.readfp(default_fp)
-        assert profile_utils.has_necessary_info(cfg, default_section_name)
-        assert profile_utils.check_necessary_info_values(cfg, default_section_name)
+    @pytest.mark.parametrize('ret_val', [True, False])
+    def test_check_against_factory(self, mocker, ret_val):
+        cfg = mocked_cfg(mocker)
+        cfg.has_section.return_value = ret_val
+        cfg.has_option.return_value = ret_val
+        if ret_val:
+            assert profile_utils.check_against_factory(cfg, default_section_name, range(1))
+            cfg.has_option.assert_called_with(default_section_name, 0)
+            assert profile_utils.check_against_factory(cfg, 'NONDEFAULT', range(1))
+            cfg.has_section.assert_called_with('NONDEFAULT')
+        else:
+            assert not profile_utils.check_against_factory(cfg, 'NONDEFAULT', range(1))
+            assert not profile_utils.check_against_factory(cfg, default_section_name, range(1))
+        cfg.get.return_value = ret_val
+        if ret_val:
+            assert profile_utils.check_against_factory(cfg, 'NONDEFAULT', range(1), ret_val)
+            cfg.get.assert_called_with('NONDEFAULT', 0)
+        else:
+            assert not profile_utils.check_against_factory(cfg, 'NONDEFAULT', range(1), True)
+    
+    @pytest.mark.parametrize('profile, ret_val', [(p, v) for p in profiles for v in (True, False)])
+    def test_check_against_funcs(self, mocker, profile, ret_val):
+        against = None
+        def side_effect(*args, **kwargs):
+            assert args[0] in profiles
+            assert args[1] in against
+            return ret_val
+        cfg = mocked_cfg(mocker)
+        cfg.has_section.return_value = ret_val
+        cfg.has_option.side_effect = side_effect
+        cfg.get.return_value = side_effect
+        against = profile_utils.NECESSARY_INFO
+        profile_utils.has_necessary_info(cfg, profile)
+        if profile != default_section_name:
+            cfg.has_section.assert_called_with(profile)        
+        assert profile_utils.check_necessary_info_values(cfg, profile) == ret_val
+        against = profile_utils.LOGIN_INFO if ret_val else profile_utils.LOGIN_INFO[:1]
+        assert profile_utils.has_login_info(cfg, profile) == ret_val
+        assert profile_utils.has_login_info(cfg, profile, both=ret_val) == ret_val
+        assert profile_utils.check_login_info_value(cfg, profile) == ret_val
+        assert profile_utils.check_login_info_value(cfg, profile, both=ret_val) == ret_val
+        against = profile_utils.AUTHENTICATE_INFO
+        assert profile_utils.has_authenticate_info(cfg, profile) == ret_val
+        assert profile_utils.check_authenticate_info_value(cfg, profile) == ret_val
+    
+    
+
+    @pytest.mark.parametrize('func,no_func', [('authenticate', 'login'), ('login', 'authenticate')])
+    def test_get_auth_names(self, mocker, func, no_func):
+        val = False
+        def side_effect(*args, **kwargs):
+            if 'both' in kwargs:
+                return val
+            else:
+                return True
+        cfg = mocker.MagicMock(spec=ConfigParser)
+        mocker.patch('picovico.cli.profile_utils.get_raw_profile', return_value=cfg)
+        mock_one = mocker.patch('picovico.cli.profile_utils.check_'+func+'_info_value')
+        mock_two = mocker.patch('picovico.cli.profile_utils.check_'+no_func+'_info_value')
+        mock_one.return_value = True
+        assert profile_utils.get_auth_names(default_section_name) == getattr(profile_utils, '{}_INFO'.format(func.upper()))
+        if func == 'authenticate':
+            mock_two.assert_not_called()
+        if func == 'login':
+            mock_one.side_effect = side_effect
+            for v in range(2):
+                val = bool(v)
+                check_val = profile_utils.LOGIN_INFO[:1] if not val else profile_utils.LOGIN_INFO
+                assert profile_utils.get_auth_names(default_section_name) == check_val
+
+    @pytest.mark.parametrize('func,auth_name', [('authenticate', None), ('login', None), ('authenticate', profile_utils.AUTHENTICATE_INFO), ('login', profile_utils.LOGIN_INFO), ('login', profile_utils.LOGIN_INFO[:1])])
+    def test_get_auth_check_and_removal(self, mocker, func, auth_name):
+        mocker.patch('picovico.cli.profile_utils.get_auth_names', return_value=auth_name)
+        mocker.patch('picovico.cli.profile_utils.get_profile', return_value=mocker.MagicMock())
+        kargs, rem, names  = profile_utils.get_auth_check_and_removal(func, default_section_name)
+        print kargs
+        print rem
+        print names
+        #mock_one.return_value = True
+        #mock_two.return_value = False
+        
+    #def test_set_profile(self, mocker):
+        #cfg = mocked_cfg(mocker)
+        #mocker.patch('picovico.cli.profile_utils.file_utils.get_file_obj')
+        #for val in profile_val:
+            #for ret_val in profile_val[val]:
+                #cfg.has_section.return_value = ret_val
+                #cfg.has_option.return_value = ret_val
+                #cfg.get.return_value = ret_val
+    #def test_has_necessary_configs(self, pv_profile_fp):
+        #default_fp = pv_profile_fp.DEFAULT
+        #cfg = six.moves.configparser.SafeConfigParser()
+        #cfg.readfp(default_fp)
+        #assert not profile_utils.has_necessary_info(cfg, default_section_name)
+        #assert not profile_utils.check_necessary_info_values(cfg, default_section_name)
+        #default_fp.write('DEVICE_ID=device_id\n')
+        #default_fp.seek(0)
+        #cfg.readfp(default_fp)
+        #assert profile_utils.has_necessary_info(cfg, default_section_name)
+        #assert profile_utils.check_necessary_info_values(cfg, default_section_name)
 
     #def test_optional_configs(self, default_fp):
         #cfg = six.moves.configparser.SafeConfigParser()
@@ -107,65 +194,65 @@ class TestCliProfileUtils:
         #assert profile_info.PASSWORD is None
         #assert profile_info.AUTH is None
 
-    def test_create_conf_values(self):
-        value_to_test = (('MY_ATTR', 'MY_VALUE'),)
-        values = profile_utils.create_profile_values(value_to_test)
-        for val in values:
-            assert val.NAME == value_to_test[0][0]
-            assert val.VALUE == value_to_test[0][1]
+    #def test_create_conf_values(self):
+        #value_to_test = (('MY_ATTR', 'MY_VALUE'),)
+        #values = profile_utils.create_profile_values(value_to_test)
+        #for val in values:
+            #assert val.NAME == value_to_test[0][0]
+            #assert val.VALUE == value_to_test[0][1]
 
-    def test_get_profile(self, mocker, pv_profile_fp):
-        default_fp = pv_profile_fp.DEFAULT
-        other_fp = pv_profile_fp.OTHER
-        cfg = six.moves.configparser.SafeConfigParser()
-        cfg.readfp(default_fp)
-        m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
-        m.return_value = cfg
-        config = profile_utils.get_profile(default_section_name, info=False)
-        assert config.APP_ID == 'default_app_id'
-        cfg.readfp(other_fp)
-        mocker.stopall()
-        m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
-        m.return_value = cfg
-        config = profile_utils.get_profile('OTHER', info=False)
-        assert config.APP_ID == 'other_app_id'
+    #def test_get_profile(self, mocker, pv_profile_fp):
+        #default_fp = pv_profile_fp.DEFAULT
+        #other_fp = pv_profile_fp.OTHER
+        #cfg = six.moves.configparser.SafeConfigParser()
+        #cfg.readfp(default_fp)
+        #m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        #m.return_value = cfg
+        #config = profile_utils.get_profile(default_section_name, info=False)
+        #assert config.APP_ID == 'default_app_id'
+        #cfg.readfp(other_fp)
+        #mocker.stopall()
+        #m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        #m.return_value = cfg
+        #config = profile_utils.get_profile('OTHER', info=False)
+        #assert config.APP_ID == 'other_app_id'
 
-    def test_set_profile(self, mocker, pv_profile_fp):
-        default_fp = pv_profile_fp.DEFAULT
-        other_fp = pv_profile_fp.OTHER
-        cfg = six.moves.configparser.SafeConfigParser()
-        cfg.readfp(default_fp)
-        old_cfg = cfg.items(default_section_name)
-        with pytest.raises(six.moves.configparser.NoOptionError):
-           cfg.get(default_section_name, 'DEVICE_ID')
-        values = profile_utils.create_profile_values(((a, return_args[i]) for i, a in enumerate(profile_utils.NECESSARY_INFO)))
-        mocker.patch('picovico.cli.file_utils.get_profile_file')
-        mocker.patch('picovico.cli.file_utils.get_file_obj')
-        m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
-        m.return_value = cfg
-        profile_utils.set_profile(values, default_section_name)
-        assert old_cfg != cfg.items(default_section_name)
-        assert cfg.get(default_section_name, 'DEVICE_ID')
+    #def test_set_profile(self, mocker, pv_profile_fp):
+        #default_fp = pv_profile_fp.DEFAULT
+        #other_fp = pv_profile_fp.OTHER
+        #cfg = six.moves.configparser.SafeConfigParser()
+        #cfg.readfp(default_fp)
+        #old_cfg = cfg.items(default_section_name)
+        #with pytest.raises(six.moves.configparser.NoOptionError):
+           #cfg.get(default_section_name, 'DEVICE_ID')
+        #values = profile_utils.create_profile_values(((a, return_args[i]) for i, a in enumerate(profile_utils.NECESSARY_INFO)))
+        #mocker.patch('picovico.cli.file_utils.get_profile_file')
+        #mocker.patch('picovico.cli.file_utils.get_file_obj')
+        #m = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        #m.return_value = cfg
+        #profile_utils.set_profile(values, default_section_name)
+        #assert old_cfg != cfg.items(default_section_name)
+        #assert cfg.get(default_section_name, 'DEVICE_ID')
 
-    def test_check_session_file(self, mocker):
-        data = {'ACCESS_KEY': 'my_access_key', 'ACCESS_TOKEN': 'my_access_token'}
-        mocker.patch('picovico.cli.file_utils.get_session_file')
-        mr = mocker.patch('picovico.cli.file_utils.open')
-        e = IOError()
-        e.errno = errno.ENOENT
-        mr.side_effect = e
-        assert not profile_utils.check_session_file()
-        e.errno = errno.EIO
-        with pytest.raises(IOError):
-            profile_utils.check_session_file()
-        mocker.stopall()
-        mr = mocker.patch('picovico.cli.file_utils.read_from_session_file')
-        mr.return_value = data
-        assert not profile_utils.check_session_file()
-        data.update(ID=1, PROFILE='default')
-        assert profile_utils.check_session_file()
-        data.update(ID=None, PROFILE=None)
-        assert not profile_utils.check_session_file()
+    #def test_check_session_file(self, mocker):
+        #data = {'ACCESS_KEY': 'my_access_key', 'ACCESS_TOKEN': 'my_access_token'}
+        #mocker.patch('picovico.cli.file_utils.get_session_file')
+        #mr = mocker.patch('picovico.cli.file_utils.open')
+        #e = IOError()
+        #e.errno = errno.ENOENT
+        #mr.side_effect = e
+        #assert not profile_utils.check_session_file()
+        #e.errno = errno.EIO
+        #with pytest.raises(IOError):
+            #profile_utils.check_session_file()
+        #mocker.stopall()
+        #mr = mocker.patch('picovico.cli.file_utils.read_from_session_file')
+        #mr.return_value = data
+        #assert not profile_utils.check_session_file()
+        #data.update(ID=1, PROFILE='default')
+        #assert profile_utils.check_session_file()
+        #data.update(ID=None, PROFILE=None)
+        #assert not profile_utils.check_session_file()
     #def test_write_access_info(self, mocker):
         #profiles = {k: None for k in cli.Profile._fields}
         #profiles.update({

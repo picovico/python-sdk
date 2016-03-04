@@ -14,9 +14,7 @@ DEFAULT_PROFILE_NAME = six.moves.configparser.DEFAULTSECT
 ALL_INFO = itertools.chain(NECESSARY_INFO, AUTHENTICATE_INFO, LOGIN_INFO)
 
 def check_against_factory(cfg, profile_name, against, check_value=False):
-    has_section = (profile_name == DEFAULT_PROFILE_NAME)
-    if not has_section:
-        has_section = cfg.has_section(profile_name)
+    has_section = (profile_name == DEFAULT_PROFILE_NAME) or cfg.has_section(profile_name)
     if has_section:     
         ok = all(cfg.has_option(profile_name, opt) for opt in against)
         if check_value and ok:
@@ -37,11 +35,11 @@ def check_authenticate_info_value(cfg, profile_name):
     return check_against_factory(cfg, profile_name, AUTHENTICATE_INFO, check_value=True)
 
 def has_login_info(cfg, profile_name, both=False):
-    check_against = LOGIN_INFO if both else (LOGIN_INFO[0],)
+    check_against = LOGIN_INFO if both else LOGIN_INFO[:1]
     return check_against_factory(cfg, profile_name, check_against)
 
 def check_login_info_value(cfg, profile_name, both=False):
-    check_against = LOGIN_INFO if both else (LOGIN_INFO[0],)
+    check_against = LOGIN_INFO if both else LOGIN_INFO[:1]
     return check_against_factory(cfg, profile_name, check_against, check_value=True)
 
 def _create_namedtuple(name, dict_to_make):
@@ -124,11 +122,12 @@ def get_profile(profile_name, info=True):
 
 def get_all_profiles():
     cfg = get_raw_profile()
+    profiles = []
     if cfg:
         profiles = cfg.sections()
         if check_necessary_info_values(cfg, DEFAULT_PROFILE_NAME):
             profiles.append(DEFAULT_PROFILE_NAME)
-        return profiles
+    return profiles
 
 def check_session_file():
     data = file_utils.read_from_session_file()
@@ -149,7 +148,7 @@ def get_auth_names(profile_name):
     is_available = {
         check_authenticate_info_value(cfg, profile_name): AUTHENTICATE_INFO,
     }
-    if check_login_info_value(cfg, profile_name):
+    if True not in is_available and check_login_info_value(cfg, profile_name):
         is_available.update({True: LOGIN_INFO[:1]})
         if check_login_info_value(cfg, profile_name, both=True):
             is_available.update({True: LOGIN_INFO})
@@ -173,7 +172,7 @@ def get_auth_check_and_removal(name, profile_name):
         remove = removal_map.get(name)
         check = check_map.get(name)
         if any(k in check for k in auth_names):
-            keyargs.update(prompt=False)
+            keyargs.update(do_prompt=False)
             keyargs.update({k.lower(): getattr(profile, k, None) for k in check})
         elif not any(k in remove for k in auth_names):
             remove = None

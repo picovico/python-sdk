@@ -18,8 +18,7 @@ def get_user_directory_for_storage(dirname='.picovico'):
 
 def get_file_from_storage(filename):
     config_dir = get_user_directory_for_storage()
-    require_file = os.path.join(config_dir, filename)
-    return require_file
+    return os.path.join(config_dir, filename)
 
 def get_profile_file():
     return get_file_from_storage('profile.ini')
@@ -27,23 +26,16 @@ def get_profile_file():
 def get_project_file():
     return get_file_from_storage('project')
 
-#def write_to_profile_file(profile_name, data):
-    #pass
-    
-#def get_profile_file():
-    #profile_file = get_profile_file()
+def get_session_file():
+    return get_file_from_storage('session')
+
 def get_file_obj(filename, mode='rb'):
     try:
-        fp = open(filename, mode)
+        return open(filename, mode)
     except IOError as e:
         if e.errno != errno.ENOENT:
             raise e
         return None
-    else:
-        return fp
-        
-def get_session_file():
-    return get_file_from_storage('session')
 
 def write_json_data(filename, data):
     f = get_file_obj(filename, mode='wb')

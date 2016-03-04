@@ -90,7 +90,7 @@ def get_action_from_command(action, profile_name):
     return current_action
 
 @cli_dec.pv_cli_check_configure
-def call_api_actions(action=None, profile=None, **kwargs):
+def call_api_actions(action, profile, **kwargs):
     assert action, 'State your command'
     api_action = get_action_from_command(action, profile)
     if action in custom_command:

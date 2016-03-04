@@ -101,7 +101,7 @@ class TestBaseComponent:
 
     @pytest.mark.parametrize('method', pv_constants.ALLOWED_METHODS)
     def test_api_call(self, pv_method_mocks, pv_request, method):
-        method_mock = getattr(pv_method_mocks, 'REQ_{}'.format(method.upper()), None)
+        method_mock = getattr(pv_method_mocks, '{}'.format(method.upper()))
         mocker = pv_method_mocks.OBJ
         pv_comp = common_mock_component(mocker, 'component', pv_request.AUTH)
         with pytest.raises(AssertionError):
@@ -110,10 +110,9 @@ class TestBaseComponent:
         with pytest.raises(AssertionError):
             #only method and no path
             pv_comp._api_call(method)
-        if method_mock:
-            pv_comp._api_call(method, path=urls.ME)
-            method_mock.assert_called_with(path=urls.ME)
-            with pytest.raises(AssertionError):
-                #more than 2 arguments
-                pv_comp._api_call(path=urls.ME, junk='junk1', junk2='junk2', junk3='junk3')
-            
+        pv_comp._api_call(method, path=urls.ME)
+        method_mock.assert_called_with(path=urls.ME)
+        with pytest.raises(AssertionError):
+            #more than 2 arguments
+            pv_comp._api_call(path=urls.ME, junk='junk1', junk2='junk2', junk3='junk3')
+        

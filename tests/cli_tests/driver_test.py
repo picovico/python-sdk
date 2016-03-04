@@ -18,11 +18,11 @@ class TestCliActions:
     def test_configure(self, mocker):
         profiles = (profile_utils.DEFAULT_PROFILE_NAME, 'NEW')
         mni = mocker.patch('picovico.cli.prompt.configure_prompt')
-        mni.return_value = (return_args[0], prompt.DEFAULT_DEVICE_ID)
         mni.side_effect = AssertionError('Application ID is required.')
         with pytest.raises(AssertionError):
             driver.configure()
         mni.side_effect = None
+        mni.return_value = (return_args[0], prompt.DEFAULT_DEVICE_ID)
         call_args = dict(zip(('APP_ID', 'DEVICE_ID'), (mni.return_value)))
         call_args.update(LOG=False)
         mgap = mocker.patch('picovico.cli.profile_utils.get_all_profiles')
@@ -48,3 +48,8 @@ class TestCliActions:
         call_args.pop('PASSWORD')
         call_args.update(APP_SECRET=msi.return_value)
         msc.assert_called_with(call_args, profiles[0])
+
+    def test_cli_action_configure(self, args):
+        pass
+
+    #def test_picovico_parse_args(self, command):

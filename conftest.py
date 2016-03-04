@@ -167,11 +167,9 @@ def pv_mocks(mocker):
     }
     return _create_namedtuple('MockFactory', mob)
 
-@pytest.fixture(params=constants.ALLOWED_METHODS)
-def pv_method_mocks(request, mocker):
-    meth = request.param
-    mob = {
-        'req_{}'.format(meth): mocker.patch('picovico.baserequest.PicovicoRequest.{}'.format(meth)),
-        'obj': mocker
-    }
+@pytest.fixture()
+def pv_method_mocks(mocker):
+    mob = {'obj': mocker}
+    for meth in constants.ALLOWED_METHODS:
+        mob[meth] = mocker.patch('picovico.baserequest.PicovicoRequest.{}'.format(meth))
     return _create_namedtuple('RequestMethodMockFactory', mob)
