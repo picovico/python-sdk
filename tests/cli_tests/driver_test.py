@@ -49,7 +49,7 @@ class TestCliActions:
         call_args.update(APP_SECRET=msi.return_value)
         msc.assert_called_with(call_args, profiles[0])
 
-    def test_cli_action_configure(self, args):
-        pass
+    # def test_cli_action_configure(self, args):
+        # pass
 
     #def test_picovico_parse_args(self, command):

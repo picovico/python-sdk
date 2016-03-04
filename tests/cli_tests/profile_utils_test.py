@@ -97,12 +97,30 @@ class TestCliProfileUtils:
 
     @pytest.mark.parametrize('func,auth_name', [('authenticate', None), ('login', None), ('authenticate', profile_utils.AUTHENTICATE_INFO), ('login', profile_utils.LOGIN_INFO), ('login', profile_utils.LOGIN_INFO[:1])])
     def test_get_auth_check_and_removal(self, mocker, func, auth_name):
+        def side_effect(*args, **kwargs):
+            mocked_p = mocker.MagicMock()
+            if auth_name:
+                for name in auth_name:
+                    setattr(mocked_p, name, True)
+                if len(auth_name) == 1 and 'USERNAME' in auth_name:
+                    setattr(mocked_p, 'PASSWORD', None)
+            return mocked_p
         mocker.patch('picovico.cli.profile_utils.get_auth_names', return_value=auth_name)
-        mocker.patch('picovico.cli.profile_utils.get_profile', return_value=mocker.MagicMock())
+        mp = mocker.patch('picovico.cli.profile_utils.get_profile')
+        mp.side_effect = side_effect
         kargs, rem, names  = profile_utils.get_auth_check_and_removal(func, default_section_name)
-        print kargs
-        print rem
-        print names
+        if auth_name is None:
+            assert all(k in kargs and kargs[k] for k in ('do_prompt', 'profile'))
+            assert rem is None
+        else:
+            assert any(k.lower() in kargs and kargs[k.lower()] for k in auth_name)
+            rem_check = 'APP_SECRET' if func == 'login' else 'USERNAME'
+            assert rem == rem_check
+            assert names.index(func)
+        assert all(k in names for k in self._funcs)
+
+
+
         #mock_one.return_value = True
         #mock_two.return_value = False
 
