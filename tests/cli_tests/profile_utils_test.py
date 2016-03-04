@@ -1,3 +1,4 @@
+import itertools
 import six
 import pytest
 
@@ -42,8 +43,8 @@ class TestCliProfileUtils:
             cfg.get.assert_called_with('NONDEFAULT', 0)
         else:
             assert not profile_utils.check_against_factory(cfg, 'NONDEFAULT', range(1), True)
-    
-    @pytest.mark.parametrize('profile, ret_val', [(p, v) for p in profiles for v in (True, False)])
+
+    @pytest.mark.parametrize('profile, ret_val', itertools.product(profiles, (True, False)))
     def test_check_against_funcs(self, mocker, profile, ret_val):
         against = None
         def side_effect(*args, **kwargs):
@@ -57,7 +58,7 @@ class TestCliProfileUtils:
         against = profile_utils.NECESSARY_INFO
         profile_utils.has_necessary_info(cfg, profile)
         if profile != default_section_name:
-            cfg.has_section.assert_called_with(profile)        
+            cfg.has_section.assert_called_with(profile)
         assert profile_utils.check_necessary_info_values(cfg, profile) == ret_val
         against = profile_utils.LOGIN_INFO if ret_val else profile_utils.LOGIN_INFO[:1]
         assert profile_utils.has_login_info(cfg, profile) == ret_val
@@ -67,10 +68,11 @@ class TestCliProfileUtils:
         against = profile_utils.AUTHENTICATE_INFO
         assert profile_utils.has_authenticate_info(cfg, profile) == ret_val
         assert profile_utils.check_authenticate_info_value(cfg, profile) == ret_val
-    
-    
 
-    @pytest.mark.parametrize('func,no_func', [('authenticate', 'login'), ('login', 'authenticate')])
+
+    _funcs = ('authenticate', 'login')
+
+    @pytest.mark.parametrize('func,no_func', [_funcs, _funcs[::-1]])
     def test_get_auth_names(self, mocker, func, no_func):
         val = False
         def side_effect(*args, **kwargs):
@@ -103,7 +105,7 @@ class TestCliProfileUtils:
         print names
         #mock_one.return_value = True
         #mock_two.return_value = False
-        
+
     #def test_set_profile(self, mocker):
         #cfg = mocked_cfg(mocker)
         #mocker.patch('picovico.cli.profile_utils.file_utils.get_file_obj')

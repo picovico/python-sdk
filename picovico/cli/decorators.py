@@ -37,7 +37,7 @@ def pv_cli_check_configure(func):
     def wrapper(*args, **kwargs):
         action = kwargs.pop('action')
         profile_name = kwargs.pop('profile', None) or profile_utils.DEFAULT_PROFILE_NAME
-        if prompt.check_profile(action):
+        if action != 'configure':
             try:
                 profile_utils.get_profile(profile_name, info=True)
             except AssertionError:

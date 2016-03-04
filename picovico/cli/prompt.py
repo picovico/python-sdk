@@ -131,6 +131,3 @@ def show_auth_login_msg(formatargs):
     msg = '''You are using {0} method but have {1} stored.
             Your {1} information will be deleted.'''
     show_warning(msg.format(*formatargs))
-
-def check_profile(name):
-    return True if name != 'configure' else False
