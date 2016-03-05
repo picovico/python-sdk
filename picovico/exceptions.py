@@ -89,7 +89,6 @@ class PicovicoProjectNotAllowed(Exception):
     """
     pass
 
-#utility to filter exceptions
 def raise_valid_error(**error_response):
     """ Picovico-SDK: Exception raising helper.
     Raises valid errors according to status_code provided.
