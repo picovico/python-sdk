@@ -3,69 +3,106 @@
 '''
 import six
 
+class PicovicoError(Exception):
+    """ Picovico-SDK: Base Class for all request errors.
 
-class PicovicoRequestError(Exception):
-	'''
-		Picovico:
-				When the api response status code is not 200
-				Error should be something like :
-								{
-								"error":{
-										'status': 400,
-										'message': "Some messages"
-									}
-							}
-        Args:
-            status(int): HTTP status code.
-            message(str): Readable message.
-            response(dict, json): Raw response.
-	'''
+    This is the base class for mostly API call errors.
 
-	def __init__(self, status=None, message=None, response=None):
-		self.status = status
-		self.message = message
-		self.raw_response = response
+    Args:
+        status(int): HTTP status code.
+        message(str): Readable message.
+        response(dict, json): Raw response from request itself.
+    """
 
-	def __str__(self):
-		return  repr({'error':{'status':self.status,'message': self.message}, 'response': self.raw_response})
-
-class PicovicoNotFound(PicovicoRequestError):
-
-    def __init__(self, message=None, response=None):
-        super(PicovicoNotFound, self).__init__(status=404, message=message, response=response)
-
-
-class PicovicoUnauthorized(PicovicoNotFound):
-    '''
-		Picovico: When the access_key and access_token aren't available
-				for the curent session
-	'''
-    def __init__(self, message=None, response=None):
-        super(PicovicoNotFound, self).__init__(status=401, message=message, response=response)
-
-
-class PicovicoServerError(PicovicoRequestError):
-    """ Same  as request error but for server. """
     def __init__(self, status=None, message=None, response=None):
 		self.status = status
 		self.message = message
 		self.raw_response = response
 
     def __str__(self):
-		return  repr({'error':{'status':self.status,'message': self.message}, \
-                        'response': self.raw_response})
+        return  repr({'error':{'status':self.status,'message': self.message}, 'response': self.raw_response})
+
+
+class PicovicoRequestError(PicovicoError):
+    """ Picovico-SDK: Class for all the client related request errors.
+
+    This class is raised when the response from server is not related to
+    200 or 300 and 500 status.
+	"""
+
+    def __init__(self, status=400, message=None, response=None):
+        assert 400 <= status <=499, 'Only greater than 400 HTTP status allowed.'
+        super(PicovicoRequestError, self).__init__(status, message, response)
+
+
+class PicovicoNotFound(PicovicoRequestError):
+    """ Picovico-SDK:  Error for 404 status."""
+
+    def __init__(self, message=None, response=None):
+        super(PicovicoNotFound, self).__init__(status=404, message=message, response=response)
+
+
+class PicovicoUnauthorized(PicovicoNotFound):
+    """ Picovico-SDK: Error for 401 status.
+
+    This error is raised when there is fault in access-token
+    and access-key scenario. i.e. Authentication problems.
+	"""
+
+    def __init__(self, message=None, response=None):
+        super(PicovicoNotFound, self).__init__(status=401, message=message, response=response)
+
+
+
+class PicovicoServerError(PicovicoError):
+    """ Picovico-SDK: Same as `PicovicoRequestError`.
+
+    This is raised for status codes of 500 i.e. server related errors.
+    """
+
+    def __init__(self, status=500, message=None, response=None):
+        assert 500 <= status <= 505, 'Only greater than 500 HTTP status allowed'
+        super(PicovicoServerError, self).__init__(status, message, response)
 
 
 class PicovicoAPINotAllowed(Exception):
+    """ Picovico-SDK: Helper class for  API errors.
+
+    This class is raised when there is some api related thresholds.
+    """
     pass
+
 
 class PicovicoComponentNotSupported(Exception):
+    """ Picovico-SDK: Helper class for component errors.
+
+    This is raised when user sets component that is not yet supported.
+    """
     pass
 
+
 class PicovicoProjectNotAllowed(Exception):
+    """ Picovico-SDK: Project related error class.
+
+    This is raised when there is some assertions in project
+    methods.
+    """
     pass
+
 #utility to filter exceptions
-def raise_valid_exceptions(**error_response):
+def raise_valid_error(**error_response):
+    """ Picovico-SDK: Exception raising helper.
+    Raises valid errors according to status_code provided.
+
+    Args:
+        status_code(int): HTTP status code either from response itself or provided explicitly.
+
+    Raises:
+        PicovicoNotFound: On 404
+        PicovicoUnauthorized: On 401
+        PicovicoRequestError: On other 400 codes.
+        PicovicoServerError: On 500 and more
+    """
     status = error_response.pop('status_code')
     exc_args = {
         'response': error_response.copy()

@@ -97,17 +97,14 @@ class TestCliProfileUtils:
 
     @pytest.mark.parametrize('func,auth_name', [('authenticate', None), ('login', None), ('authenticate', profile_utils.AUTHENTICATE_INFO), ('login', profile_utils.LOGIN_INFO), ('login', profile_utils.LOGIN_INFO[:1])])
     def test_get_auth_check_and_removal(self, mocker, func, auth_name):
-        def side_effect(*args, **kwargs):
-            mocked_p = mocker.MagicMock()
-            if auth_name:
-                for name in auth_name:
-                    setattr(mocked_p, name, True)
-                if len(auth_name) == 1 and 'USERNAME' in auth_name:
-                    setattr(mocked_p, 'PASSWORD', None)
-            return mocked_p
+        mp = mocker.MagicMock()
+        if auth_name:
+            for name in auth_name:
+                setattr(mp, name, True)
+            if len(auth_name) == 1 and 'USERNAME' in auth_name:
+                mp.PASSWORD = None
         mocker.patch('picovico.cli.profile_utils.get_auth_names', return_value=auth_name)
-        mp = mocker.patch('picovico.cli.profile_utils.get_profile')
-        mp.side_effect = side_effect
+        mocker.patch('picovico.cli.profile_utils.get_profile', return_value=mp)
         kargs, rem, names  = profile_utils.get_auth_check_and_removal(func, default_section_name)
         if auth_name is None:
             assert all(k in kargs and kargs[k] for k in ('do_prompt', 'profile'))
