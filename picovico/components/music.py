@@ -2,9 +2,18 @@ from .base import PicovicoBaseComponent
 
 
 class PicovicoMusic(PicovicoBaseComponent):
-    """ Picovico Music Component Class """
-    def __init__(self, request_obj):
-        super(PicovicoMusic, self).__init__(request_obj, 'music')
+    """ Picovico-SDK: Music  component class.
+    """
 
-    def _upload_component_url(self, url, preview):
-        return super(PicovicoMusic, self)._upload_component_url(url, preview_url=preview)
+    @property
+    def component(self):
+        return 'music'
+
+    def upload_url(self, url, preview):
+        """ upload music url and music preview
+
+        Args:
+            url(str): URL  of music.
+            preview(str):  preview url of music.
+        """
+        return super(PicovicoMusic, self).upload_url(url, preview_url=preview)
