@@ -12,15 +12,27 @@ from .photo import PicovicoPhoto
 from .. import baserequest as pv_base
 
 class PicovicoComponentMixin(object):
-    """ Picovico mixin for components.(Abstract)
-    This is just a mixin. Shouldn't be used alone.
+    """ Picovico-SDK: Mixin class for component.
+
+    This is a mixin class inherited by API class.
+
+    Attributes:
+        style_component: PicovicoStyle object
+        music_component: PicovicoMusic object
+        photo_component: PicovicoPhoto object
+        video_component: PicovicoVideo object
     """
+
     __metaclass__ = abc.ABCMeta
+
     def __init__(self):
         super(PicovicoComponentMixin, self).__init__()
         self._pv_request = pv_base.PicovicoRequest()
-        
+
     def _ready_component_property(self):
+        """ **Not for user.
+        Readies read-only component properties.
+        """
         self.__components = collections.namedtuple('Component', PicovicoBaseComponent._components)
         def get_func_from_name(name):
             def property_func(self):
@@ -34,4 +46,5 @@ class PicovicoComponentMixin(object):
         self.__components(**component_class)
 
 
+# allow only specific components when * imported.
 __all__ = ['PicovicoVideo', 'PicovicoMusic', 'PicovicoStyle', 'PicovicoPhoto']

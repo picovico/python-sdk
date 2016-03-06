@@ -1,6 +1,8 @@
-'''
-    Url configuration for Picovico python-sdk
-'''
+""" Picovico-SDK: URL constants.
+
+All the api related endpoints and host.
+"""
+
 PICOVICO_BASE = "https://uapi-f1.picovico.com/v2.1/"
 
 PICOVICO_APP = "login/app"

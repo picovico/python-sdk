@@ -41,7 +41,7 @@ def pv_cli_check_configure(func):
             try:
                 profile_utils.get_profile(profile_name, info=True)
             except AssertionError:
-                prompt.show_warning('No profile found. You should run configure', stop=True)
+                prompt.show_warning(prompt.NO_PROFILE_MSG, stop=True)
         return func(action, profile_name, *args, **kwargs)
     return wrapper
 

@@ -1,6 +1,6 @@
 import pytest
 
-from picovico.cli import decorators as cli_dec
+from picovico.cli import prompt, decorators as cli_dec
 from picovico.cli.profile_utils import DEFAULT_PROFILE_NAME
 
 class TestPVCLIDecorators:
@@ -16,11 +16,11 @@ class TestPVCLIDecorators:
             argument['profile'] = profile
         mock_get_profile = mocker.patch('picovico.cli.decorators.profile_utils.get_profile')
         mock_get_profile.return_value = True
-        #noaction in 'configure'
+        msw = mocker.patch('picovico.cli.decorators.prompt.show_warning')
         config_check(**argument)
+        assert not msw.called
         mock_func.assert_called_with(action, profile)
         if action != 'configure':
             mock_get_profile.side_effect = AssertionError
-            with pytest.raises(SystemExit):
-                #assertion error
-                config_check(action='noconfigure')
+            config_check(**argument)
+            msw.assert_called_with(prompt.NO_PROFILE_MSG, stop=True)

@@ -5,11 +5,13 @@ from .. import constants as pv_constants
 
 
 class PicovicoVideo(PicovicoBaseComponent):
-    """ Picovico Video Component class. """
+    """ Picovico-SDK: Picovico Video Component class.
+    """
+
     @property
     def component(self):
         return 'video'
-    
+
     def _api_call(self, **kwargs):
         id = kwargs.pop('video_id', None)
         if id:
@@ -70,7 +72,7 @@ class PicovicoVideo(PicovicoBaseComponent):
             'post_data': vdd
         })
         return self._api_call(**req_args)
-        
+
         #self.vdd = {
             #'style': self.style
         #}

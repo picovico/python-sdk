@@ -7,7 +7,7 @@ import six
 
 DEFAULT_DEVICE_ID = 'com.pvcli.sdk'
 VERSION = '2.5'
-
+NO_PROFILE_MSG = 'No profile found. You should run configure.'
 
 def show_input(msg):
     return six.moves.input(msg)
