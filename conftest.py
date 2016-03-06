@@ -3,7 +3,10 @@ import collections
 import six
 import pytest
 import requests
-import mock
+try:
+    import mock
+except ImportError:
+    from unittest import mock
 
 from picovico import urls
 from picovico import constants
@@ -103,7 +106,7 @@ def pv_act_request_args(pv_headers):
     return _create_namedtuple('FakeMethodArgs', gm)
 
 @pytest.fixture()
-def pv_api_call_args(): 
+def pv_api_call_args():
     gm = {meth: {'method': meth, 'path': None} for meth in constants.ALLOWED_METHODS}
     return _create_namedtuple('FakeAPICallArgs', gm)
 

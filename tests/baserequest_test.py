@@ -1,5 +1,8 @@
 import pytest
-import mock
+try:
+    import mock
+except ImportError:
+    from unittest import mock
 
 from picovico import urls
 from picovico import exceptions as pv_exceptions
@@ -18,7 +21,7 @@ class TestPicovicoRequest:
         assert 'X-VALID' in pv_request.headers and 'additional' in pv_request.headers
         pv_request.url = urls.ME
         assert pv_request.url == pv_urls.ME
-    
+
     def test_get_request_args(self):
         req_args = PicovicoRequest.get_request_args('get')
         assert req_args and isinstance(req_args, RequestArg)
@@ -27,7 +30,7 @@ class TestPicovicoRequest:
         req_args = PicovicoRequest.get_request_args('post', 'Hello')
         assert req_args.method == 'post'
         assert req_args.data
-    
+
     def test_respond(self, pv_mocks, pv_urls, pv_act_request_args, pv_response, pv_messages):
         request_mock = pv_mocks.REQUEST
         request_mock.return_value = pv_response.SUCCESS.OK
@@ -42,7 +45,7 @@ class TestPicovicoRequest:
         request_mock.return_value = pv_response.ERROR.BAD
         with pytest.raises(pv_exceptions.PicovicoRequestError):
             pv_request._PicovicoRequest__respond(urls.ME)
-    
+
     @pytest.mark.parametrize('method', pv_constants.ALLOWED_METHODS)
     def test_methods(self, pv_mocks, pv_urls, method):
         mocker = pv_mocks.OBJ
@@ -59,7 +62,7 @@ class TestPicovicoRequest:
                 data = {'k': 'v'}
                 argument.update(post_data=data)
             else:
-                data = 'putdata' 
+                data = 'putdata'
                 mocker.patch('picovico.baserequest.open', mock.mock_open(read_data=data))
                 argument.update(filename='helo')
         method_func(urls.ME) if not argument else method_func(urls.ME, **argument)
