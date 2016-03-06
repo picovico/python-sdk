@@ -1,10 +1,11 @@
+import itertools
 import pytest
 
 from picovico.cli import prompt, decorators as cli_dec
 from picovico.cli.profile_utils import DEFAULT_PROFILE_NAME
 
 class TestPVCLIDecorators:
-    @pytest.mark.parametrize('action,profile', [(k,v) for k in ('configure', 'noconfigure') for v in (DEFAULT_PROFILE_NAME, 'NO_DEFAULT')])
+    @pytest.mark.parametrize('action,profile', itertools.product(('configure', 'noconfigure'), (DEFAULT_PROFILE_NAME, 'NO_DEFAULT')))
     def test_check_configure(self, mocker, action, profile):
         mock_func = mocker.MagicMock()
         mock_func.__name__ = 'mocked_func'
