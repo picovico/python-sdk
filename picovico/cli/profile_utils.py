@@ -48,7 +48,7 @@ def _create_namedtuple(name, dict_to_make):
     return Factory(**key_transformation)
 
 def create_profile_values(list_of_values):
-    ret_val = [_create_namedtuple('Conf', dict(six.moves.zip(('name', 'value'), val))) for val in list_of_values]
+    ret_val = [_create_namedtuple('Conf', dict(zip(('name', 'value'), val))) for val in list_of_values]
     return ret_val
 
 def is_in_profile(values_to_check, profile_name):

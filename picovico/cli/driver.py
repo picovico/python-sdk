@@ -65,13 +65,15 @@ def login(profile_name=None, username=None, password=None, profile=None, do_prom
         username, password = prompt.retry_once_for_assertions(prompt.configure_login_info, coerce_password=True)
     if username and not password:
         password = prompt.retry_once_for_assertions(prompt.configure_password_info)
-    pv_utility.auth_action('login', profile or profile_name, username=username, password=password)
+    profile_name = getattr(profile, 'NAME', profile_name)
+    pv_utility.auth_action('login', profile_name, username=username, password=password)
 
 @cli_dec.pv_cli_check_info('authenticate')
 def authenticate(profile_name=None, app_secret=None, profile=None, do_prompt=True):
     if do_prompt and not app_secret:
         app_secret = prompt.retry_once_for_assertions(prompt.configure_secret_info)
-    pv_utility.auth_action('authenticate', profile or profile_name, app_secret=app_secret)
+    profile_name = getattr(profile, 'NAME', profile_name)
+    pv_utility.auth_action('authenticate', profile_name, app_secret=app_secret)
 
 def logout(profile_name=None):
     api = pv_utility.prepare_api_object(profile_name, session=True)
@@ -162,7 +164,7 @@ def component_commands():
 
 def get_cli_commands():
     commands = [
-        {'command': 'configure', 'options': [{'name': '--include', 'choices': ('login', 'authenticate'), 'required': False}, {'name': '--log', 'action': 'store_true'}]},
+        {'command': 'configure', 'options': [{'name': '--with', 'choices': ('login', 'authenticate'), 'required': False, 'dest': 'include'}, {'name': '--log', 'action': 'store_true'}]},
         {'command': 'login', 'options': None},
         {'command': 'logout', 'options': None},
         {'command': 'authenticate', 'options': None},

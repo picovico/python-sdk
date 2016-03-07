@@ -21,11 +21,23 @@ def get_file_from_storage(filename):
 def get_profile_file():
     return get_file_from_storage('profile.ini')
 
+def has_profile_file():
+    return os.path.isfile(get_profile_file())
+
 def get_project_file():
     return get_file_from_storage('project')
 
+def has_project_file():
+    return os.path.isfile(get_project_file())
+
+def has_session_file():
+    return os.path.isfile(get_session_file())
+
 def get_session_file():
     return get_file_from_storage('session')
+
+def has_session_file():
+    return os.path.isfile(get_session_file())
 
 def get_file_obj(filename, mode='rb'):
     try:

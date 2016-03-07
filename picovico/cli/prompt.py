@@ -49,7 +49,7 @@ def retry_once_for_assertions(func, **kwargs):
     try:
         value = func(**kwargs)
     except AssertionError as e:
-        show_warning(e.message+'\n')
+        show_warning(e.args[0]+'\n')
         value = func(**kwargs)
     return value
 

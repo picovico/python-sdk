@@ -1,7 +1,12 @@
+import contextlib
 import itertools
 import six
 import pytest
 
+try:
+    import mock
+except ImportError:
+    from unittest import mock
 from picovico.cli import profile_utils
 
 ConfigParser = six.moves.configparser.SafeConfigParser
@@ -116,8 +121,14 @@ class TestCliProfileUtils:
             assert names.index(func)
         assert all(k in names for k in self._funcs)
 
-
-
+    #@pytest.mark.parametrize('fp', (None, ))
+    #def test_get_raw_profile(self, fp, mocker):
+        #mocker.patch('picovico.cli.profile_utils.file_utils.get_profile_file', return_value='hello')
+        #mocker.patch('picovico.cli.profile_utils.file_utils.get_file_obj', return_value=fp)
+        #cfg = profile_utils.get_raw_profile()
+        #if fp is None:
+            #assert cfg is None
+            
         #mock_one.return_value = True
         #mock_two.return_value = False
 

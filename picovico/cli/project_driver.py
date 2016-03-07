@@ -4,6 +4,7 @@ import six
 
 from . import utils as pv_utility
 from . import profile_utils
+from . import file_utils
 from .. import project as pv_project
 
 project_components = {
@@ -142,7 +143,7 @@ def _check_assertion(func, **kwargs):
     try:
         return func(**kwargs)
     except AssertionError as e:
-        prompt.show_warning(e.message, True)
+        prompt.show_warning(e.args[0], True)
 
 
 def check_photo_music_component(**kwargs):
@@ -164,6 +165,7 @@ def check_component_args(**kwargs):
         check_credit_component(**kwargs)
 
 def populate_vdd_to_project(project_obj, vdd):
+    assert vdd and isinstance(vdd, dict), 'Video Data object should be dictionary.'
     assets = vdd.pop('assets')
     credits = vdd.pop('credits')
     if assets:
@@ -176,17 +178,16 @@ def populate_vdd_to_project(project_obj, vdd):
         if attr and vdd[key]:
             attr(**vdd[key])
 
-def get_project_api(**kwargs):
+def get_project_api(profile, **kwargs):
     api = pv_utility.prepare_api_object(profile_name=profile, session=True)
     video_id = kwargs.get('video', None)
-    project_data = file_utils.read_from_project_file()
-    if video_id:
-        data = project_data.get(video_id, None)
-    else:
-        data = project_data if len(project_data) == 1 else None
-        video_id = ''.join(data.keys()) if data else None
+    project_data = file_utils.read_from_project_file() or {}
+    if not video_id:
+        video_id = ''.join(project_data.keys()) if len(project_data) == 1 else None
+    data = project_data.get(video_id, None)
+    if data:
+        populate_vdd_to_project(api.project, data)
     api.project.video = video_id
-    populate_vdd_to_project(api.project, data[video_id])
     return api
 
 def project_save_format(project):
@@ -210,7 +211,7 @@ def save_project_data(project):
 def project_cli_action(profile, **kwargs):
     project_action = kwargs.get('project')
     methods = []
-    api = get_project_api(**kwargs)
+    api = get_project_api(profile, **kwargs)
     if project_action in ('define', 'begin'):
         if project_action == 'define':
             check_component_args(**kwargs)
