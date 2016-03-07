@@ -22,12 +22,15 @@ def ignore_not_implemented(func, *arg, **kwargs):
         return True
 
 def common_mock_component(mocker, return_component, req):
-    mocker.patch.multiple('picovico.components.base.PicovicoBaseComponent', __abstractmethods__=set())
+    try:
+        mocker.patch.multiple('picovico.components.base.PicovicoBaseComponent', __abstractmethods__=set())
+    except AttributeError:
+        pass
     component_mock = mocker.patch('picovico.components.base.PicovicoBaseComponent.component', new_callable=mocker.PropertyMock)
     component_mock.return_value = return_component
     return PicovicoBaseComponent(req)
 
-    
+
 class TestBaseComponent:
     def test_create_request_args(self):
         req_args = PicovicoBaseComponent.create_request_args()
@@ -67,7 +70,7 @@ class TestBaseComponent:
         free_req = mocker.patch('picovico.components.base.pv_base.PicovicoRequest.get')
         if ignore_not_implemented(pv_comp.get_free):
             free_req.assert_called_with(path='{}s'.format(pv_component['name']))
-            
+
     def test_component_methods_upload(self, pv_mocks, pv_component, pv_request, pv_api_call_args):
         mocker = pv_mocks.OBJ
         api_call_mock = pv_mocks.API_CALL
@@ -79,7 +82,7 @@ class TestBaseComponent:
                     'filename': 'hello',
                     'data_headers': 'something'
                 }
-            }, 
+            },
             'POST': {
                 'method': 'upload_url',
                 'args': {
@@ -115,4 +118,4 @@ class TestBaseComponent:
         with pytest.raises(AssertionError):
             #more than 2 arguments
             pv_comp._api_call(path=urls.ME, junk='junk1', junk2='junk2', junk3='junk3')
-        
+
