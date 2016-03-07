@@ -1,104 +1,154 @@
 import abc
 
-from .. import exceptions as pv_exceptions
 from .. import urls as pv_urls
+from .. import constants as pv_constants
 from .. import baserequest as pv_base
 from .. import decorators as pv_decorator
 
 
 class PicovicoBaseComponent(object):
-    """ Picovico Base Component class. (Abstract)
-    This class is the base for all other component classes and shouldn't be used alone.
+    """ Picovico-SDK: Abstract class for Picovico Components.
 
-    Attributes:
-        component(str): Name of component currently initiated.
+    Abstract class with common component methods and API calls.
+
+    Args:
+        request_obj(PicovicoRequest): PicovicoRequest object.
+
+    Raises:
+        AssertionError
     """
     __metaclass__ = abc.ABCMeta
-    _names = ('get_{}', 'get_{}s',
-                'upload_{}_file', 'upload_{}_url',
-                'delete_{}', 'get_library_{}s', 'get_free_{}s')
     _components = ('style', 'music', 'photo', 'video')
 
+
+    def __init__(self, request_obj):
+        assert isinstance(request_obj, pv_base.PicovicoRequest)
+        self._pv_request = request_obj
+
+    @staticmethod
+    def create_request_args(**kwargs):
+        """ staticmethod to create common request argument such as methods and paths.
+        """
+        url_attr = kwargs.pop('url_attr', 'PICOVICO_STYLES')
+        if 'method' not in kwargs:
+            kwargs.update(method='get')
+        req_url = getattr(pv_urls, url_attr)
+        kwargs.update(path=req_url)
+        return kwargs
+
     def _api_call(self, method='get', **request_args):
-        assert method and method in ('get', 'post', 'put', 'delete'), 'Only "get", "post", "put" and "delete" allowed.'
-        assert ('url' in request_args and request_args['url'])
-        assert (request_args and len(request_args) < 3)
+        """ **Not for User.
+        Actual request call.
+        """
+        assert method and method in pv_constants.ALLOWED_METHODS, 'Only {} allowed.'.format(','.join(pv_constants.ALLOWED_METHODS))
+        assert ('path' in request_args and request_args['path'])
+        assert (1 <= len(request_args) <= 3)
         return getattr(self._pv_request, method)(**request_args)
 
-    def __init__(self, request_obj, name='video'):
-        """ Authenticated request object for component access. """
-        assert isinstance(request_obj, pv_base.PicovicoRequest)
-        if name not in self._components:
-            raise pv_exceptions.PicovicoComponentNotSupported('This component is not supported.')
-        self.__component = name
-        self._pv_request = request_obj
-        for name in self._names:
-            meth_name = name.format(self.component)
-            setattr(self, meth_name, getattr(self, '_{}'.format(meth_name.replace(self.component, 'component'))))
-
-    @property
+    @abc.abstractproperty
     def component(self):
-        return self.__component
+        """ Abstract component.
+        This will be overridden by allowed components for specific class.
+        """
+        raise NotImplementedError
+
+    def __sanitize_single_url(self, url, url_args):
+        return url.format(**url_args)
 
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
-    def _get_component(self, id):
-        req_args = {
+    def one(self, id):
+        """ Fetch component with specific id.
+
+        Args:
+            id(str): component id to fetch.
+        """
+        url_args =  {'{}_id'.format(self.component): id}
+        req_args = self.create_request_args(**{
             'method': 'get',
-            'url': getattr(pv_urls, 'MY_SINGLE_{}'.format(self.component.upper()), None),
-            '{}_id'.format(id): id
-        }
+            'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
+        })
+        req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
-    def _get_components(self):
-        req_args = {
+    def all(self):
+        """ Fetch all components.
+        """
+        req_args = self.create_request_args(**{
             'method': 'get',
-            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper()))
-        }
+            'url_attr': 'MY_{}S'.format(self.component.upper())
+        })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
-    def _upload_component_file(self, filename, data_headers=None):
-        req_args = {
+    def upload_file(self, filename, data_headers=None):
+        """ Upload file for component.
+        `put` method is used.
+
+        Args:
+            filname(str): path to file.
+            data_headers(optional(dict)): Any additional headers.
+        """
+        req_args = self.create_request_args(**{
             'method': 'put',
-            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
-            'filename': filename,
-            'data_headers': data_headers
-        }
+            'url_attr': 'MY_{}S'.format(self.component.upper()),
+            'filename': filename
+        })
+        if data_headers:
+            req_args.update(data_headers=data_headers)
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
-    def _upload_component_url(self, url, **data):
-        req_args = {
+    def upload_url(self, url, **data):
+        """ Upload URL for component.
+        `post` method  is used.
+
+        Args:
+            url(str): URL to upload.
+            keyargs: Any additional data.
+        """
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_{}'.format(self.component.upper())),
-            'data': dict(url=url, **data),
-        }
+            'url_attr': 'MY_{}S'.format(self.component.upper()),
+            'post_data': dict(url=url, **data),
+        })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
-    def _delete_component(self, id):
-        req_args = {
-            'method': 'get',
-            'url': getattr(pv_urls, 'MY_SINGLE_{}'.format(self.component.upper())),
-            '{}_id'.format(id): id
-        }
+    def delete(self, id):
+        """ Remove specific component.
+
+        Args:
+            id(str): Component id to be removed.
+        """
+        url_args =  {'{}_id'.format(self.component): id}
+        req_args = self.create_request_args(**{
+            'method': 'delete',
+            'url_attr': 'MY_SINGLE_{}'.format(self.component.upper()),
+        })
+        req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
     @pv_decorator.pv_auth_required
-    def _get_library_components(self):
-        req_args = {
+    def get_library(self):
+        """ Helper method to fetch all user component data.
+        This method is similar to `all`.
+        """
+        req_args = self.create_request_args(**{
             'method': 'get',
-            'url': getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())),
-        }
+            'url_attr': 'MY_{}S'.format(self.component.upper()),
+        })
         return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
-    def _get_free_components(self):
+    def get_free(self):
+        """ method for free components.
+        View Picovico offered 'music' and 'style'
+        """
         free_req = pv_base.PicovicoRequest()
-        return free_req.get(url=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))
+        return free_req.get(path=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))

@@ -1,5 +1,4 @@
-import sys
-import json
+import collections
 
 import requests
 import six
@@ -8,39 +7,54 @@ from six.moves.urllib import parse
 from . import urls as pv_urls
 from . import exceptions as pv_exceptions
 
+
+# Helper namedtuple for Request Argument
+RequestArg = collections.namedtuple('RequestArg', ('method', 'data'))
+
+
 class PicovicoRequest(object):
-    '''
-        Picovico: Picovico API Request methods.
-        Args:
-            headers(dict): (Optional)Header to attach for request
-    '''
-    __base = pv_urls.PICOVICO_BASE
-    
+    """ Picovico-SDK: Picovico Request class for API calls.
+
+    This class is a convenience wrapper around `requests` module.
+    It provides method calls and arguments for Picovico API. This also
+    include URL buildup.
+
+    Attributes:
+        request_args(RequestArg): This will only be available when you call a method.
+
+    Args:
+        headers(optional[dict]): headers to be included with API request.
+    """
+
     def __init__(self, headers=None):
+        self.__host = pv_urls.PICOVICO_BASE
         self.__headers = headers
-        self.__endpoint = self.base_url
-    
-    @property
-    def base_url(self):
-        return self.__base
-    
-    @base_url.setter
-    def base_url(self, url):
-        self.__base = url.lower()
+        self.__url = self.host
 
     @property
-    def endpoint(self):
+    def host(self):
+        """ The base host URL. By default its provided by picovico.
         """
-            Picovico: Read Only endpoint of API
-        """
-        return self.__endpoint
+        return self.__host
 
-    @endpoint.setter
-    def endpoint(self, url):
-        self.__endpoint = parse.urljoin(self.base_url, url.lower())
+    @host.setter
+    def host(self, url):
+        self.__host = url.lower()
+
+    @property
+    def url(self):
+        """ The URL created  using host and path.
+        """
+        return self.__url
+
+    @url.setter
+    def url(self, endpoint):
+        self.__url = parse.urljoin(self.host, endpoint.lower())
 
     @property
     def headers(self):
+        """ The header that is provided in init along with appends for additional headers.
+        """
         return self.__headers
 
     @headers.setter
@@ -50,59 +64,137 @@ class PicovicoRequest(object):
         else:
             self.__headers = value
 
-    def __get_args_for_url(self, url):
-        self.endpoint = url
-        args =  {'url': self.endpoint}
-        if self.headers:
-            args.update(headers=self.headers)
-        return args
-    
+    @staticmethod
+    def get_request_args(method_name, req_data=None):
+        """ Staticmethod to create common request arguments.
+
+        This method creates data and method arguments for request call.
+
+        Args:
+            method_name(str): Supported method names such as 'get', 'post' etc.
+            req_data(object): Data to be sent. Usually `dict` or open file.
+
+        Returns:
+            RequestArg object i.e. namedtuple with method and data assigned.
+        """
+        args = {
+            'method': method_name,
+            'data': req_data
+        }
+        return RequestArg(**args)
+
     def is_authenticated(self):
-        is_it = False
+        """ Checks whether the object is authentcated object or not.
+
+        This method checks for header for authentication token and key.
+
+        Returns:
+            True or False
+        """
+        check = False
         if self.headers:
-            access_key_exists = 'X-Access-Key' in self.headers and self.headers['X-Access-Key']
-            access_token_exists = 'X-Access-Token' in self.headers and self.headers['X-Access-Token'] 
-            if access_key_exists and access_token_exists:
-                is_it = True
-        return is_it
+            check = all(k in self.headers and self.headers[k] for k in ('X-Access-Key', 'X-Access-Token'))
+        return check
 
-    def get(self, url):
-        self.request_args = self.__get_args_for_url(url)
-        self.request_args.update(method='get')
-        return self.__respond()
+    def get(self, path):
+        """ Request get method.
 
-    def post(self, url, data):
-        assert isinstance(data, dict), 'data should be of {"key": "value"} format'
-        self.request_args = self.__get_args_for_url(url)
-        self.request_args.update(data=data)
-        self.request_args.update(method='post')
-        return self.__respond()
+        Args:
+            path(str): URL path.
 
-    def  put(self, url, filename=None, data_headers=None):
-        self.request_args = self.__get_args_for_url(url)
+        Raises:
+            PicovicoNotFound: If status is 404.
+            PicovicoUnauthorized: If status is 401.
+            PicovicoRequestError: If status is 400 related.
+            PicovicoServerError: If status is 500.
+
+        Returns:
+            JSON data if status is ok.
+        """
+        self.request_args = self.get_request_args('get')
+        return self.__respond(path)
+
+    def post(self, path, post_data):
+        """ Request post method.
+
+        Args:
+            path(str): URL path.
+            post_data(dict): Data to be posted `{'k': 'v'}` format.
+        Raises:
+            PicovicoNotFound: If status is 404.
+            PicovicoUnauthorized: If status is 401.
+            PicovicoRequestError: If status is 400 related.
+            PicovicoServerError: If status is 500.
+            AssertionError: when post_data is not `dict`.
+
+        Returns:
+            JSON data if status is ok.
+        """
+        assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
+        self.request_args = self.get_request_args('post', post_data)
+        return self.__respond(path)
+
+    def  put(self, path, filename=None, data_headers=None):
+        """ Request put method.
+
+        Args:
+            path(str): URL path.
+            filename(optional[str]): filename with full path.
+            data_headers(optional[dict]): Data to be posted `{'k': 'v'}` format.
+        Raises:
+            PicovicoNotFound: If status is 404.
+            PicovicoUnauthorized: If status is 401.
+            PicovicoRequestError: If status is 400 related.
+            PicovicoServerError: If status is 500.
+            AssertionError: when filename or data_headers are provided but donot match the types.
+
+        Returns:
+            JSON data if status is ok.
+        """
         if data_headers is not None:
             assert isinstance(data_headers, dict), 'data headers should be of {"key": "value"} format'
             self.headers = data_headers
+        put_data = None
         if filename is not None:
             assert isinstance(filename, six.string_types), 'Filename should be valid name'
             with open(filename, 'r') as f:
-                self.request_args.update(data=f)
-        self.request_args.update(method='put')
-        return self.__respond()
+                put_data = f
+        self.request_args = self.get_request_args('put', put_data)
+        return self.__respond(path)
 
-    def delete(self, url):
-        self.request_args = self.__get_args_for_url(url)
-        self.request_args.update(method='delete')
-        return self.__respond()
+    def delete(self, path):
+        """ Request put method.
 
-    def __respond(self):
-        '''
-            Picovico: Returns json response.
-            Checks if response is not 400 or 500.
-            Raises error based on response status code.
-        '''
-        response = requests.request(**self.request_args)
+        Args:
+            path(str): URL path.
+
+        Raises:
+            PicovicoNotFound: If status is 404.
+            PicovicoUnauthorized: If status is 401.
+            PicovicoRequestError: If status is 400 related.
+            PicovicoServerError: If status is 500.
+
+        Returns:
+            JSON data if status is ok.
+        """
+        self.request_args = self.get_request_args('delete')
+        return self.__respond(path)
+
+    def __respond(self, path):
+        """ **Not for user.
+        Appends path to URL and calls `requests` for API populating request arguments.
+        Raises error  based on status.
+        Return json data.
+
+        Args:
+            path(str): This should be path that was provided to method.
+        """
+        self.url = path
+        request_args = self.request_args._asdict()
+        request_args.update(url=self.url)
+        request_args.update(headers=self.headers)
+        response = requests.request(**request_args)
         json_response = response.json()
         if not response.ok:
-            pv_exceptions.raise_valid_exceptions(status_code=response.status_code, **json_response)
+            pv_exceptions.raise_valid_error(status_code=response.status_code, **json_response)
         return json_response

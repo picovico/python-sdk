@@ -2,9 +2,18 @@ from .base import PicovicoBaseComponent
 
 
 class PicovicoPhoto(PicovicoBaseComponent):
-    """ Picovico Photo Component class. """
-    def __init__(self, request_obj):
-        super(PicovicoPhoto, self).__init__(request_obj, 'photo')
+    """ Picovico-SDK: Photo Component class.
+    """
 
-    def _upload_component_url(self, url, thumbnail):
-        return super(PicovicoPhoto, self)._upload_component_url(url, thumbnail_url=thumbnail)
+    @property
+    def component(self):
+        return 'photo'
+
+    def upload_url(self, url, thumbnail):
+        """ upload photo url and thubnail.
+
+        Args:
+            url(str): Photo URL to upload.
+            thumbnail(str): Thumbnail URL to upload.
+        """
+        return super(PicovicoPhoto, self).upload_url(url, thumbnail_url=thumbnail)

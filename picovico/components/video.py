@@ -1,44 +1,82 @@
 from .base import PicovicoBaseComponent
 from .. import decorators as pv_decorator
 from .. import urls as pv_urls
+from .. import constants as pv_constants
 
 
 class PicovicoVideo(PicovicoBaseComponent):
-    """ Picovico Video Component class. """
-    def __init__(self, request_obj):
-        super(PicovicoVideo, self).__init__(request_obj, 'video')
+    """ Picovico-SDK: Picovico Video Component class.
+    """
+
+    @property
+    def component(self):
+        return 'video'
+
+    def _api_call(self, **kwargs):
+        id = kwargs.pop('video_id', None)
+        if id:
+            url_path = kwargs.get('path')
+            kwargs.update(path=url_path.format(video_id=id))
+        return super(PicovicoVideo, self)._api_call(**kwargs)
 
     @pv_decorator.pv_auth_required
-    def preview_video(self, video_id):
+    def preview(self, video_id):
         '''
-            Picovico: Make a preview request for the project. 
+            Picovico: Make a preview request for the project.
             144p video preview is available for the style.
             Rendering state of the video will not be changed.
         '''
-        req_args = {
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_PREVIEW'.format(video_id)),
-        }
-        return self._api_call(**req_args)
-        
+            'url_attr': 'MY_SINGLE_VIDEO_PREVIEW',
+        })
+        return self._api_call(video_id=video_id, **req_args)
+
     @pv_decorator.pv_auth_required
-    def create_video(self, video_id):
+    def create(self, video_id):
         '''
             Picovico: Sends the actual rendering request to rendering engine
         '''
-        req_args = {
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_CREATE'.format(video_id)),
-        }
-        return self._api_call(**req_args)
-        
+            'url_attr': 'MY_SINGLE_VIDEO_CREATE',
+        })
+        return self._api_call(video_id=video_id, **req_args)
+
     @pv_decorator.pv_auth_required
-    def duplicate_video(self, video_id):
+    def duplicate(self, video_id):
         '''
             Picovico: Duplicates any video and saves it to the new draft or overrides if any exists.
         '''
-        req_args = {
+        req_args = self.create_request_args(**{
             'method': 'post',
-            'url': getattr(pv_urls, 'MY_SINGLE_VIDEO_DUPLICATE'.format(video_id)),
-        }
+            'url_attr': 'MY_SINGLE_VIDEO_DUPLICATE',
+        })
+        return self._api_call(video_id=video_id, **req_args)
+
+    @pv_decorator.pv_auth_required
+    def new(self, name=None):
+        req_args = self.create_request_args(**{
+            'method': 'post',
+            'url_attr': 'MY_VIDEOS',
+            'post_data': {'name': name or pv_constants.VIDEO_NAME}
+        })
         return self._api_call(**req_args)
+
+    @pv_decorator.pv_auth_required
+    def save(self, vdd):
+        assert isinstance(vdd, dict), 'Simply assure vdd provided is dictionary format.'
+        req_args = self.create_request_args(**{
+            'method': 'post',
+            'url_attr': 'MY_VIDEOS',
+            'post_data': vdd
+        })
+        return self._api_call(**req_args)
+
+        #self.vdd = {
+            #'style': self.style
+        #}
+
+        #req_args = {
+            #'method':
+        #}
