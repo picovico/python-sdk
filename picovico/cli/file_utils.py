@@ -3,18 +3,16 @@ import json
 import errno
 
 def get_user_directory_for_storage(dirname='.picovico'):
-    try:
-        user_home = os.environ['HOME']
-    except KeyError as e:
+    user_home = os.environ.get('HOME', os.path.expanduser('~'))
+    if not user_home:
         raise EnvironmentError("Couldn't determine user home.")
-    else:
-        config_dir = os.path.join(user_home, dirname)
-        try:
-            os.makedirs(config_dir)
-        except OSError as e:
-            if e.errno != errno.EEXIST:
-                raise e
-        return config_dir
+    config_dir = os.path.join(user_home, dirname)
+    try:
+        os.makedirs(config_dir)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise e
+    return config_dir
 
 def get_file_from_storage(filename):
     config_dir = get_user_directory_for_storage()
@@ -22,7 +20,7 @@ def get_file_from_storage(filename):
 
 def get_profile_file():
     return get_file_from_storage('profile.ini')
-    
+
 def get_project_file():
     return get_file_from_storage('project')
 
@@ -58,7 +56,7 @@ def delete_file(filename):
 def delete_session_file():
     session_file = get_session_file()
     delete_file(session_file)
-    
+
 def delete_project_file():
     project_file = get_project_file()
     delete_file(project_file)

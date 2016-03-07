@@ -16,6 +16,7 @@ def file_mock(mocker, return_value=None, side_effect=None, open_data=None):
 class TestPVCliFileUtilities:
     def test_get_user_directory_for_storage(self, mocker):
         mocker.patch.dict('picovico.cli.file_utils.os.environ', clear=True)
+        mocker.patch('picovico.cli.file_utils.os.path.expanduser', return_value=None)
         with pytest.raises(EnvironmentError):
             cfg_file = pv_cli_file_utility.get_user_directory_for_storage()
         mocker.stopall()
@@ -30,11 +31,11 @@ class TestPVCliFileUtilities:
         e.errno = errno.EEXIST
         m.side_effect = e
         pv_config_dir = pv_cli_file_utility.get_user_directory_for_storage()
-        pv_actual_config_dir = os.path.join(os.environ['HOME'], '.picovico')
+        pv_actual_config_dir = os.path.join(os.path.expanduser('~'), '.picovico')
         assert pv_config_dir == pv_actual_config_dir
-    
+
     def test_get_file_functions(self, mocker):
-        pv_config_dir = os.path.join(os.environ['HOME'], '.picovico')
+        pv_config_dir = os.path.join(os.path.expanduser('~'), '.picovico')
         m = mocker.patch('picovico.cli.file_utils.get_user_directory_for_storage')
         m.return_value = pv_config_dir
         profile_file = pv_cli_file_utility.get_file_from_storage('profile.ini')
@@ -48,7 +49,7 @@ class TestPVCliFileUtilities:
         assert project_file != session_file != profile_file
         assert project_file == os.path.join(pv_config_dir, 'project')
         assert project_file == pv_cli_file_utility.get_project_file()
-    
+
     def test_file_obj(self, mocker):
         e = IOError()
         e.errno = errno.EPERM
