@@ -63,8 +63,8 @@ def _prepare_method_args(meth_name, **kwargs):
     return profile_utils._create_namedtuple('MethodArgs', val)
 
 def _prepare_text_args(**kwargs):
-    title = kwargs.get('title')
-    body = kwargs.get('body')
+    title = kwargs.get('title', None)
+    body = kwargs.get('body', None)
     assert any((title, body)), 'Either title or body is required.'
     return title, body
     
@@ -81,7 +81,7 @@ def _prepare_common_args(**kwargs):
     return _id, _file, _url 
 
 def prepare_photo_method_args(**kwargs):
-    photo_id, photo_id, photo_url = _prepare_common_args(**kwargs)
+    photo_id, photo_file, photo_url = _prepare_common_args(**kwargs)
     photo_thumb = kwargs.get('thumb')
     photo_caption = kwargs.get('caption')
     meth_name = 'add_photo'
@@ -136,7 +136,7 @@ def prepare_method_args(**kwargs):
     meth_args = prepare_common_methods_with_args(**kwargs)
     component = kwargs.get('component', None)
     if component and component in component_methods:
-        meth_args.append(component_methods.get(component))
+        meth_args.append(component_methods.get(component)(**kwargs))
     return meth_args
 
 def _check_assertion(func, **kwargs):
@@ -157,13 +157,16 @@ def check_text_component(**kwargs):
 
 def check_component_args(**kwargs):
     component = kwargs.get('component')
-    if component in ('music', 'photo'):
-        check_photo_music_component(**kwargs)
-    elif component == 'text':
-        check_text_component(**kwargs)
-    elif component == 'credit':
-        check_credit_component(**kwargs)
-
+    comp_map = {
+        'text': check_text_component,
+        'music': check_photo_music_component,
+        'photo': check_photo_music_component,
+        'credit': check_credit_component
+    }
+    comp_func = comp_map.get(component, None)
+    if comp_func:
+        comp_func(**kwargs)
+    
 def populate_vdd_to_project(project_obj, vdd):
     assert vdd and isinstance(vdd, dict), 'Video Data object should be dictionary.'
     assets = vdd.pop('assets')
