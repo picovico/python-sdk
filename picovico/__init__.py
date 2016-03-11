@@ -6,33 +6,31 @@ from . import project as pv_project
 
 
 class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
-    """ Picovico-SDK: The API class
-    This class is base class for api activity. This class has all the attributes of
-    componentmixin and sessinmixin. It will ready component and project objects based
+    """ Picovico-SDK: The API class.
+    Base class for API activity. It will ready component and project objects based
     on authorization.
 
     Attributes(Only when you are authorized):
-        project
-        photo_component
-        video_component
-        music_component
-        style_component
+        photo_component :class: `PicovicoPhoto` instance.
+        video_component :class: `PicovicoVideo` instance.
+        music_component :class: `PicovicoMusic` instance.
+        style_component :class: `PicovicoStyle` instance.
 
     Args:
         app_id(str): Application ID given by Picovico.
         device_id(str): Some Device identifier. [Default  will be used]
         app_secret(optional[str]): If  application secret is given
     """
-    def __init__(self, app_id, device_id, app_secret=None):
+    def __init__(self, app_id, device_id=None, app_secret=None):
         super(PicovicoAPI, self).__init__(app_id, device_id=device_id, app_secret=app_secret)
-        self.__project = None
         if self.is_authorized():
-            self._ready_component_property()
-            self.__ready_project()
+            self._pv_request.headers = self.headers
+        self.__project = None
+        self._ready_component_property()
 
     def login(self, username, password):
         """ API login method.
-        Calls  login action on API and sets access headers.
+        Calls login action on API and sets access headers.
         Also, it readies the component attributes if everything ok.
 
         Args:
@@ -53,8 +51,13 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
                     access_token=response.get('access_token'))
         self._pv_request.headers = self.headers
         self._ready_component_property()
-        self.__ready_project()
 
+    def __is_set_header(self):
+        if self.is_authorized():
+            self._pv_request.headers = self.headers
+            return True
+        return False
+    
     def authenticate(self, app_secret=None):
         """ API authentication workflow.
 
@@ -75,9 +78,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
         response = self._pv_request.post(path=pv_urls.PICOVICO_APP, post_data=data)
         self.set_access_tokens(access_key=response.get('access_key'),
                 access_token=response.get('access_token'))
-        self._pv_request.headers = self.headers
         self._ready_component_property()
-        self.__ready_project()
 
     @pv_auth_required
     def me(self):
@@ -88,11 +89,12 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
     @property
     def project(self):
         """ Project Component.
-        If authorized PicovicoProject object else None.
+        Returns:
+            :class: PicovicoProject instance[authorized] else None.
         """
         return self.__project
 
-
-    def __ready_project(self):
-        if self.is_authorized():
+    def _ready_component_property(self):
+        if self.__is_set_header():
             self.__project = pv_project.PicovicoProject(self._pv_request)
+            super(PicovicoAPI, self)._ready_component_property()

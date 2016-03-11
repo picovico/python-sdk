@@ -48,7 +48,7 @@ class TestBaseComponent:
         mocker = pv_mocks.OBJ
         api_call_mock = pv_mocks.API_CALL
         pv_comp = common_mock_component(mocker, pv_component['name'], pv_request.AUTH)
-        for meth in ('get_library', 'all'):
+        for meth in ('all',):
             func = getattr(pv_comp, meth)
             if ignore_not_implemented(func):
                 call_arg = pv_api_call_args.GET.copy()

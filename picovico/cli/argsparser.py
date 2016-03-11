@@ -38,9 +38,10 @@ def picovico_parse_args():
     parser = get_parser()
     ns = parser.parse_args()
     arguments = ns.__dict__.copy()
-    if len(arguments) and 'include' not in arguments:
-        arguments = {k.replace('-', '_'): v for k, v in arguments.items()}
-    elif 'include' in arguments:
+    #if len(arguments) and 'include' not in arguments:
+        #arguments = {k.replace('-', '_'): v for k, v in arguments.items()}
+    #el
+    if 'include' in arguments:
         arguments.pop('include')
         if ns.include:
             arguments.update({ns.include: True})

@@ -1,16 +1,16 @@
-# default device identifier to be used.
+#: Picovico-SDK: default device identifier to be used.
 DEFAULT_DEVICE_ID = "com.picovico.api.python-sdk"
 
 class PicovicoSessionMixin(object):
-    """ Picovico-SDK: SessionMixin class.
+    """ Picovico-SDK: **SessionMixin** class.
 
-    This class itself is not used and is base class.
+    This class itself is not useful.
     It provides API related session properties and method.
 
     Args:
-        app_id(str): Application ID provided by picovico
-        app_secret(optional[str]): Application Secret if avilable.
-        devide_id(optional[str]): Device Identication. Default will be provided.
+        app_id (str): Application ID provided by picovico.
+        app_secret (str, optional): Application Secret if avilable.
+        devide_id (str, optional): Device Identication. Default value is :data:`.DEFAULT_DEVICE_ID`.
     """
 
     def __init__(self, app_id, app_secret=None, device_id=DEFAULT_DEVICE_ID):
@@ -63,9 +63,10 @@ class PicovicoSessionMixin(object):
 
     def set_access_tokens(self, access_key, access_token):
         """ Set access_key and access_token for authentication
+        
         Args:
-            access_key(str): access key provided by picovico
-            access_token(str): access token provided by picovico
+            access_key (str): access key provided by picovico
+            access_token (str): access token provided by picovico
         """
         self.__access_key = access_key
         self.__access_token = access_token
@@ -75,17 +76,15 @@ class PicovicoSessionMixin(object):
         This should be opposite of is_authorized.
 
         Returns:
-            True or False
-
+            bool: *True* if access_key and access_token is set else *False*.
         """
         return not (self.access_key and self.access_token)
 
     def is_authorized(self):
         """ Check if key and token are set.
-        This should be opposite of is_anonymous.
 
         Returns:
-            True or False
+            bool: *False* if is_anonymous else *True*.
         """
         return not self.is_anonymous()
 

@@ -12,7 +12,7 @@ class PicovicoBaseComponent(object):
     Abstract class with common component methods and API calls.
 
     Args:
-        request_obj(PicovicoRequest): PicovicoRequest object.
+        request_obj(PicovicoRequest): instance of :class:`picovico.baserequest.PicovicoRequest`.
 
     Raises:
         AssertionError
@@ -133,17 +133,17 @@ class PicovicoBaseComponent(object):
         req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[:2])
-    @pv_decorator.pv_auth_required
-    def get_library(self):
-        """ Helper method to fetch all user component data.
-        This method is similar to `all`.
-        """
-        req_args = self.create_request_args(**{
-            'method': 'get',
-            'url_attr': 'MY_{}S'.format(self.component.upper()),
-        })
-        return self._api_call(**req_args)
+    #@pv_decorator.pv_not_implemented(_components[:2])
+    #@pv_decorator.pv_auth_required
+    #def get_library(self):
+        #""" Helper method to fetch all user component data.
+        #This method is similar to `all`.
+        #"""
+        #req_args = self.create_request_args(**{
+            #'method': 'get',
+            #'url_attr': 'MY_{}S'.format(self.component.upper()),
+        #})
+        #return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
     def get_free(self):

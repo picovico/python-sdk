@@ -112,8 +112,10 @@ def get_profile(profile_name, info=True):
     if not cfg:
         cfg = six.moves.configparser.SafeConfigParser()
         write_new_profile_info(cfg, profile_name)
-    if not cfg.sections():
-       profile_name = DEFAULT_PROFILE_NAME
+    sections = cfg.sections()
+    sections.append(DEFAULT_PROFILE_NAME)
+    if profile_name not in sections:
+        raise ValueError('No Profile: {} found.'.format(profile_name))
     if info:
         assert check_necessary_info_values(cfg, profile_name)
     options = dict(cfg.items(profile_name))

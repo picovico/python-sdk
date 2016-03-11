@@ -62,18 +62,18 @@ def my_profile(profile_name=None):
 @cli_dec.pv_cli_check_info('login')
 def login(profile_name=None, username=None, password=None, profile=None, do_prompt=True):
     if do_prompt and not (username and password):
-        username, password = prompt.retry_once_for_assertions(prompt.configure_login_info, coerce_password=True)
+        user, pass_ = prompt.retry_once_for_assertions(prompt.configure_login_info, coerce_password=True, query_password=False)
     if username and not password:
-        password = prompt.retry_once_for_assertions(prompt.configure_password_info)
+        pass_ = prompt.retry_once_for_assertions(prompt.configure_password_info)
     profile_name = getattr(profile, 'NAME', profile_name)
-    pv_utility.auth_action('login', profile_name, username=username, password=password)
+    pv_utility.auth_action('login', profile_name, username=user, password=pass_)
 
 @cli_dec.pv_cli_check_info('authenticate')
 def authenticate(profile_name=None, app_secret=None, profile=None, do_prompt=True):
     if do_prompt and not app_secret:
-        app_secret = prompt.retry_once_for_assertions(prompt.configure_secret_info)
+        app_sec = prompt.retry_once_for_assertions(prompt.configure_secret_info)
     profile_name = getattr(profile, 'NAME', profile_name)
-    pv_utility.auth_action('authenticate', profile_name, app_secret=app_secret)
+    pv_utility.auth_action('authenticate', profile_name, app_secret=app_sec)
 
 def logout(profile_name=None):
     api = pv_utility.prepare_api_object(profile_name, session=True)
@@ -87,9 +87,23 @@ def get_action_from_command(action, profile_name):
     component = action_map.get('component', None)
     if component:
         api = pv_utility.prepare_api_object(profile_name, session=True)
-        component = getattr(api, component)
-        current_action = getattr(component, current_action)
+        api._ready_component_property()
+        api_component = getattr(api, component)
+        current_action = getattr(api_component, current_action)
     return current_action
+
+def _sanitize_args_kwargs(**kwargs):
+    d = {}
+    remove = None
+    for k in kwargs:
+        if k.endswith('id'):
+            remove = k
+            val = kwargs[k]
+            d.update(id=val)
+    if remove:
+        kwargs.pop(remove)
+    kwargs.update(d)
+    return kwargs
 
 @cli_dec.pv_cli_check_configure
 def call_api_actions(action, profile, **kwargs):
@@ -101,7 +115,8 @@ def call_api_actions(action, profile, **kwargs):
         else:
             kwargs = {'profile_name': profile}
     try:
-        result = api_action(**kwargs)
+        kwargs = _sanitize_args_kwargs(**kwargs) 
+        result = api_action(**kwargs) if kwargs else api_action()
     except (pv_api_exceptions.PicovicoRequestError, pv_api_exceptions.PicovicoServerError) as  e:
         prompt.show_action_error(action, profile, e.status, e.message)
     else:
@@ -109,9 +124,9 @@ def call_api_actions(action, profile, **kwargs):
             prompt.show_action_result(action, result, profile)
         else:
             prompt.show_action_success(action, profile)
-    prof = profile_utils.get_profile(profile)
-    if prof.LOG and action not in custom_command:
-        cli_logger.log_actions(prof.NAME, action, result, **kwargs)
+        prof = profile_utils.get_profile(profile)
+        if prof.LOG and action not in custom_command:
+            cli_logger.log_actions(prof.NAME, action, result, **kwargs)
 
 def create_component_commands():
     #components = {
@@ -133,12 +148,12 @@ def create_component_commands():
             'get-{}s'.format(component): []
         }
         cur_comp = components[component]
-        component_id = '--{}-id'.format(component)
+        component_id = '{}_id'.format(component)
         if component not in exclude_for_delete:
             act = 'get-{}'.format(component)
-            cur_comp.update({act: [{'name': component_id, 'required': True}]})
+            cur_comp.update({act: [{'name': '--id', 'dest': component_id, 'required': True}]})
             act = 'delete-{}'.format(component)
-            cur_comp.update({act: [{'name': component_id, 'required': True}]})
+            cur_comp.update({act: [{'name': '--id', 'dest': component_id, 'required': True}]})
         if component in has_free_component:
             act = 'get-free-{}s'.format(component)
             cur_comp.update({act: []})
@@ -149,16 +164,24 @@ def create_component_commands():
     return components
 
 def component_commands():
+    action_map = {
+        'get-component': 'one',
+        'get-components': 'all',
+        'delete-component': 'delete',
+        'get-free-components': 'get_free',
+        'upload-component-url': 'upload_url',
+        'upload-component-file': 'upload_file'
+    }
     components = create_component_commands()
     component_map = []
     for component, actions in six.iteritems(components):
         for method, options in six.iteritems(actions):
             command = method.format(component)
-            action = command.replace('-', '_')
+            action = action_map.get(command.replace(component, 'component'))
             component_map.append({'command': command, 'options': None, 'action': action, 'component': '{}_component'.format(component)})
             if options:
                 command = method.format(component)
-                action = command.replace('-', '_')
+                action = action_map.get(command.replace(component, 'component'))
                 component_map.append({'command': command, 'options':  options, 'action': action, 'component': '{}_component'.format(component)})
     return component_map
 
@@ -190,5 +213,5 @@ def cli_map_command_to_actions():
         'project': {'action': proj_driver.project_cli_action}
     }
     components = component_commands()
-    command_action_map.update({d['action']: {'action': d['action'], 'component': d['component']} for d in components})
+    command_action_map.update({d['command']: {'action': d['action'], 'component': d['component']} for d in components})
     return command_action_map

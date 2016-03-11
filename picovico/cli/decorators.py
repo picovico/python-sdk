@@ -42,6 +42,8 @@ def pv_cli_check_configure(func):
                 profile_utils.get_profile(profile_name, info=True)
             except AssertionError:
                 prompt.show_warning(prompt.NO_PROFILE_MSG, stop=True)
+            except ValueError as e:
+                prompt.show_warning(e.args[0], stop=True)
         return func(action, profile_name, *args, **kwargs)
     return wrapper
 

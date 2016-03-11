@@ -1,8 +1,6 @@
+'''	Picovico-SDK: Custom exception classes
+    ======================================
 '''
-	Picovico: Picovico custom exception classes
-'''
-import six
-
 class PicovicoError(Exception):
     """ Picovico-SDK: Base Class for all request errors.
 
@@ -97,10 +95,10 @@ def raise_valid_error(**error_response):
         status_code(int): HTTP status code either from response itself or provided explicitly.
 
     Raises:
-        PicovicoNotFound: On 404
-        PicovicoUnauthorized: On 401
-        PicovicoRequestError: On other 400 codes.
-        PicovicoServerError: On 500 and more
+        PicovicoNotFound
+        PicovicoUnauthorized
+        PicovicoRequestError
+        PicovicoServerError
     """
     status = error_response.pop('status_code')
     exc_args = {

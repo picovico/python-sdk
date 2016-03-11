@@ -79,6 +79,7 @@ def configure_password_info():
 
 def configure_login_info(coerce_password=False, query_password=True):
     username = show_input('Enter Picovico Username: ')
+    password = None
     if query_password and not coerce_password:
         password = password_save_query()
     elif coerce_password and not query_password:
@@ -97,7 +98,7 @@ def show_action_result(action, result, profile_name):
     generic_prompt(profile_name=profile_name)
     show_print('Your Action: {}'.format(action))
     show_print('Result:')
-    show_print(pprint.pprint(result))
+    pprint.pprint(result)
 
 
 def show_action_message(profile_name, message):
@@ -115,8 +116,8 @@ def show_action_error(action, profile_name, status, message):
         401: 'PicovicoUnAuthorized',
         404: 'PicovicoNotFound',
     }
-    error_names.update({x: 'PicovicoServerError' for x in six.moves.range(start=500, stop=503)})
-    error_name = error_names.get(status)
+    error_names.update({x: 'PicovicoServerError' for x in six.moves.range(500, 503)})
+    error_name = error_names.get(status, 'PicovicoRequestError')
     msg = '{0}: {1}'.format(error_name, message)
     show_action_message(profile_name, msg)
 

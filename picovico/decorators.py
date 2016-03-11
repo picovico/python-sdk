@@ -10,7 +10,7 @@ def pv_auth_required(func):
     Also it sets header to `_pv_request` attribute of the object.
 
     Raises:
-        PicovicoAPINotAllowed
+        picovico.exceptions.PicovicoAPINotAllowed
     """
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -51,7 +51,7 @@ def pv_project_check_begin(func):
     This checks project object `video` attribute.
 
     Raises:
-        PicovicoProjectNotAllowed
+        picovico.exceptions.PicovicoProjectNotAllowed
     """
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
