@@ -12,6 +12,7 @@ def prepare_api_object(profile_name, session=False):
         sess = profile_utils.get_session_info()
         if sess and sess.PROFILE == profile.NAME:
             api.set_access_tokens(sess.ACCESS_KEY, sess.ACCESS_TOKEN)
+            api._ready_component_property()
         else:
             auth_names = profile_utils.get_auth_names(profile.NAME)
             if not auth_names:
@@ -32,6 +33,7 @@ def auth_action(funcname, profile_name, **kwargs):
     api = prepare_api_object(profile_name)
     getattr(api, funcname)(**kwargs)
     if api.is_authorized():
+        api._ready_component_property()
         data = {
             'ACCESS_KEY': api.access_key,
             'ACCESS_TOKEN': api.access_token,

@@ -13,7 +13,7 @@ project_components = {
     'music': ('url', 'preview', 'id', 'filename'),
     'credit': ('content',)
 }    
-define_components = itertools.chain(a for a in pv_project.Vdd._fields if a not in ('assets', 'credits'))
+define_components = [a for a in pv_project.Vdd._fields if a not in ('assets', 'credits')]
 subcommands = {
     'begin': ('name', 'style', 'quality'),
     'define': itertools.chain(define_components, ('video',)),
@@ -179,7 +179,9 @@ def populate_vdd_to_project(project_obj, vdd):
         add_attr = getattr(project_obj, 'add_{}'.format(key), None)
         attr = getattr(project_obj, 'set_{}'.format(key), add_attr) 
         if attr and vdd[key]:
-            attr(**vdd[key])
+            arg = vdd[key]
+            if 'value' in arg and arg['value']:
+                attr(**arg)
 
 def get_project_api(profile, **kwargs):
     api = pv_utility.prepare_api_object(profile_name=profile, session=True)
@@ -188,9 +190,9 @@ def get_project_api(profile, **kwargs):
     if not video_id:
         video_id = ''.join(project_data.keys()) if len(project_data) == 1 else None
     data = project_data.get(video_id, None)
+    api.project.video = video_id
     if data:
         populate_vdd_to_project(api.project, data)
-    api.project.video = video_id
     return api
 
 def project_save_format(project):
@@ -205,26 +207,25 @@ def project_save_format(project):
     return project_format
 
 def save_project_data(project):
-    project_data = file_utils.read_from_project_file()
     new_data = project_save_format(project)
-    if project_data:
-        new_data.update(project_data)
     file_utils.write_to_project_file(new_data)
 
-def project_cli_action(profile, **kwargs):
+def project_cli_action(profile=None, **kwargs):
     project_action = kwargs.get('project')
     methods = []
     api = get_project_api(profile, **kwargs)
     if project_action in ('define', 'begin'):
         if project_action == 'define':
             check_component_args(**kwargs)
+        else:
+            api.project.begin(kwargs.get('name', None))
         methods = prepare_method_args(**kwargs)
     else:
         getattr(api.project, project_action)()
     for act in methods:
         action = getattr(api.project, act.METHOD)
         action(**act.ARGUMENTS)
-    save_project_data(project)
+    save_project_data(api.project)
     #action = getattr(api.project, project_action)
     #arguments = prepare_from_kwargs(**kwargs)
     #action(**kwargs)
