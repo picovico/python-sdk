@@ -2,6 +2,7 @@ import sys
 import functools
 
 from . import profile_utils
+from . import file_utils
 from . import prompt
 
 def pv_cli_check_authenticate(func):
@@ -68,6 +69,15 @@ def pv_cli_check_info(funcname):
         return wrapper
     return check
 
+def pv_cli_check_project_begin(func):
+    @functools.wraps(func)
+    def wrapper(**kwargs):
+        action = kwargs.get('project')
+        if action != 'begin':
+            if not file_utils.has_project_file():
+                prompt.show_warning('Please begin your project.', stop=True)
+        return func(**kwargs)
+    return wrapper
 #def pv_cli_check_for_configure(func):
     #@functools.wraps(func)
     #def wrapper(profile_name, *args, **kwargs):

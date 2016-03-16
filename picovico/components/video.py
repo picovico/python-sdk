@@ -64,14 +64,14 @@ class PicovicoVideo(PicovicoBaseComponent):
         return self._api_call(**req_args)
 
     @pv_decorator.pv_auth_required
-    def save(self, vdd):
+    def save(self, video_id, vdd):
         assert isinstance(vdd, dict), 'Simply assure vdd provided is dictionary format.'
         req_args = self.create_request_args(**{
             'method': 'post',
-            'url_attr': 'MY_VIDEOS',
+            'url_attr': 'MY_SINGLE_VIDEO',
             'post_data': vdd
         })
-        return self._api_call(**req_args)
+        return self._api_call(video_id=video_id, **req_args)
 
         #self.vdd = {
             #'style': self.style

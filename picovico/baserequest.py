@@ -49,7 +49,7 @@ class PicovicoRequest(object):
 
     @url.setter
     def url(self, endpoint):
-        self.__url = parse.urljoin(self.host, endpoint.lower())
+        self.__url = parse.urljoin(self.host, endpoint)
 
     @property
     def headers(self):

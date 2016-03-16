@@ -128,7 +128,7 @@ class PicovicoProject(object):
             Dictionary for single asset.
         """
         asset_dict = {
-            'asset': asset_type,
+            'name': asset_type,
             'start_time': 0,
             'end_time': 0
         }
@@ -199,8 +199,8 @@ class PicovicoProject(object):
         Raises:
             AssertionError
         """
-        assert value in pv_constants.QUALITY, '{0} is not supported. Choose [{1}]'.format(value, ','.join(str(q) for q in pv_constants.QUALITY))
-        self.__replace_vdd_data(quality=value)
+        assert int(value) in pv_constants.QUALITY, '{0} is not supported. Choose [{1}]'.format(value, ','.join(str(q) for q in pv_constants.QUALITY))
+        self.__replace_vdd_data(quality=int(value))
 
     def set_name(self, value):
         """ Add name to video project.

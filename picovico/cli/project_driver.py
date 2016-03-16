@@ -5,6 +5,8 @@ import six
 from . import utils as pv_utility
 from . import profile_utils
 from . import file_utils
+from . import prompt
+from . import decorators as pv_cli_dec
 from .. import project as pv_project
 
 project_components = {
@@ -15,7 +17,7 @@ project_components = {
 }    
 define_components = [a for a in pv_project.Vdd._fields if a not in ('assets', 'credits')]
 subcommands = {
-    'begin': ('name', 'style', 'quality'),
+    'begin': define_components,
     'define': itertools.chain(define_components, ('video',)),
     'render': ('video',),
     'preview': ('video',),
@@ -210,6 +212,7 @@ def save_project_data(project):
     new_data = project_save_format(project)
     file_utils.write_to_project_file(new_data)
 
+@pv_cli_dec.pv_cli_check_project_begin
 def project_cli_action(profile=None, **kwargs):
     project_action = kwargs.get('project')
     methods = []

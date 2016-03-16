@@ -30,9 +30,6 @@ def get_project_file():
 def has_project_file():
     return os.path.isfile(get_project_file())
 
-def has_session_file():
-    return os.path.isfile(get_session_file())
-
 def get_session_file():
     return get_file_from_storage('session')
 
