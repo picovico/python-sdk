@@ -79,7 +79,7 @@ class PicovicoProject(object):
     def render(self):
         """ Render/Create the video.
         """
-        self.video_component.render(self.video)
+        self.video_component.create(self.video)
 
     def preview(self):
         """ Preview the video.
