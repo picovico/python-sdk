@@ -10,7 +10,7 @@ def pv_auth_required(func):
     Also it sets header to `_pv_request` attribute of the object.
 
     Raises:
-        picovico.exceptions.PicovicoAPINotAllowed
+        .PicovicoAPINotAllowed
     """
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):
@@ -30,7 +30,7 @@ def pv_not_implemented(against):
     the object component is implemented in API or not.
 
     Args:
-        againsts(iterator): The check itertor.
+        againsts(:class:`list` | :class:`tuple`): The check itertor.
 
     Raises:
         NotImplementedError
@@ -51,7 +51,7 @@ def pv_project_check_begin(func):
     This checks project object `video` attribute.
 
     Raises:
-        picovico.exceptions.PicovicoProjectNotAllowed
+        .PicovicoProjectNotAllowed
     """
     @functools.wraps(func)
     def wrapper(self, *args, **kwargs):

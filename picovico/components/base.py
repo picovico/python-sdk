@@ -11,17 +11,19 @@ class PicovicoBaseComponent(object):
 
     Abstract class with common component methods and API calls.
 
-    Args:
-        request_obj(PicovicoRequest): instance of :class:`picovico.baserequest.PicovicoRequest`.
-
-    Raises:
-        AssertionError
     """
     __metaclass__ = abc.ABCMeta
     _components = ('style', 'music', 'photo', 'video')
 
 
     def __init__(self, request_obj):
+        """
+        Args:
+            request_obj(PicovicoRequest): instance of :class:`picovico.baserequest.PicovicoRequest`.
+
+        Raises:
+            AssertionError
+        """
         assert isinstance(request_obj, pv_base.PicovicoRequest)
         self._pv_request = request_obj
 

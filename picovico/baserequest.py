@@ -20,10 +20,10 @@ class PicovicoRequest(object):
     include URL buildup.
     
     Attributes:
-        request_args: :class:`.RequestArg` instance available after method calls.
+        request_args: Object with `method` and `data` attributes available after method call.
 
     Args:
-        headers(dict, optional): headers to be included with API request.
+        headers(dict): *Optional* headers to be included with API request.
     """
 
     def __init__(self, headers=None):
@@ -75,7 +75,7 @@ class PicovicoRequest(object):
             req_data(object): Data to be sent. Usually `dict` or open file.
 
         Returns:
-            :class:`.RequestArg` instance.
+            object: Object with `data` and `method` assigned.
         """
         args = {
             'method': method_name,
@@ -103,10 +103,10 @@ class PicovicoRequest(object):
             path(str): URL path.
 
         Raises:
-            picovico.exceptions.PicovicoNotFound: If status is 404.
-            picovico.exceptions.PicovicoUnauthorized: If status is 401.
-            picovico.exceptions.PicovicoRequestError: If status is 400 related.
-            picovico.exceptions.PicovicoServerError: If status is 500.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
 
         Returns:
             :mod:`json` data.
@@ -119,17 +119,17 @@ class PicovicoRequest(object):
 
         Args:
             path(str): URL path.
-            post_data(dict): Data to be posted `{'k': 'v'}` format.
+            post_data(dict): *Optional* Data to be posted `{'k': 'v'}` format.
         
         Raises:
-            picovico.exceptions.PicovicoNotFound: If status is 404.
-            picovico.exceptions.PicovicoUnauthorized: If status is 401.
-            picovico.exceptions.PicovicoRequestError: If status is 400 related.
-            picovico.exceptions.PicovicoServerError: If status is 500.
-            AssertionError: when post_data is not :py:class:`dict`.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
+            AssertionError: when post_data is not :class:`dict`.
 
         Returns:
-            :py:mod:`json` data.
+            :mod:`json` data.
         """
         if post_data:
             assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
@@ -141,17 +141,18 @@ class PicovicoRequest(object):
 
         Args:
             path(str): URL path.
-            filename(optional[str]): filename with full path.
-            data_headers(optional[dict]): Data to be posted `{'k': 'v'}` format.
+            filename(str): *Optional* filename with full path.
+            data_headers(dict): *Optional* Data to be posted `{'k': 'v'}` format.
+        
         Raises:
-            picovico.exceptions.PicovicoNotFound: If status is 404.
-            picovico.exceptions.PicovicoUnauthorized: If status is 401.
-            picovico.exceptions.PicovicoRequestError: If status is 400 related.
-            picovico.exceptions.PicovicoServerError: If status is 500.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
             AssertionError: when filename or data_headers are provided but donot match the types.
 
         Returns:
-            :py:mod:`json` data.
+            :mod:`json` data.
         """
         if data_headers is not None:
             assert isinstance(data_headers, dict), 'data headers should be of {"key": "value"} format'
@@ -170,13 +171,13 @@ class PicovicoRequest(object):
             path(str): URL path.
 
         Raises:
-            picovico.exceptions.PicovicoNotFound: If status is 404.
-            picovico.exceptions.PicovicoUnauthorized: If status is 401.
-            picovico.exceptions.PicovicoRequestError: If status is 400 related.
-            picovico.exceptions.PicovicoServerError: If status is 500.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
 
         Returns:
-            :py:mod:`json` data.
+            :mod:`json` data.
         """
         self.request_args = self.get_request_args('delete')
         return self.__respond(path)

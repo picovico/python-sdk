@@ -9,7 +9,7 @@ class PicovicoError(Exception):
     Args:
         status(int): HTTP status code.
         message(str): Readable message.
-        response(dict, json): Raw response from request itself.
+        response(:class:`dict` | :mod:`json`): Raw response from request itself.
     """
 
     def __init__(self, status=None, message=None, response=None):

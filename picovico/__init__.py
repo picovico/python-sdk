@@ -10,17 +10,22 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
     Base class for API activity. It will ready component and project objects based
     on authorization.
 
-    Attributes(Only when you are authorized):
-        photo_component :class: `PicovicoPhoto` instance.
-        video_component :class: `PicovicoVideo` instance.
-        music_component :class: `PicovicoMusic` instance.
-        style_component :class: `PicovicoStyle` instance.
+    Attributes:
+        photo_component: :class:`.components.PicovicoPhoto` instance.
+        video_component: :class:`.components.PicovicoVideo` instance.
+        music_component: :class:`.components.PicovicoMusic` instance.
+        style_component: :class:`.components.PicovicoStyle` instance.
+        project: :class:`.PicovicoProject` instance.
+
+    Note:
+        Components and Projects are available only after authorization.
 
     Args:
         app_id(str): Application ID given by Picovico.
         device_id(str): Some Device identifier. [Default  will be used]
-        app_secret(optional[str]): If  application secret is given
+        app_secret(str): *Optional* If  application secret is given.
     """
+    
     def __init__(self, app_id, device_id=None, app_secret=None):
         super(PicovicoAPI, self).__init__(app_id, device_id=device_id, app_secret=app_secret)
         if self.is_authorized():
@@ -82,16 +87,12 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
 
     @pv_auth_required
     def me(self):
-        """ Profile call from api.
+        """ Get my profile.
         """
         return self._pv_request.get(path=pv_urls.ME)
 
     @property
     def project(self):
-        """ Project Component.
-        Returns:
-            :class: PicovicoProject instance[authorized] else None.
-        """
         return self.__project
 
     def _ready_component_property(self):

@@ -16,12 +16,6 @@ class PicovicoComponentMixin(object):
     """ Picovico-SDK: Mixin class for component.
 
     This is a mixin class inherited by API class.
-
-    Attributes:
-        style_component: PicovicoStyle object
-        music_component: PicovicoMusic object
-        photo_component: PicovicoPhoto object
-        video_component: PicovicoVideo object
     """
 
     __metaclass__ = abc.ABCMeta
