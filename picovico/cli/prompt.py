@@ -105,6 +105,10 @@ def show_action_message(profile_name, message):
     generic_prompt(profile_name=profile_name)
     show_print(message)
 
+def show_project_action_success(action, video_id, profile_name):
+    msg = 'Your Project Action: {} was succesfully completed.'.format(action)
+    msg += '\nYour current video is: {}'.format(video_id)
+    show_action_message(profile_name, msg)
 
 def show_action_success(action, profile_name):
     msg = 'Your Action: {} was succesfully completed.'.format(action)

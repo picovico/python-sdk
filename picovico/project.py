@@ -275,7 +275,7 @@ class PicovicoProject(object):
             caption(str): caption to be used with photo.
         """
         photo_data = {'caption': caption} if caption else None
-        photo_asset = self.create_asset_dict('photo', photo_id, photo_data)
+        photo_asset = self.create_asset_dict('image', photo_id, photo_data)
         self.__add_asset(photo_asset)
 
     @pv_decorator.pv_project_check_begin

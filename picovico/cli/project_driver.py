@@ -23,6 +23,7 @@ subcommands = {
     'preview': ('video',),
     'discard': ('video',),
     'save': ('video',),
+    'close': None,
 }
 
 def get_project_command():
@@ -111,6 +112,7 @@ def prepare_music_method_args(**kwargs):
     #return ('add_music', music_id=music_id, body=body)
 def _prepare_credit_args(**kwargs):
     content = kwargs.get('content')
+    assert content, 'Credit content should be "name,value" format.'
     content = content.split(',')
     assert len(content) == 2 and all(content), 'Make sure credit content is "name,value" format.'
     return content[0], content[1]
@@ -212,10 +214,15 @@ def save_project_data(project):
     new_data = project_save_format(project)
     file_utils.write_to_project_file(new_data)
 
+def close():
+    file_utils.delete_project_file()
+
 @pv_cli_dec.pv_cli_check_project_begin
 def project_cli_action(profile=None, **kwargs):
     project_action = kwargs.get('project')
     methods = []
+    if project_action == 'close':
+        return None
     api = get_project_api(profile, **kwargs)
     if project_action in ('define', 'begin'):
         if project_action == 'define':
@@ -232,3 +239,12 @@ def project_cli_action(profile=None, **kwargs):
     #action = getattr(api.project, project_action)
     #arguments = prepare_from_kwargs(**kwargs)
     #action(**kwargs)
+
+def finalize_project_action(**kwargs):
+    project_data = file_utils.read_from_project_file() or {}
+    video_id = ''.join(project_data.keys()) if len(project_data) == 1 else None
+    act = kwargs.get('project')
+    if act.startswith(('render', 'close')):
+        close()
+    prompt.show_project_action_success(act, video_id, kwargs.get('profile_name'))
+        

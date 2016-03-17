@@ -123,7 +123,10 @@ def call_api_actions(action, profile, **kwargs):
         if result:
             prompt.show_action_result(action, result, profile)
         else:
-            prompt.show_action_success(action, profile)
+            if action == 'project':
+                proj_driver.finalize_project_action(**kwargs)
+            else:
+                prompt.show_action_success(action, profile)
         prof = profile_utils.get_profile(profile)
         if prof.LOG and action not in custom_command:
             cli_logger.log_actions(prof.NAME, action, result, **kwargs)
