@@ -23,6 +23,7 @@ picovico.baserequest module
 .. automodule:: picovico.baserequest
 .. autoclass:: PicovicoRequest
     :members:
+    :exclude-members: get_request_args
     
 picovico.decorators module
 --------------------------

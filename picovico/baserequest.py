@@ -19,9 +19,6 @@ class PicovicoRequest(object):
     It provides method calls and arguments for Picovico API. This also
     include URL buildup.
     
-    Attributes:
-        request_args: Object with `method` and `data` attributes available after method call.
-
     Args:
         headers(dict): *Optional* headers to be included with API request.
     """
@@ -75,7 +72,7 @@ class PicovicoRequest(object):
             req_data(object): Data to be sent. Usually `dict` or open file.
 
         Returns:
-            object: Object with `data` and `method` assigned.
+            RequestArg: Object with `data` and `method` assigned.
         """
         args = {
             'method': method_name,

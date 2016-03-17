@@ -12,16 +12,16 @@ from .photo import PicovicoPhoto
 from .. import urls as pv_urls
 from .. import baserequest as pv_base
 
-_doc_map = {
-    'video': PicovicoVideo,
-    'music': PicovicoMusic,
-    'style': PicovicoStyle,
-    'photo': PicovicoPhoto,
-}
-for k, v in _doc_map.items():
-    for meth in ('one', 'all', 'delete', 'get_free', 'upload_file'):
-        doc = getattr(v, meth)
-        setattr(doc.__func__, '__doc__', doc.__doc__.format(k))
+# _doc_map = {
+    # 'video': PicovicoVideo,
+    # 'music': PicovicoMusic,
+    # 'style': PicovicoStyle,
+    # 'photo': PicovicoPhoto,
+# }
+# for k, v in _doc_map.items():
+    # for meth in ('one', 'all', 'delete', 'get_free', 'upload_file'):
+        # doc = getattr(v, meth)
+        # setattr(doc.__func__, '__doc__', doc.__doc__.format(k))
 
 class PicovicoComponentMixin(object):
     """ Picovico-SDK: Mixin class for component.
