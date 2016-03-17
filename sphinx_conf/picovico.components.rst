@@ -1,1 +1,0 @@
-../doc/source/picovico.components.rst
