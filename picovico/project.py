@@ -6,7 +6,8 @@ from . import components as pv_components
 from . import constants as pv_constants
 from . import decorators as pv_decorator
 
-# Video Data Definition to be used in project
+#: Video Data Definition to be used in project
+#: All video related components are stored in `Vdd`
 Vdd = collections.namedtuple('VideoDefinitionData', ('name', 'style', 'quality', 'assets', 'privacy', 'credits'))
 
 class PicovicoProject(object):
@@ -16,16 +17,16 @@ class PicovicoProject(object):
     The object will hold all component related actions as well.
 
     Attributes:
-        photo_component: PicovicoComponent object
-        video_component: PicovicoComponent object
-        music_component: PicovicoComponent object
-        style_component: PicovicoComponent object
+        photo_component: :class:`.PicovicoPhoto` instance.
+        video_component: :class:`.PicovicoVideo` instance.
+        music_component: :class:`.PicovicoMusic` instance.
+        style_component: :class:`.PicovicoStyle` instance.
 
     Args:
         request_obj(PicovicoRequest): Request object with authentication
 
     Raises:
-        PicovicoProjectNotAllowed: when request is not authorized.
+        PicovicoProjectNotAllowed: when `request_obj` is not authorized.
     """
 
     def __init__(self, request_obj):
@@ -40,7 +41,7 @@ class PicovicoProject(object):
 
     @property
     def vdd(self):
-        """ Read-only Vdd object.
+        """ Read-only :class:`Vdd` instance.
         """
         return self.__vdd
 
@@ -59,7 +60,7 @@ class PicovicoProject(object):
         """ Initiate the video proect.
 
         Args:
-            name(optional[str]): Name of video or default 'Untitled' name
+            name(str): *Optional* Name of video or default 'Untitled' name
         """
         self.set_name(name)
         res = self.video_component.new(self.vdd.name)
@@ -71,7 +72,7 @@ class PicovicoProject(object):
         self.video_component.delete(self.video)
 
     def save(self):
-        """ Save vdd component.
+        """ Save `Vdd` component.
         """
         if self.vdd:
             self.video_component.save(self.video, self.populate_vdd())
@@ -87,10 +88,10 @@ class PicovicoProject(object):
         self.video_component.preview(self.video)
 
     def populate_vdd(self):
-        """ Make Vdd post data.
+        """ Make `Vdd` post data.
 
         Returns:
-            vdd dictionary for post.
+            dict: data based on :class:`Vdd` instance.
         """
         vdd = {}
         vdd.update(name=self.vdd.name)
@@ -104,8 +105,11 @@ class PicovicoProject(object):
 
     @staticmethod
     def time_counter(assets):
-        """ (staticmethod) time counter.
+        """ Time counter.
         Appends time in assets.
+        
+        Returns:
+            dict: data with 'start_time' and 'end_time'.
         """
         start = 0 if not assets else len(assets)*5
         return {
@@ -116,16 +120,16 @@ class PicovicoProject(object):
 
     @staticmethod
     def create_asset_dict(asset_type, asset_id=None, data=None):
-        """ (staticmethod) asset data creator.
-        Creates asset post data from type.
+        """ Asset data creator.
+        Creates asset post data from asset type.
 
         Args:
             asset_type(str): name of asset to be sent.
-            asset_id(optional[str]): id of some asset component
-            data(optional[dict]): additional data to be sent.
+            asset_id(str): *Optional* id of some asset component
+            data(dict): *Optional* additional data to be sent.
 
         Returns:
-            Dictionary for single asset.
+            dict: Single Asset post data.
         """
         asset_dict = {
             'name': asset_type,
@@ -177,7 +181,7 @@ class PicovicoProject(object):
     @pv_decorator.pv_project_check_begin
     def set_style(self, value):
         """ Add style to video project.
-        Sets vdd style.
+        Sets :class:`Vdd` style.
 
         Args:
             value(str): style name of picovico.
@@ -191,7 +195,7 @@ class PicovicoProject(object):
     @pv_decorator.pv_project_check_begin
     def set_quality(self, value):
         """ Add quality to video project.
-        Sets vdd quality.
+        Sets :class:`Vdd` quality.
 
         Args:
             value(int): allowed quality by picovico
@@ -204,7 +208,7 @@ class PicovicoProject(object):
 
     def set_name(self, value):
         """ Add name to video project.
-        Sets vdd name.
+        Sets :class:`Vdd` name.
 
         Args:
             value(str): name to set.
@@ -215,7 +219,7 @@ class PicovicoProject(object):
     @pv_decorator.pv_project_check_begin
     def add_music(self, music_id):
         """ Add music to video project.
-        Adds music asset to vdd.
+        Adds music asset to :class:`Vdd`.
 
         Args:
             music_id(str): music identifier from picovico.

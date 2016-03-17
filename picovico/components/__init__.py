@@ -46,6 +46,9 @@ class PicovicoComponentMixin(object):
         self._pv_request = pv_base.PicovicoRequest()
         for component in ('music', 'style'):
             setattr(self, 'free_{}s'.format(component), self.__get_free(component.upper())) 
+            # doc = 'Picovico offered {}s'.format(component)
+            # func = getattr(PicovicoComponentMixin, 'free_{}s'.format(component))
+            # func.__func__.__doc__ = doc
             #self._ready_component_property()
 
     def _ready_component_property(self):
