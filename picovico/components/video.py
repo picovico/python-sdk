@@ -65,6 +65,13 @@ class PicovicoVideo(PicovicoBaseComponent):
 
     @pv_decorator.pv_auth_required
     def save(self, video_id, vdd):
+        """ Save video with vdd data.
+
+        Args:
+            video_id(str): Video identifier to be saved.
+
+        """
+
         assert isinstance(vdd, dict), 'Simply assure vdd provided is dictionary format.'
         req_args = self.create_request_args(**{
             'method': 'post',

@@ -11,10 +11,10 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
     on authorization.
 
     Attributes:
-        photo_component: :class:`.components.PicovicoPhoto` instance.
-        video_component: :class:`.components.PicovicoVideo` instance.
-        music_component: :class:`.components.PicovicoMusic` instance.
-        style_component: :class:`.components.PicovicoStyle` instance.
+        photo_component: :class:`.PicovicoPhoto` instance.
+        video_component: :class:`.PicovicoVideo` instance.
+        music_component: :class:`.PicovicoMusic` instance.
+        style_component: :class:`.PicovicoStyle` instance.
         project: :class:`.PicovicoProject` instance.
 
     Note:
@@ -25,7 +25,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
         device_id(str): Some Device identifier. [Default  will be used]
         app_secret(str): *Optional* If  application secret is given.
     """
-    
+
     def __init__(self, app_id, device_id=None, app_secret=None):
         super(PicovicoAPI, self).__init__(app_id, device_id=device_id, app_secret=app_secret)
         if self.is_authorized():
@@ -62,7 +62,7 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
             self._pv_request.headers = self.headers
             return True
         return False
-    
+
     def authenticate(self, app_secret=None):
         """ API authentication workflow.
 

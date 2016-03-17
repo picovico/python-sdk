@@ -1,3 +1,6 @@
+""" Picovico-SDK: Some Necessary constants.
+"""
+
 from collections import namedtuple
 
 SUPPORTED_IMAGE_FORMAT = ('PNG', 'JPEG')
