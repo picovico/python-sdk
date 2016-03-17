@@ -60,10 +60,10 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def one(self, id):
-        """ Fetch component with specific id.
+        """ Fetch {0} with specific id.
 
         Args:
-            id(str): component id to fetch.
+            id(str): {0} id to fetch.
         """
         url_args =  {'{}_id'.format(self.component): id}
         req_args = self.create_request_args(**{
@@ -75,7 +75,7 @@ class PicovicoBaseComponent(object):
 
     @pv_decorator.pv_auth_required
     def all(self):
-        """ Fetch all components.
+        """ Fetch all {0}s.
         """
         req_args = self.create_request_args(**{
             'method': 'get',
@@ -86,12 +86,11 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
     def upload_file(self, filename, data_headers=None):
-        """ Upload file for component.
-        `put` method is used.
+        """ Upload file for {0}.
 
         Args:
             filname(str): path to file.
-            data_headers(optional(dict)): Any additional headers.
+            data_headers(dict): *Optional* Any additional headers.
         """
         req_args = self.create_request_args(**{
             'method': 'put',
@@ -105,8 +104,7 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
     def upload_url(self, url, **data):
-        """ Upload URL for component.
-        `post` method  is used.
+        """ Upload URL for {0}.
 
         Args:
             url(str): URL to upload.
@@ -122,10 +120,10 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def delete(self, id):
-        """ Remove specific component.
+        """ Remove specific {0}.
 
         Args:
-            id(str): Component id to be removed.
+            id(str): {0} id to be removed.
         """
         url_args =  {'{}_id'.format(self.component): id}
         req_args = self.create_request_args(**{
@@ -149,8 +147,7 @@ class PicovicoBaseComponent(object):
 
     @pv_decorator.pv_not_implemented(_components[:2])
     def get_free(self):
-        """ method for free components.
-        View Picovico offered 'music' and 'style'
+        """ View Picovico offered '{0}'.
         """
         free_req = pv_base.PicovicoRequest()
         return free_req.get(path=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))

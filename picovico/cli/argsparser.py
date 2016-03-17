@@ -5,6 +5,29 @@ import six
 
 from . import driver as cli_driver
 
+help_usage = """ Picovico SDK client utility. 
+                ------------------------------
+
+picovico-client action args
+
+    Actions:
+        configure
+        login
+        logout
+        authenticate
+        get-{component}s music, photo, style, video
+        project
+    
+    Project Actions:
+        define
+        begin
+        close
+        render
+        preview
+        duplicate
+        save
+"""
+
 def create_arguments(parser, actions):
     for action in actions:
         name = action.pop('name')
@@ -27,7 +50,7 @@ def create_subcommands(parser, actions, sub_title, sub_dest, **extras):
 
 def get_parser():
     actions = cli_driver.get_cli_commands()
-    parser = argparse.ArgumentParser(prog='picovico-client')
+    parser = argparse.ArgumentParser(prog='picovico-client', description=help_usage, formatter_class=argparse.RawTextHelpFormatter)
     profile_args = {
         '--profile': {'type': str}
     }
