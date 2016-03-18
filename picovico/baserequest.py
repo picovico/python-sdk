@@ -8,7 +8,7 @@ from . import urls as pv_urls
 from . import exceptions as pv_exceptions
 
 
-# Helper namedtuple for Request Argument
+#: `RequestArg` namedtuple for PicovicoRequest 
 RequestArg = collections.namedtuple('RequestArg', ('method', 'data'))
 
 
@@ -18,12 +18,9 @@ class PicovicoRequest(object):
     This class is a convenience wrapper around `requests` module.
     It provides method calls and arguments for Picovico API. This also
     include URL buildup.
-
-    Attributes:
-        request_args(RequestArg): This will only be available when you call a method.
-
+    
     Args:
-        headers(optional[dict]): headers to be included with API request.
+        headers(dict): *Optional* headers to be included with API request.
     """
 
     def __init__(self, headers=None):
@@ -49,7 +46,7 @@ class PicovicoRequest(object):
 
     @url.setter
     def url(self, endpoint):
-        self.__url = parse.urljoin(self.host, endpoint.lower())
+        self.__url = parse.urljoin(self.host, endpoint)
 
     @property
     def headers(self):
@@ -75,7 +72,7 @@ class PicovicoRequest(object):
             req_data(object): Data to be sent. Usually `dict` or open file.
 
         Returns:
-            RequestArg object i.e. namedtuple with method and data assigned.
+            RequestArg: Object with `data` and `method` assigned.
         """
         args = {
             'method': method_name,
@@ -84,12 +81,12 @@ class PicovicoRequest(object):
         return RequestArg(**args)
 
     def is_authenticated(self):
-        """ Checks whether the object is authentcated object or not.
+        """ Checks whether the object is authenticated or not.
 
         This method checks for header for authentication token and key.
 
         Returns:
-            True or False
+            bool: *True* if header consist of authentication headers else *False*.
         """
         check = False
         if self.headers:
@@ -103,34 +100,36 @@ class PicovicoRequest(object):
             path(str): URL path.
 
         Raises:
-            PicovicoNotFound: If status is 404.
-            PicovicoUnauthorized: If status is 401.
-            PicovicoRequestError: If status is 400 related.
-            PicovicoServerError: If status is 500.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
 
         Returns:
-            JSON data if status is ok.
+            :mod:`json` data.
         """
         self.request_args = self.get_request_args('get')
         return self.__respond(path)
 
-    def post(self, path, post_data):
+    def post(self, path, post_data=None):
         """ Request post method.
 
         Args:
             path(str): URL path.
-            post_data(dict): Data to be posted `{'k': 'v'}` format.
+            post_data(dict): *Optional* Data to be posted `{'k': 'v'}` format.
+        
         Raises:
-            PicovicoNotFound: If status is 404.
-            PicovicoUnauthorized: If status is 401.
-            PicovicoRequestError: If status is 400 related.
-            PicovicoServerError: If status is 500.
-            AssertionError: when post_data is not `dict`.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
+            AssertionError: when post_data is not :class:`dict`.
 
         Returns:
-            JSON data if status is ok.
+            :mod:`json` data.
         """
-        assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
+        if post_data:
+            assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
         self.request_args = self.get_request_args('post', post_data)
         return self.__respond(path)
 
@@ -139,17 +138,18 @@ class PicovicoRequest(object):
 
         Args:
             path(str): URL path.
-            filename(optional[str]): filename with full path.
-            data_headers(optional[dict]): Data to be posted `{'k': 'v'}` format.
+            filename(str): *Optional* filename with full path.
+            data_headers(dict): *Optional* Data to be posted `{'k': 'v'}` format.
+        
         Raises:
-            PicovicoNotFound: If status is 404.
-            PicovicoUnauthorized: If status is 401.
-            PicovicoRequestError: If status is 400 related.
-            PicovicoServerError: If status is 500.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
             AssertionError: when filename or data_headers are provided but donot match the types.
 
         Returns:
-            JSON data if status is ok.
+            :mod:`json` data.
         """
         if data_headers is not None:
             assert isinstance(data_headers, dict), 'data headers should be of {"key": "value"} format'
@@ -157,9 +157,8 @@ class PicovicoRequest(object):
         put_data = None
         if filename is not None:
             assert isinstance(filename, six.string_types), 'Filename should be valid name'
-            with open(filename, 'r') as f:
-                put_data = f
-        self.request_args = self.get_request_args('put', put_data)
+            put_data = open(filename, 'rb').read()
+        self.request_args = self.get_request_args('put', req_data=put_data)
         return self.__respond(path)
 
     def delete(self, path):
@@ -169,13 +168,13 @@ class PicovicoRequest(object):
             path(str): URL path.
 
         Raises:
-            PicovicoNotFound: If status is 404.
-            PicovicoUnauthorized: If status is 401.
-            PicovicoRequestError: If status is 400 related.
-            PicovicoServerError: If status is 500.
+            .PicovicoNotFound: If status is 404.
+            .PicovicoUnauthorized: If status is 401.
+            .PicovicoRequestError: If status is 400 related.
+            .PicovicoServerError: If status is 500.
 
         Returns:
-            JSON data if status is ok.
+            :mod:`json` data.
         """
         self.request_args = self.get_request_args('delete')
         return self.__respond(path)
@@ -194,7 +193,10 @@ class PicovicoRequest(object):
         request_args.update(url=self.url)
         request_args.update(headers=self.headers)
         response = requests.request(**request_args)
-        json_response = response.json()
+        try:
+            json_response = response.json()
+        except ValueError:
+            json_response = {'message': response.text}
         if not response.ok:
             pv_exceptions.raise_valid_error(status_code=response.status_code, **json_response)
         return json_response

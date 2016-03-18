@@ -68,11 +68,8 @@ class TestPicovicoRequest:
         method_func(urls.ME) if not argument else method_func(urls.ME, **argument)
         respond_mock.assert_called_with(urls.ME)
         assert pv_req.request_args.method == method
-        if method != 'put':
-            assert pv_req.request_args.data == data
-        else:
-            assert pv_req.request_args.data.read() == data
-
+        assert pv_req.request_args.data == data
+        
     def test_authentication_header(self, pv_headers):
         pv_req = PicovicoRequest()
         assert not pv_req.is_authenticated()

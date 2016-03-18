@@ -1,8 +1,10 @@
-""" Picovico-SDK: URL constants.
+""" .. :mod: urls
+            :synopsis: URL paths and endpoints.
 
 All the api related endpoints and host.
 """
 
+#: Base URL
 PICOVICO_BASE = "https://uapi-f1.picovico.com/v2.1/"
 
 PICOVICO_APP = "login/app"

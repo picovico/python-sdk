@@ -11,17 +11,19 @@ class PicovicoBaseComponent(object):
 
     Abstract class with common component methods and API calls.
 
-    Args:
-        request_obj(PicovicoRequest): PicovicoRequest object.
-
-    Raises:
-        AssertionError
     """
     __metaclass__ = abc.ABCMeta
     _components = ('style', 'music', 'photo', 'video')
 
 
     def __init__(self, request_obj):
+        """
+        Args:
+            request_obj(.PicovicoRequest): instance of :class:`.PicovicoRequest`.
+
+        Raises:
+            AssertionError
+        """
         assert isinstance(request_obj, pv_base.PicovicoRequest)
         self._pv_request = request_obj
 
@@ -58,10 +60,10 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def one(self, id):
-        """ Fetch component with specific id.
+        """ Fetch one with specific id.
 
         Args:
-            id(str): component id to fetch.
+            id(str): id to fetch.
         """
         url_args =  {'{}_id'.format(self.component): id}
         req_args = self.create_request_args(**{
@@ -73,7 +75,7 @@ class PicovicoBaseComponent(object):
 
     @pv_decorator.pv_auth_required
     def all(self):
-        """ Fetch all components.
+        """ Fetch all.
         """
         req_args = self.create_request_args(**{
             'method': 'get',
@@ -84,12 +86,11 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
     def upload_file(self, filename, data_headers=None):
-        """ Upload file for component.
-        `put` method is used.
+        """ Upload file.
 
         Args:
             filname(str): path to file.
-            data_headers(optional(dict)): Any additional headers.
+            data_headers(dict): *Optional* Any additional headers.
         """
         req_args = self.create_request_args(**{
             'method': 'put',
@@ -103,8 +104,7 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:3])
     @pv_decorator.pv_auth_required
     def upload_url(self, url, **data):
-        """ Upload URL for component.
-        `post` method  is used.
+        """ Upload URL.
 
         Args:
             url(str): URL to upload.
@@ -120,10 +120,10 @@ class PicovicoBaseComponent(object):
     @pv_decorator.pv_not_implemented(_components[1:])
     @pv_decorator.pv_auth_required
     def delete(self, id):
-        """ Remove specific component.
+        """ Remove specific.
 
         Args:
-            id(str): Component id to be removed.
+            id(str): id to be removed.
         """
         url_args =  {'{}_id'.format(self.component): id}
         req_args = self.create_request_args(**{
@@ -133,22 +133,21 @@ class PicovicoBaseComponent(object):
         req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[:2])
-    @pv_decorator.pv_auth_required
-    def get_library(self):
-        """ Helper method to fetch all user component data.
-        This method is similar to `all`.
-        """
-        req_args = self.create_request_args(**{
-            'method': 'get',
-            'url_attr': 'MY_{}S'.format(self.component.upper()),
-        })
-        return self._api_call(**req_args)
+    #@pv_decorator.pv_not_implemented(_components[:2])
+    #@pv_decorator.pv_auth_required
+    #def get_library(self):
+        #""" Helper method to fetch all user component data.
+        #This method is similar to `all`.
+        #"""
+        #req_args = self.create_request_args(**{
+            #'method': 'get',
+            #'url_attr': 'MY_{}S'.format(self.component.upper()),
+        #})
+        #return self._api_call(**req_args)
 
     @pv_decorator.pv_not_implemented(_components[:2])
     def get_free(self):
-        """ method for free components.
-        View Picovico offered 'music' and 'style'
+        """ View Picovico free components.
         """
         free_req = pv_base.PicovicoRequest()
         return free_req.get(path=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))

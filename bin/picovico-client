@@ -1,0 +1,4 @@
+from picovico.cli.argsparser import picovico_parse_args
+
+if __name__ == '__main__':
+    picovico_parse_args()
