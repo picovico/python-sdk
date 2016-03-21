@@ -51,6 +51,7 @@ picovico.exceptions module
 
 .. automodule:: picovico.exceptions
     :members:
+    :exclude-members: PicovicoError
 
 picovico.project module
 -----------------------
