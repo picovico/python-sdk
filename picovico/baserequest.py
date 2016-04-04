@@ -106,7 +106,7 @@ class PicovicoRequest(object):
             .PicovicoServerError: If status is 500.
 
         Returns:
-            :mod:`json` data.
+            dict: :mod:`json` data.
         """
         self.request_args = self.get_request_args('get')
         return self.__respond(path)
@@ -126,7 +126,7 @@ class PicovicoRequest(object):
             AssertionError: when post_data is not :class:`dict`.
 
         Returns:
-            :mod:`json` data.
+            dict: :mod:`json` data.
         """
         if post_data:
             assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
@@ -149,7 +149,7 @@ class PicovicoRequest(object):
             AssertionError: when filename or data_headers are provided but donot match the types.
 
         Returns:
-            :mod:`json` data.
+            dict: :mod:`json` data.
         """
         if data_headers is not None:
             assert isinstance(data_headers, dict), 'data headers should be of {"key": "value"} format'
@@ -174,7 +174,7 @@ class PicovicoRequest(object):
             .PicovicoServerError: If status is 500.
 
         Returns:
-            :mod:`json` data.
+            dict: :mod:`json` data.
         """
         self.request_args = self.get_request_args('delete')
         return self.__respond(path)
