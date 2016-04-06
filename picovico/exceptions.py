@@ -53,7 +53,7 @@ class PicovicoUnauthorized(PicovicoNotFound):
 
 
 class PicovicoServerError(PicovicoError):
-    """ Picovico-SDK: Same as `PicovicoRequestError`.
+    """ Picovico-SDK: Same as :class:`.PicovicoRequestError`.
 
     This is raised for status codes of 500 i.e. server related errors.
     """
