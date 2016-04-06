@@ -1,0 +1,14 @@
+.gitignore
+.cache/
+.coverage
+*.pyc
+dist/
+*.sublime-workspace
+*.sublime-project
+picovico.egg-info/
+pytest_runner-2.7.1-py2.7.egg
+tox/
+build/
+*.egg/
+*.egg
+.tox/
