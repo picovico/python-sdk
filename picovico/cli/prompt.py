@@ -1,7 +1,7 @@
 import sys
 import warnings
 import pprint
-
+import getpass
 import six
 
 
@@ -72,7 +72,7 @@ def password_save_query():
 
 
 def configure_password_info():
-    password = show_input('Enter Picovico Password: ')
+    password =  getpass.getpass('Enter Picovico Password: ')
     assert password, 'Password is required.'
     return password
 
