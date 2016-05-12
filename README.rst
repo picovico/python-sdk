@@ -1,10 +1,12 @@
-python-sdk
+python-sdk (Beta)
 ==========
 
-The official python-sdk from Picovico
+The official python-sdk from Picovico API.
+- Includes picovico-client CLI tool to explore the API
 
+- For API documentation, visit - http://docs.picovico.com
+- Create API account - https://api.picovico.com
 
-NOT READY FOR PRODUCTION
 ~~~~~~~~~~~~~~~~~~~~~~~~
 For Testing
 -----------
