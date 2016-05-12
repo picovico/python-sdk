@@ -1,5 +1,5 @@
 import functools
-from . import exceptions as pv_exceptions
+from picovico import exceptions as pv_exceptions
 
 
 def pv_auth_required(func):

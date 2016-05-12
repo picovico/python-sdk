@@ -4,8 +4,8 @@ import requests
 import six
 from six.moves.urllib import parse
 
-from . import urls as pv_urls
-from . import exceptions as pv_exceptions
+from picovico import urls as pv_urls
+from picovico import exceptions as pv_exceptions
 
 
 #: `RequestArg` namedtuple for PicovicoRequest 

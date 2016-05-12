@@ -1,10 +1,10 @@
 import json
 import collections
 
-from . import exceptions as pv_exceptions
-from . import components as pv_components
-from . import constants as pv_constants
-from . import decorators as pv_decorator
+from picovico import exceptions as pv_exceptions
+from picovico import components as pv_components
+from picovico import constants as pv_constants
+from picovico import decorators as pv_decorator
 
 #: Video Data Definition to be used in project
 #: All video related components are stored in `Vdd`

@@ -1,8 +1,8 @@
-from . import file_utils
-from . import profile_utils
-from . import prompt
-
-from .. import PicovicoAPI
+from picovico.cli import file_utils
+from picovico.cli import profile_utils
+from picovico.cli import prompt
+      
+from picovico import PicovicoAPI
 
 def prepare_api_object(profile_name, session=False):
     profile_name = profile_name or profile_utils.DEFAULT_PROFILE_NAME

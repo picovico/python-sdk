@@ -3,7 +3,7 @@ import collections
 
 import six
 
-from . import file_utils
+from picovico.cli import file_utils
 
 
 NECESSARY_INFO = ('APP_ID', 'DEVICE_ID')

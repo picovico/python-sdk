@@ -1,9 +1,9 @@
 import abc
 
-from .. import urls as pv_urls
-from .. import constants as pv_constants
-from .. import baserequest as pv_base
-from .. import decorators as pv_decorator
+from picovico import urls as pv_urls
+from picovico import constants as pv_constants
+from picovico import baserequest as pv_base
+from picovico import decorators as pv_decorator
 
 
 class PicovicoBaseComponent(object):

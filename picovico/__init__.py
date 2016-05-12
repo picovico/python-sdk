@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from picovico.session import PicovicoSessionMixin
 from picovico.components import PicovicoComponentMixin
 from picovico.decorators import pv_auth_required

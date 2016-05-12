@@ -2,12 +2,12 @@ import itertools
 
 import six
 
-from . import utils as pv_utility
-from . import profile_utils
-from . import file_utils
-from . import prompt
-from . import decorators as pv_cli_dec
-from .. import project as pv_project
+from picovico.cli import utils as pv_utility
+from picovico.cli import profile_utils
+from picovico.cli import file_utils
+from picovico.cli import prompt
+from picovico.cli import decorators as pv_cli_dec
+from picovico import project as pv_project
 
 project_components = {
     'text': ('title', 'body'),
