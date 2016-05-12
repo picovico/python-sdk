@@ -10,7 +10,7 @@ from picovico.components.music import PicovicoMusic
 from picovico.components.photo import PicovicoPhoto
 
 from picovico import urls as pv_urls
-from picovico import baserequest as pv_base
+from picovico import baserequest as pv_request
 
 # _doc_map = {
     # 'video': PicovicoVideo,
@@ -34,7 +34,7 @@ class PicovicoComponentMixin(object):
     def __get_free(self, component):
         url = getattr(pv_urls, 'PICOVICO_{}S'.format(component))
         if self._pv_request.is_authenticated():
-            free_req = pv_base.PicovicoRequest()
+            free_req = pv_request.PicovicoRequest()
         else:
             free_req = self._pv_request
         def req():
@@ -43,7 +43,7 @@ class PicovicoComponentMixin(object):
 
     def __init__(self):
         super(PicovicoComponentMixin, self).__init__()
-        self._pv_request = pv_base.PicovicoRequest()
+        self._pv_request = pv_request.PicovicoRequest()
         for component in ('music', 'style'):
             setattr(self, 'free_{}s'.format(component), self.__get_free(component.upper())) 
             # doc = 'Picovico offered {}s'.format(component)

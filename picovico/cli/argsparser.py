@@ -3,7 +3,7 @@ import argparse
 
 import six
 
-from picovico.cli import driver as cli_driver
+from picovico.cli import driver as pv_cli_driver
 
 help_usage = """ Picovico SDK client utility. 
                 ------------------------------
@@ -49,7 +49,7 @@ def create_subcommands(parser, actions, sub_title, sub_dest, **extras):
     return parser
 
 def get_parser():
-    actions = cli_driver.get_cli_commands()
+    actions = pv_cli_driver.get_cli_commands()
     parser = argparse.ArgumentParser(prog='picovico-client', description=help_usage, formatter_class=argparse.RawTextHelpFormatter)
     profile_args = {
         '--profile': {'type': str}
@@ -69,4 +69,4 @@ def picovico_parse_args():
         if ns.include:
             arguments.update({ns.include: True})
     #print arguments
-    cli_driver.call_api_actions(**arguments)
+    pv_cli_driver.call_api_actions(**arguments)

@@ -68,7 +68,7 @@ class TestPVCLIArgs:
             assert 'log' in kwargs and kwargs['log'] in (True, False)
             assert 'profile' in kwargs and kwargs['profile'] in (None, 'SOME')
         mock_sys = mocker.patch.object(sys, 'argv', command.split())
-        mock_call_api_action = mocker.patch('picovico.cli.argsparser.cli_driver.call_api_actions')
+        mock_call_api_action = mocker.patch('picovico.cli.argsparser.pv_cli_driver.call_api_actions')
         mock_call_api_action.side_effect = side_effect
         picovico_parse_args()
         # mock_sys = mocker.patch.object(sys, 'argv', command.split()+['photo'])

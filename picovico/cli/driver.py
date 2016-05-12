@@ -3,15 +3,15 @@ import itertools
 
 import six
 
-from picovico.cli import decorators as cli_dec
-from picovico.cli import log as cli_logger
+from picovico.cli import decorators as pv_cli_decorators
+from picovico.cli import log as pv_cli_log
 from picovico.cli import profile_utils
 from picovico.cli import prompt
-from picovico.cli import project_driver as proj_driver
-from picovico.cli import utils as pv_utility
+from picovico.cli import project_driver
+from picovico.cli import utils as pv_cli_utils
 from picovico import PicovicoAPI
 from picovico.components.base import PicovicoBaseComponent
-from picovico import exceptions as pv_api_exceptions
+from picovico import exceptions as pv_exceptions
 
 custom_command = ('login', 'logout', 'authenticate', 'configure', 'my_profile')
 # component_actions = ('get_musics', 'get_music', 'delete_music',
@@ -56,27 +56,27 @@ def configure(profile_name=None, login=False, authenticate=False, log=False):
         prompt.show_print('Something unknown happened. Rerun configure')
 
 def my_profile(profile_name=None):
-    api = pv_utility.prepare_api_object(profile_name, session=True)
+    api = pv_cli_utils.prepare_api_object(profile_name, session=True)
     return api.me()
 
-@cli_dec.pv_cli_check_info('login')
+@pv_cli_decorators.pv_cli_check_info('login')
 def login(profile_name=None, username=None, password=None, profile=None, do_prompt=True):
     if do_prompt and not (username and password):
         user, pass_ = prompt.retry_once_for_assertions(prompt.configure_login_info, coerce_password=True, query_password=False)
     if username and not password:
         pass_ = prompt.retry_once_for_assertions(prompt.configure_password_info)
     profile_name = getattr(profile, 'NAME', profile_name)
-    pv_utility.auth_action('login', profile_name, username=user, password=pass_)
+    pv_cli_utils.auth_action('login', profile_name, username=user, password=pass_)
 
-@cli_dec.pv_cli_check_info('authenticate')
+@pv_cli_decorators.pv_cli_check_info('authenticate')
 def authenticate(profile_name=None, app_secret=None, profile=None, do_prompt=True):
     if do_prompt and not app_secret:
         app_sec = prompt.retry_once_for_assertions(prompt.configure_secret_info)
     profile_name = getattr(profile, 'NAME', profile_name)
-    pv_utility.auth_action('authenticate', profile_name, app_secret=app_sec)
+    pv_cli_utils.auth_action('authenticate', profile_name, app_secret=app_sec)
 
 def logout(profile_name=None):
-    api = pv_utility.prepare_api_object(profile_name, session=True)
+    api = pv_cli_utils.prepare_api_object(profile_name, session=True)
     api.logout()
     file_utils.delete_session_file()
 
@@ -86,7 +86,7 @@ def get_action_from_command(action, profile_name):
     current_action = action_map.get('action')
     component = action_map.get('component', None)
     if component:
-        api = pv_utility.prepare_api_object(profile_name, session=True)
+        api = pv_cli_utils.prepare_api_object(profile_name, session=True)
         api._ready_component_property()
         api_component = getattr(api, component)
         current_action = getattr(api_component, current_action)
@@ -105,7 +105,7 @@ def _sanitize_args_kwargs(**kwargs):
     kwargs.update(d)
     return kwargs
 
-@cli_dec.pv_cli_check_configure
+@pv_cli_decorators.pv_cli_check_configure
 def call_api_actions(action, profile, **kwargs):
     assert action, 'State your command'
     api_action = get_action_from_command(action, profile)
@@ -117,19 +117,19 @@ def call_api_actions(action, profile, **kwargs):
     try:
         kwargs = _sanitize_args_kwargs(**kwargs) 
         result = api_action(**kwargs) if kwargs else api_action()
-    except (pv_api_exceptions.PicovicoRequestError, pv_api_exceptions.PicovicoServerError) as  e:
+    except (pv_exceptions.PicovicoRequestError, pv_exceptions.PicovicoServerError) as  e:
         prompt.show_action_error(action, profile, e.status, e.message)
     else:
         if result:
             prompt.show_action_result(action, result, profile)
         else:
             if action == 'project':
-                proj_driver.finalize_project_action(**kwargs)
+                project_driver.finalize_project_action(**kwargs)
             else:
                 prompt.show_action_success(action, profile)
         prof = profile_utils.get_profile(profile)
         if prof.LOG and action not in custom_command:
-            cli_logger.log_actions(prof.NAME, action, result, **kwargs)
+            pv_cli_log.log_actions(prof.NAME, action, result, **kwargs)
 
 def create_component_commands():
     #components = {
@@ -201,7 +201,7 @@ def get_cli_commands():
     components = component_commands()
     commands = itertools.chain(commands, [{'command': d['command'], 'options': d['options']} for d in components])
     all_commands = [profile_utils._create_namedtuple('CliCommandsConfig', d) for d in commands]
-    project_commands = proj_driver.get_project_cli_commands()
+    project_commands = project_driver.get_project_cli_commands()
     all_commands = itertools.chain(all_commands, project_commands)
     return all_commands
 
@@ -212,8 +212,8 @@ def cli_map_command_to_actions():
         'logout': {'action': logout},
         'authenticate': {'action': authenticate},
         'my-profile': {'action': my_profile},
-        'flush-log': {'action': cli_logger.flush_log},
-        'project': {'action': proj_driver.project_cli_action}
+        'flush-log': {'action': pv_cli_log.flush_log},
+        'project': {'action': project_driver.project_cli_action}
     }
     components = component_commands()
     command_action_map.update({d['command']: {'action': d['action'], 'component': d['component']} for d in components})

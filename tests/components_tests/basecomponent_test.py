@@ -67,7 +67,7 @@ class TestBaseComponent:
                 call_url = call_url.format(**call_url_args)
                 call_arg.update(path=call_url)
                 api_call_mock.assert_called_with(**call_arg)
-        free_req = mocker.patch('picovico.components.base.pv_base.PicovicoRequest.get')
+        free_req = mocker.patch('picovico.components.base.pv_request.PicovicoRequest.get')
         if ignore_not_implemented(pv_comp.get_free):
             free_req.assert_called_with(path='{}s'.format(pv_component['name']))
 

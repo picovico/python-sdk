@@ -48,6 +48,6 @@ class TestPicovicoAPI:
         api = PicovicoAPI('app_id', 'device_id')
         assert not api.project
         mocker.patch.object(PicovicoAPI, 'is_authorized', return_value=True)
-        mocker.patch('picovico.components.pv_base.PicovicoRequest.is_authenticated', return_value=True)
+        mocker.patch('picovico.components.pv_request.PicovicoRequest.is_authenticated', return_value=True)
         api = PicovicoAPI('app_id', 'device_id')
         assert api.project

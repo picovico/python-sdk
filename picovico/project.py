@@ -4,7 +4,7 @@ import collections
 from picovico import exceptions as pv_exceptions
 from picovico import components as pv_components
 from picovico import constants as pv_constants
-from picovico import decorators as pv_decorator
+from picovico import decorators as pv_decorators
 
 #: Video Data Definition to be used in project
 #: All video related components are stored in `Vdd`
@@ -178,7 +178,7 @@ class PicovicoProject(object):
     def __replace_vdd_data(self, **kwargs):
         self.__vdd = self.vdd._replace(**kwargs)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def set_style(self, value):
         """ Add style to video project.
         Sets :class:`Vdd` style.
@@ -192,7 +192,7 @@ class PicovicoProject(object):
         assert value, 'Empty Style not allowed.'
         self.__replace_vdd_data(style=value)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def set_quality(self, value):
         """ Add quality to video project.
         Sets :class:`Vdd` quality.
@@ -216,7 +216,7 @@ class PicovicoProject(object):
         if value:
             self.__replace_vdd_data(name=value)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def add_music(self, music_id):
         """ Add music to video project.
         Adds music asset to :class:`Vdd`.
@@ -227,7 +227,7 @@ class PicovicoProject(object):
         music_asset = self.create_asset_dict('music', music_id)
         self.__add_asset(music_asset, time=False)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def set_privacy(self, value):
         """ Set privacy of video project.
 
@@ -237,7 +237,7 @@ class PicovicoProject(object):
         assert value in pv_constants.PRIVACY, 'Privacy can be [{}]'.format(','.join(pv_constants.PRIVACY))
         self.__replace_vdd_data(privacy=value)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def add_credit(self, name, value):
         """ Add single credit to video project.
         Credits are list of length 2.
@@ -251,7 +251,7 @@ class PicovicoProject(object):
             self.__replace_vdd_data(credits=[])
         self.vdd.credits.append((name, value))
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def add_text(self, title=None, body=None):
         """ Add text asset to video project.
 
@@ -270,7 +270,7 @@ class PicovicoProject(object):
         text_asset = self.create_asset_dict('text', data=text_data)
         self.__add_asset(text_asset)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def add_photo(self, photo_id, caption=None):
         """ Add photo asset to video project.
 
@@ -282,7 +282,7 @@ class PicovicoProject(object):
         photo_asset = self.create_asset_dict('image', photo_id, photo_data)
         self.__add_asset(photo_asset)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def __component_actions(self, component, method_name, **kwargs):
         component_method = getattr(getattr(self, '{}_component'.format(component)), method_name)
         return component_method(**kwargs)
@@ -331,13 +331,13 @@ class PicovicoProject(object):
         res = self.__component_actions('photo', 'upload_file', filename=filename)
         self.add_photo(res['id'], caption)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def clear_assets(self):
         """ Clear video project vdd assets.
         """
         self.__replace_vdd_data(assets=None)
 
-    @pv_decorator.pv_project_check_begin
+    @pv_decorators.pv_project_check_begin
     def clear_credits(self):
         """ Clear video project credit assets.
         """

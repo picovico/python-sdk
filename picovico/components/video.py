@@ -1,5 +1,5 @@
 from picovico.components.base import PicovicoBaseComponent
-from picovico import decorators as pv_decorator
+from picovico import decorators as pv_decorators
 from picovico import urls as pv_urls
 from picovico import constants as pv_constants
 
@@ -19,7 +19,7 @@ class PicovicoVideo(PicovicoBaseComponent):
             kwargs.update(path=url_path.format(video_id=id))
         return super(PicovicoVideo, self)._api_call(**kwargs)
 
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_auth_required
     def preview(self, video_id):
         '''
             Picovico: Make a preview request for the project.
@@ -32,7 +32,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         })
         return self._api_call(video_id=video_id, **req_args)
 
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_auth_required
     def create(self, video_id):
         '''
             Picovico: Sends the actual rendering request to rendering engine
@@ -43,7 +43,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         })
         return self._api_call(video_id=video_id, **req_args)
 
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_auth_required
     def duplicate(self, video_id):
         '''
             Picovico: Duplicates any video and saves it to the new draft or overrides if any exists.
@@ -54,7 +54,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         })
         return self._api_call(video_id=video_id, **req_args)
 
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_auth_required
     def new(self, name=None):
         req_args = self.create_request_args(**{
             'method': 'post',
@@ -63,7 +63,7 @@ class PicovicoVideo(PicovicoBaseComponent):
         })
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_auth_required
     def save(self, video_id, vdd):
         """ Save video with vdd data.
 

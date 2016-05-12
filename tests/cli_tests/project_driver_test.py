@@ -102,7 +102,7 @@ class TestProjectDriver:
     def test_get_project_api(self, mocker, video_id, video_data):
         mapi = mocker.Mock(spec=PicovicoAPI)
         mapi.project = mocker.Mock(return_value='Project')
-        mocker.patch('picovico.cli.project_driver.pv_utility.prepare_api_object', return_value=mapi)
+        mocker.patch('picovico.cli.project_driver.pv_cli_utils.prepare_api_object', return_value=mapi)
         mocker.patch('picovico.cli.project_driver.file_utils.read_from_project_file', return_value=video_data)
         mpv = mocker.patch('picovico.cli.project_driver.populate_vdd_to_project')
         pv_project_driver.get_project_api('Hello', video=video_id)
