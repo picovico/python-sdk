@@ -18,7 +18,10 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 install_requires = [
     'requests',
-    'six'
+    'six', 
+    'pyopenssl', 
+    'ndg-httpsclient',
+    'pyasn1'
     ]
 
 tests_require = [
