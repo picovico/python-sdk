@@ -2,8 +2,8 @@ import abc
 
 from picovico import urls as pv_urls
 from picovico import constants as pv_constants
-from picovico import baserequest as pv_base
-from picovico import decorators as pv_decorator
+from picovico import baserequest as pv_request
+from picovico import decorators as pv_decorators
 
 
 class PicovicoBaseComponent(object):
@@ -24,7 +24,7 @@ class PicovicoBaseComponent(object):
         Raises:
             AssertionError
         """
-        assert isinstance(request_obj, pv_base.PicovicoRequest)
+        assert isinstance(request_obj, pv_request.PicovicoRequest)
         self._pv_request = request_obj
 
     @staticmethod
@@ -57,8 +57,8 @@ class PicovicoBaseComponent(object):
     def __sanitize_single_url(self, url, url_args):
         return url.format(**url_args)
 
-    @pv_decorator.pv_not_implemented(_components[1:])
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_not_implemented(_components[1:])
+    @pv_decorators.pv_auth_required
     def one(self, id):
         """ Fetch one with specific id.
 
@@ -73,7 +73,7 @@ class PicovicoBaseComponent(object):
         req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_auth_required
     def all(self):
         """ Fetch all.
         """
@@ -83,8 +83,8 @@ class PicovicoBaseComponent(object):
         })
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[1:3])
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_not_implemented(_components[1:3])
+    @pv_decorators.pv_auth_required
     def upload_file(self, filename, data_headers=None):
         """ Upload file.
 
@@ -101,8 +101,8 @@ class PicovicoBaseComponent(object):
             req_args.update(data_headers=data_headers)
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[1:3])
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_not_implemented(_components[1:3])
+    @pv_decorators.pv_auth_required
     def upload_url(self, url, **data):
         """ Upload URL.
 
@@ -117,8 +117,8 @@ class PicovicoBaseComponent(object):
         })
         return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[1:])
-    @pv_decorator.pv_auth_required
+    @pv_decorators.pv_not_implemented(_components[1:])
+    @pv_decorators.pv_auth_required
     def delete(self, id):
         """ Remove specific.
 
@@ -133,8 +133,8 @@ class PicovicoBaseComponent(object):
         req_args.update(path=self.__sanitize_single_url(req_args.pop('path'), url_args))
         return self._api_call(**req_args)
 
-    #@pv_decorator.pv_not_implemented(_components[:2])
-    #@pv_decorator.pv_auth_required
+    #@pv_decorators.pv_not_implemented(_components[:2])
+    #@pv_decorators.pv_auth_required
     #def get_library(self):
         #""" Helper method to fetch all user component data.
         #This method is similar to `all`.
@@ -145,9 +145,9 @@ class PicovicoBaseComponent(object):
         #})
         #return self._api_call(**req_args)
 
-    @pv_decorator.pv_not_implemented(_components[:2])
+    @pv_decorators.pv_not_implemented(_components[:2])
     def get_free(self):
         """ View Picovico free components.
         """
-        free_req = pv_base.PicovicoRequest()
+        free_req = pv_request.PicovicoRequest()
         return free_req.get(path=getattr(pv_urls, 'PICOVICO_{}S'.format(self.component.upper())))

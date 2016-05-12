@@ -2,11 +2,11 @@ import itertools
 
 import six
 
-from picovico.cli import utils as pv_utility
+from picovico.cli import utils as pv_cli_utils
 from picovico.cli import profile_utils
 from picovico.cli import file_utils
 from picovico.cli import prompt
-from picovico.cli import decorators as pv_cli_dec
+from picovico.cli import decorators as pv_cli_decorators
 from picovico import project as pv_project
 
 project_components = {
@@ -188,7 +188,7 @@ def populate_vdd_to_project(project_obj, vdd):
                 attr(**arg)
 
 def get_project_api(profile, **kwargs):
-    api = pv_utility.prepare_api_object(profile_name=profile, session=True)
+    api = pv_cli_utils.prepare_api_object(profile_name=profile, session=True)
     video_id = kwargs.get('video', None)
     project_data = file_utils.read_from_project_file() or {}
     if not video_id:
@@ -217,7 +217,7 @@ def save_project_data(project):
 def close():
     file_utils.delete_project_file()
 
-@pv_cli_dec.pv_cli_check_project_begin
+@pv_cli_decorators.pv_cli_check_project_begin
 def project_cli_action(profile=None, **kwargs):
     project_action = kwargs.get('project')
     methods = []
