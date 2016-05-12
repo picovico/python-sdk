@@ -1,6 +1,6 @@
 import sys
 import warnings
-import pprint
+import json
 import getpass
 import six
 
@@ -9,12 +9,15 @@ DEFAULT_DEVICE_ID = 'com.pvcli.sdk'
 VERSION = '2.1'
 NO_PROFILE_MSG = 'No profile found. You should run configure.'
 
+def pretty_print_result(result):
+    six.print_(json.dumps(result, indent=None, separators=(',\n', ': ')), file=sys.stdout)
+
 def show_input(msg):
     return six.moves.input(msg)
 
 
 def show_print(msg):
-    six.print_(msg)
+    six.print_(msg, file=sys.stderr)
 
 
 def show_warning(warn_text, stop=False):
@@ -98,7 +101,7 @@ def show_action_result(action, result, profile_name):
     generic_prompt(profile_name=profile_name)
     show_print('Your Action: {}'.format(action))
     show_print('Result:')
-    pprint.pprint(result)
+    pretty_print_result(result)
 
 
 def show_action_message(profile_name, message):
