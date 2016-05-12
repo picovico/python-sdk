@@ -3,7 +3,7 @@ import argparse
 
 import six
 
-from . import driver as cli_driver
+from picovico.cli import driver as cli_driver
 
 help_usage = """ Picovico SDK client utility. 
                 ------------------------------

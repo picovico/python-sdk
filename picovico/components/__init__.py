@@ -3,14 +3,14 @@ import collections
 
 import six
 
-from .base import PicovicoBaseComponent
-from .video import PicovicoVideo
-from .style import PicovicoStyle
-from .music import PicovicoMusic
-from .photo import PicovicoPhoto
+from picovico.components.base import PicovicoBaseComponent
+from picovico.components.video import PicovicoVideo
+from picovico.components.style import PicovicoStyle
+from picovico.components.music import PicovicoMusic
+from picovico.components.photo import PicovicoPhoto
 
-from .. import urls as pv_urls
-from .. import baserequest as pv_base
+from picovico import urls as pv_urls
+from picovico import baserequest as pv_base
 
 # _doc_map = {
     # 'video': PicovicoVideo,

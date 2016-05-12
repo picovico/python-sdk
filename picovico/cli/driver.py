@@ -3,15 +3,15 @@ import itertools
 
 import six
 
-from . import decorators as cli_dec
-from . import log as cli_logger
-from . import profile_utils
-from . import prompt
-from . import project_driver as proj_driver
-from . import utils as pv_utility
-from .. import PicovicoAPI
-from ..components.base import PicovicoBaseComponent
-from .. import exceptions as pv_api_exceptions
+from picovico.cli import decorators as cli_dec
+from picovico.cli import log as cli_logger
+from picovico.cli import profile_utils
+from picovico.cli import prompt
+from picovico.cli import project_driver as proj_driver
+from picovico.cli import utils as pv_utility
+from picovico import PicovicoAPI
+from picovico.components.base import PicovicoBaseComponent
+from picovico import exceptions as pv_api_exceptions
 
 custom_command = ('login', 'logout', 'authenticate', 'configure', 'my_profile')
 # component_actions = ('get_musics', 'get_music', 'delete_music',

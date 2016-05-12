@@ -1,8 +1,8 @@
-from .session import PicovicoSessionMixin
-from .components import PicovicoComponentMixin
-from .decorators import pv_auth_required
-from . import urls as pv_urls
-from . import project as pv_project
+from picovico.session import PicovicoSessionMixin
+from picovico.components import PicovicoComponentMixin
+from picovico.decorators import pv_auth_required
+from picovico import urls as pv_urls
+from picovico import project as pv_project
 
 
 class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):

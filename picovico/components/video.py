@@ -1,7 +1,7 @@
-from .base import PicovicoBaseComponent
-from .. import decorators as pv_decorator
-from .. import urls as pv_urls
-from .. import constants as pv_constants
+from picovico.components.base import PicovicoBaseComponent
+from picovico import decorators as pv_decorator
+from picovico import urls as pv_urls
+from picovico import constants as pv_constants
 
 
 class PicovicoVideo(PicovicoBaseComponent):

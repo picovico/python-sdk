@@ -1,4 +1,4 @@
-from .base import PicovicoBaseComponent
+from picovico.components.base import PicovicoBaseComponent
 
 
 class PicovicoStyle(PicovicoBaseComponent):

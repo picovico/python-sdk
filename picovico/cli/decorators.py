@@ -1,9 +1,9 @@
 import sys
 import functools
 
-from . import profile_utils
-from . import file_utils
-from . import prompt
+from picovico.cli import profile_utils
+from picovico.cli import file_utils
+from picovico.cli import prompt
 
 def pv_cli_check_authenticate(func):
     @functools.wraps(func)

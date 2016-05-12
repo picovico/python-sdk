@@ -1,7 +1,7 @@
 import os
 import logging
 import logging.handlers as log_handlers
-from . import file_utils
+from picovico.cli import file_utils
 
 
 def get_logger(profile_name):
