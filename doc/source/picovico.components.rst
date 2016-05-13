@@ -1,5 +1,5 @@
-picovico.components package
-===========================
+Components (picovico.components)
+================================
 
 Submodules
 ----------

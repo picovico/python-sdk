@@ -13,3 +13,5 @@ build/
 *.egg
 .tox/
 .eggs/
+doc/build/
+doc/Makefile
