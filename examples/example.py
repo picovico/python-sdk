@@ -8,17 +8,18 @@ PICOVICO_APP_SECRET = None
 #'YOUR-APP-SECRET'
 
 #initiate api
-api = PicovicoAPI(PICOVICO_APP_ID, PICOVICO_DEVICE_ID, 'PICOVICO-APP-SECRET-[OPTIONAL]') # can call .authenticate method later
+#provide the app_secret argument, or call api.authenticate() later
+api = PicovicoAPI(PICOVICO_APP_ID, PICOVICO_DEVICE_ID, PICOVICO_APP_SECRET)
 
 #to get picovico system components
 free_styles = api.free_styles()
 free_musics = api.free_musics()
 
-#To authenticate with app_id and app_secret
+# Authentication is done by either of the methods, .login() or .authenticate()
+# USE ONLY ONE
+# .login() to login with username and password
+# .authenticate() to login with app_id and app_secret
 api.authenticate('YOUR-APP-SECRET')
-#if secret is initiated in api just call api.authenticate()
-
-#To login with username and password
 api.login('YOUR-USERNAME', 'YOUR-PASSWORD')
 
 #Either login or authenticate is needed for actions described below:
