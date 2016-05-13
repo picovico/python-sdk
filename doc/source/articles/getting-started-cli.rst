@@ -31,14 +31,21 @@ Commands
     my-profile
         View Profile
     project
-        Video project related commands
+        Video project related command. It requires subcommands.
+        
         subcommands:
             begin
+            
             define
+            
             save
+            
             preview
+            
             render
+            
             close
+            
             discard
 
 .. code-block:: console
