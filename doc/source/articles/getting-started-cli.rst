@@ -12,7 +12,7 @@ Global Option
 -------------
     
     `\-\-profile PROFILE`
-        For profile to use with commands
+        Profile based approach that are stored to use different application_id and login information
 
 Commands
 --------
@@ -24,14 +24,29 @@ Commands
                 Whether log should be maintained. [stored in $HOME/.picovico]
     
 
-    `login`
+    login
         Login prompt for user
-    `authenticate`
+    authenticate
         Authenticate with application secret
-    'my-profile'
+    my-profile
         View Profile
-    `project`
-        Video project related commands
+    project
+        Video project related command. It requires subcommands.
+        
+        subcommands:
+            begin
+            
+            define
+            
+            save
+            
+            preview
+            
+            render
+            
+            close
+            
+            discard
 
 .. code-block:: console
 
