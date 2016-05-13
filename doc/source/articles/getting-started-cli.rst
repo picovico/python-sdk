@@ -24,14 +24,22 @@ Commands
                 Whether log should be maintained. [stored in $HOME/.picovico]
     
 
-    `login`
+    login
         Login prompt for user
-    `authenticate`
+    authenticate
         Authenticate with application secret
-    'my-profile'
+    my-profile
         View Profile
-    `project`
+    project
         Video project related commands
+        subcommands:
+            begin
+            define
+            save
+            preview
+            render
+            close
+            discard
 
 .. code-block:: console
 
