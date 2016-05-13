@@ -9,13 +9,17 @@ help_usage = """ Picovico SDK client utility.
                 ------------------------------
 
 picovico-client action args
+    
+    Options:
+        --profile PROFILE
 
     Actions:
         configure
         login
         logout
         authenticate
-        get-{component}s music, photo, style, video
+        get-{music,photo,style,video}s
+        get-free-{music,style}s
         project
     
     Project Actions:
