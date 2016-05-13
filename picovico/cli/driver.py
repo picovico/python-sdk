@@ -72,9 +72,9 @@ def login(profile_name=None, username=None, password=None, profile=None, do_prom
 @pv_cli_decorators.pv_cli_check_info('authenticate')
 def authenticate(profile_name=None, app_secret=None, profile=None, do_prompt=True):
     if do_prompt and not app_secret:
-        app_sec = prompt.retry_once_for_assertions(prompt.configure_secret_info)
+        app_secret = prompt.retry_once_for_assertions(prompt.configure_secret_info)
     profile_name = getattr(profile, 'NAME', profile_name)
-    pv_cli_utils.auth_action('authenticate', profile_name, app_secret=app_sec)
+    pv_cli_utils.auth_action('authenticate', profile_name, app_secret=app_secret)
 
 def logout(profile_name=None):
     api = pv_cli_utils.prepare_api_object(profile_name, session=True)
