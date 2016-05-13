@@ -10,7 +10,7 @@ VERSION = '2.1'
 NO_PROFILE_MSG = 'No profile found. You should run configure.'
 
 def pretty_print_result(result):
-    six.print_(json.dumps(result, indent=None, separators=(',\n', ': ')), file=sys.stdout)
+    six.print_(json.dumps(result, indent=2, separators=(',\n', ': '), sort_keys=True), file=sys.stdout)
 
 def show_input(msg):
     return six.moves.input(msg)
