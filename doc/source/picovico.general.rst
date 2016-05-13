@@ -1,21 +1,8 @@
-Other modules
-=============
+Picovico Modules
+================
 
-picovico.urls module
---------------------
-
-.. automodule:: picovico.urls
-    :members:
-
-picovico.constants module
--------------------------
-
-.. automodule:: picovico.constants
-    :members:
-
-
-Module contents
----------------
+Base
+----
 
 .. automodule:: picovico
     :members:
@@ -50,4 +37,8 @@ picovico.project module
 .. automodule:: picovico.project
     :members:
 
+picovico.urls module
+--------------------
 
+.. automodule:: picovico.urls
+    :members:

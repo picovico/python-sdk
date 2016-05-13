@@ -1,6 +1,3 @@
-'''	Picovico-SDK: Custom exception classes
-    ======================================
-'''
 class PicovicoError(Exception):
     """ Picovico-SDK: Base Class for all request errors.
 
