@@ -43,7 +43,7 @@ def configure(profile_name=None, login=False, authenticate=False, log=False):
     info['APP_ID'], info['DEVICE_ID'] = prompt.retry_once_for_assertions(prompt.configure_prompt)
     remove_info = None
     all_profiles = profile_utils.get_all_profiles()
-    if profile_name in all_profiles:
+    if profile_name.lower() in all_profiles:
         prompt.show_warning('Your existing profile "{}" will be overriden.\n'.format(profile_name))
     info.update(configure_login_authenticate(profile_name, login, authenticate))
     info.update(LOG=log)
