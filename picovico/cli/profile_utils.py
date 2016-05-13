@@ -57,40 +57,37 @@ def is_in_profile(values_to_check, profile_name):
 
 def set_profile(values_to_set, profile_name):
     cfg = get_raw_profile()
-    try:
-        cfg.add_section(profile_name.lower())
-    except (six.moves.ConfigParser.DuplicateSectionError, ValueError):
-        pass
+    write_new_profile_info(cfg, profile_name)
     if isinstance(values_to_set, dict):
         copied_value = values_to_set.copy()
         values_to_set = create_profile_values(six.iteritems(copied_value))
     for value in values_to_set:
         cfg.set(profile_name, value.NAME, str(value.VALUE))
-    profile_file = file_utils.get_profile_file()
-    f = file_utils.get_file_obj(profile_file, mode='w')
-    if f:
-        with f:
-            cfg.write(f)
-            return True
+    cfg = write_profile_config(cfg)
+    if cfg:
+        return True
     return False
+    
+def write_profile_config(cfg, mode='w'):
+    profile_file = file_utils.get_profile_file()
+    fp = file_utils.get_file_obj(profile_file, mode=mode)
+    with fp:
+        cfg.write(fp)
+        return cfg
 
 def write_new_profile_info(cfg, profile_name):
-    profile_file = file_utils.get_profile_file()
-    fp = file_utils.get_file_obj(profile_file, mode='w+')
-    if fp:
+    if file_utils.has_profile_file():
         write = False
-        if profile_name.upper() != DEFAULT_PROFILE_NAME \
-            and profile_name not in cfg.sections():
-            cfg.add_section(profile_name)
+        if profile_name.lower() not in get_all_profiles():
+            cfg.add_section(profile_name.lower())
             write = True
+            # cfg = write_profile_config(cfg, mode='w+')
         if not check_necessary_info_values(cfg, profile_name):
             for opt in NECESSARY_INFO:
                 cfg.set(profile_name, opt, '')
             write = True
         if write:
-            with fp:
-                cfg.write(fp)
-
+            cfg = write_profile_config(cfg, mode='w+')
 
 def get_raw_profile():
     profile_file = file_utils.get_profile_file()
@@ -106,11 +103,8 @@ def remove_profile_value(profile_name, option):
     cfg = get_raw_profile()
     if cfg and cfg.has_option(profile_name, option):
         if cfg.remove_option(profile_name, option):
-            profile_file = file_utils.get_profile_file()
-            fp = file_utils.get_file_obj(profile_file, mode='w+')
-            with fp:
-                cfg.write(fp)
-
+            write_profile_config(cfg, mode='w+')
+            
 def get_profile(profile_name, info=True):
     cfg = get_raw_profile()
     if not cfg:
