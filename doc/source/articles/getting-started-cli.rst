@@ -12,7 +12,7 @@ Global Option
 -------------
     
     `\-\-profile PROFILE`
-        For profile to use with commands
+        Profile based approach that are stored to use different application_id and login information
 
 Commands
 --------
