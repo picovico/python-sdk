@@ -17,7 +17,7 @@ def show_input(msg):
 
 
 def show_print(msg):
-    six.print_(msg, file=sys.stderr)
+    six.print_("[*] "+msg, file=sys.stderr)
 
 
 def show_warning(warn_text, stop=False):

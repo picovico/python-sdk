@@ -6,6 +6,7 @@ import six
 from picovico.cli import decorators as pv_cli_decorators
 from picovico.cli import log as pv_cli_log
 from picovico.cli import profile_utils
+from picovico.cli import file_utils
 from picovico.cli import prompt
 from picovico.cli import project_driver
 from picovico.cli import utils as pv_cli_utils
