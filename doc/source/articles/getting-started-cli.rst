@@ -11,21 +11,28 @@ Getting Started (CLI)
 Global Option
 -------------
     
-    `--profile PROFILE`
+    `\-\-profile PROFILE`
         For profile to use with commands
-    
+
 Commands
 --------
     `configure`
-        
-        Options:
-            --with login/authenticate:
+        OPTIONS:
+            `\-\-with login/authenticate`:
                 Whether you would like to store your authenticate or login information.
-            
-            --log:
+            `\-\-log`:
                 Whether log should be maintained. [stored in $HOME/.picovico]
-        
-    .. code-block:: console
+    
 
-        $ picovico-client configure -h
+    `login`
+        Login prompt for user
+    `authenticate`
+        Authenticate with application secret
+    'my-profile'
+        View Profile
+    `project`
+        Video project related commands
 
+.. code-block:: console
+
+    $ picovico-client COMMANDS OPTIONS
