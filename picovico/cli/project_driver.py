@@ -11,7 +11,7 @@ from picovico import project as pv_project
 
 project_components = {
     'text': ('title', 'body'),
-    'photo': ('url', 'thumb', 'id', 'filename'),
+    'photo': ('url', 'thumb', 'id', 'filename', 'caption'),
     'music': ('url', 'preview', 'id', 'filename'),
     'credit': ('content',)
 }    
