@@ -23,7 +23,21 @@ pv_project.begin(name='Hello World') # Choose your project name.
 pv_project.set_style('vanilla') # Choose a style, Vanilla is always beautiful :)
 pv_project.set_quality(720)
 pv_project.add_text('Hello World', 'This is Picovico') # Title, Text or Subtitle
-pv_project.add_photo_url('', 'thumb', 'caption') # Upload photo by URL, file or previous uploads
+pv_project.add_photo_url('http://picovico.github.io/python-sdk/_static/images/m_unsplash-001.jpg', 
+                        'http://picovico.github.io/python-sdk/_static/images/t_unsplash-001.jpg', 
+                        'caption') # Upload photo by URL, file or previous uploads
+pv_project.add_photo_url('http://picovico.github.io/python-sdk/_static/images/m_unsplash-002.jpg', 
+                        'http://picovico.github.io/python-sdk/_static/images/t_unsplash-002.jpg', 
+                        'caption') # Upload photo by URL, file or previous uploads
+pv_project.add_photo_url('http://picovico.github.io/python-sdk/_static/images/m_unsplash-003.jpg', 
+                        'http://picovico.github.io/python-sdk/_static/images/t_unsplash-003.jpg', 
+                        'caption') # Upload photo by URL, file or previous uploads
+pv_project.add_photo_url('http://picovico.github.io/python-sdk/_static/images/m_unsplash-004.jpg', 
+                        'http://picovico.github.io/python-sdk/_static/images/t_unsplash-004.jpg', 
+                        'caption') # Upload photo by URL, file or previous uploads
+pv_project.add_photo_url('http://picovico.github.io/python-sdk/_static/images/m_unsplash-005.jpg', 
+                        'http://picovico.github.io/python-sdk/_static/images/t_unsplash-005.jpg', 
+                        'caption') # Upload photo by URL, file or previous uploads
 pv_project.add_music('NhLIi') # Clear Air, By Kevin MacLeod (You can use your music as well)
 pv_project.add_credit('Music', 'Kevin MacLeod') # Give credit, wherever required
 # 5. Save the project progress (Optional, you may directly jump to preview or render)
