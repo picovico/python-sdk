@@ -27,7 +27,7 @@ pv_music = api.music_component
 pv_style = api.style_component
 pv_photo = api.photo_component
 pv_video = api.video_component
-pv_project = api.project_components
+pv_project = api.project
 
 
 #View profile 
