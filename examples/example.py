@@ -27,9 +27,39 @@ pv_music = api.music_component
 pv_style = api.style_component
 pv_photo = api.photo_component
 pv_video = api.video_component
+pv_project = api.project_components
+
 
 #View profile 
 api.me()
+
+#For video creation
+pv_project.begin(name='OPTIONAL')
+#if change of name required
+pv_project.set_name('NEW_NAME')
+
+pv_project.set_style('STYLE_NAME')
+pv_project.set_quality(720)
+pv_project.add_text('title', 'body')
+pv_project.add_photo('id', 'caption')
+pv_project.add_music('id')
+pv_project.add_credit('somename', 'somevalue')
+#for saving project video
+pv_project.save()
+#for rendering project video
+pv_project.render()
+#for preview of project
+pv_project.preview()
+#for project delete
+pv_project.discard()
+
+#for music and photo upload
+pv_project.add_photo_file('full/file/path', 'caption')
+pv_project.add_photo_url('url', 'thumb', 'caption')
+pv_project.add_music_url('url', 'preview')
+pv_project.add_music_file('full/file/path')
+
+
 
 #All components are provided with some basic method
 #In some cases the method may not be implemented
