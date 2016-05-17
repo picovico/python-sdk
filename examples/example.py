@@ -1,41 +1,74 @@
 from picovico import PicovicoAPI
 
-#Create a config files to import settings
-
+# Define the fundamentals
 PICOVICO_DEVICE_ID = 'SOME-DEVICE-ID'
 PICOVICO_APP_ID = 'YOUR-APPLICATION-ID'
-PICOVICO_APP_SECRET = None
-#'YOUR-APP-SECRET'
+PICOVICO_APP_SECRET = 'YOUR-APP-SECRET'
 
-#initiate api
-#provide the app_secret argument, or call api.authenticate() later
+# Initialize API
+"""
+1. Optionally, authentication can be done later as well.
+  api.authenticate('app-secret')
+2. To authenticate with username / password instead
+  api.login('username', 'password')
+"""
 api = PicovicoAPI(PICOVICO_APP_ID, PICOVICO_DEVICE_ID, PICOVICO_APP_SECRET)
 
-#to get picovico system components
-free_styles = api.free_styles()
-free_musics = api.free_musics()
-
-# Authentication is done by either of the methods, .login() or .authenticate()
-# USE ONLY ONE
-# .login() to login with username and password
-# .authenticate() to login with app_id and app_secret
-api.authenticate('YOUR-APP-SECRET')
-api.login('YOUR-USERNAME', 'YOUR-PASSWORD')
-
-#Either login or authenticate is needed for actions described below:
+# Picovico Components are referenced as api.some_component
 pv_music = api.music_component
 pv_style = api.style_component
 pv_photo = api.photo_component
 pv_video = api.video_component
 
-#View profile 
+# Project is a separate workflow to assist in video creation
+"""
+Refer to Hello World Example, for better understanding of the Project Workflow
+- A project is begun, which remains as active project
+- Define the project with slides / music / style etc
+- Save / Preview the project
+- Render / Discard to close the active project
+"""
+pv_project = api.project
+
+# Check the available freebies
+"""
+- Picovico has a library of Free (Attribution required) Music Files
+- Picovico has a set of fundamental styles, which are free for personal usage
+"""
+free_styles = api.free_styles()
+free_musics = api.free_musics()
+
+# View profile, Check your account balance, etc.
 api.me()
 
-#All components are provided with some basic method
-#In some cases the method may not be implemented
-#Component methods
+# Upload Local File
+pv_project.add_photo_file('full/file/path', 'caption')
+pv_project.add_music_file('full/file/path')
+
+# Use hosted image / music
+pv_project.add_photo_url('url', 'thumb', 'caption')
+pv_project.add_music_url('url', 'preview')
+
+# Use Preview Uploads
+pv_project.add_photo('id')
+pv_project.add_music('id')
+
+# Navigate Picovico Library, or your library with the available helper methods
+"""
+  - .all() - Fetch all items
+  - .one('id') - Fetch one item
+  - .delete('id') - Delete item (subject to ownership)
+"""
 pv_photo.all()
 pv_photo.one('SINGLE_PHOTO_ID')
+pv_photo.delete('SINGLE_PHOTO_ID')
+
+# Other methods
 pv_photo.upload_file('LOCAL_FILE_PATH')
 pv_photo.upload_url('PHOTO_URL', 'PHOTO_THUMBNAIL_URL')
-pv_photo.delete('SINGLE_PHOTO_ID')
+
+pv_music.upload_file('...')
+pv_music.upload_url('...', '...')
+
+# Please refer to the class reference, if you have any further confusions
+# Please contact dev@picovico.com for queries

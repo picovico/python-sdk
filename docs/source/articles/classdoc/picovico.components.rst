@@ -1,5 +1,5 @@
-Components (picovico.components)
-================================
+Class documentation (picovico.components)
+=========================================
 
 Submodules
 ----------
