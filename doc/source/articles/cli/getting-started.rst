@@ -1,8 +1,5 @@
-Getting Started (CLI)
-=====================
-
-`The official Picovico Python SDK <http://github.com/picovico/python-sdk>`_ comes with a handy command line utility tool ``picovico-client`` to explore the video rendering API. Use it to login to your account, check account settings, create a video, check your videos, browse library etc. 
-
+Getting Started with CLI
+========================
 
 **Example usages:**
 

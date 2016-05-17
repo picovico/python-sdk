@@ -8,6 +8,7 @@ Table of Contents
 .. toctree::
     :glob:
     :titlesonly:
-    
-    articles/*
-    *
+
+    articles/index
+    articles/index-cli
+    articles/index-class

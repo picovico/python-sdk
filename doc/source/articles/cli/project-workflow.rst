@@ -4,13 +4,13 @@ Project Workflow and Subcommands (CLI)
 All actions related to a video project is provided by this command. It requires subcommands for respective action.
 
 Project Workflow
-~~~~~~~~~~~~~~~~
+----------------
 Basically, the project workflow begins with an empty project with a project name. The video definition is provided in a JSON object ``assets``. The object holds complete details of the images, text, music and credits. Style and quality properties are specified in the same request.
 
 After the definition, either ``preview`` or ``render`` action is send.
 
 CLI Subcommands
-~~~~~~~~~~~~~~~
+---------------
 Project command in CLI works as per project workflow in the API.
 
     1. begin
