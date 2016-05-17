@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Hello World Example &mdash; Picovico Python SDK (Documentation)</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Picovico Python SDK (Documentation)" href="../../index.html"/>
+        <link rel="up" title="Getting Started with SDK" href="../index.html"/>
+        <link rel="next" title="Other SDK features" href="example-sdk-features.html"/>
+        <link rel="prev" title="Getting Started with SDK" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Picovico-SDK
+          
+
+          
+            
+            <img src="../../_static/logo_white.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Getting Started with SDK</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hello World Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example-sdk-features.html">Other SDK features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../index-cli.html">Command Line Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index-class.html">Class Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Picovico-SDK</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Getting Started with SDK</a> &raquo;</li>
+      
+    <li>Hello World Example</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/articles/sdk/example-hello-world.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hello-world-example">
+<h1>Hello World Example<a class="headerlink" href="#hello-world-example" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">picovico</span> <span class="k">import</span> <span class="n">PicovicoAPI</span>
+
+<span class="c1"># 1. Define the fundamentals</span>
+<span class="n">PICOVICO_DEVICE_ID</span> <span class="o">=</span> <span class="s1">&#39;SOME-DEVICE-ID&#39;</span>
+<span class="n">PICOVICO_APP_ID</span> <span class="o">=</span> <span class="s1">&#39;YOUR-APPLICATION-ID&#39;</span>
+<span class="n">PICOVICO_APP_SECRET</span> <span class="o">=</span> <span class="s1">&#39;YOUR-APP-SECRET&#39;</span>
+
+<span class="c1"># 2. Initialize API</span>
+<span class="c1"># - Provide the app_secret argument, or call api.authenticate() later</span>
+<span class="n">api</span> <span class="o">=</span> <span class="n">PicovicoAPI</span><span class="p">(</span><span class="n">PICOVICO_APP_ID</span><span class="p">,</span> <span class="n">PICOVICO_DEVICE_ID</span><span class="p">,</span> <span class="n">PICOVICO_APP_SECRET</span><span class="p">)</span>
+
+<span class="c1"># component alias (optional)</span>
+<span class="n">pv_music</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">music_component</span>
+<span class="n">pv_style</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">style_component</span>
+<span class="n">pv_photo</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">photo_component</span>
+<span class="n">pv_video</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">video_component</span>
+<span class="n">pv_project</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">project</span>
+
+<span class="c1"># 3. Begin a project. (Once a project is begun, it remains as active project)</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Hello World&#39;</span><span class="p">)</span> <span class="c1"># Choose your project name.</span>
+
+<span class="c1"># 4. Define the project</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;vanilla&#39;</span><span class="p">)</span> <span class="c1"># Choose a style, Vanilla is always beautiful :)</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">set_quality</span><span class="p">(</span><span class="mi">720</span><span class="p">)</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s1">&#39;Hello World&#39;</span><span class="p">,</span> <span class="s1">&#39;This is Picovico&#39;</span><span class="p">)</span> <span class="c1"># Title, Text or Subtitle</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">add_photo_url</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;thumb&#39;</span><span class="p">,</span> <span class="s1">&#39;caption&#39;</span><span class="p">)</span> <span class="c1"># Upload photo by URL, file or previous uploads</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">add_music</span><span class="p">(</span><span class="s1">&#39;NhLIi&#39;</span><span class="p">)</span> <span class="c1"># Clear Air, By Kevin MacLeod (You can use your music as well)</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">add_credit</span><span class="p">(</span><span class="s1">&#39;Music&#39;</span><span class="p">,</span> <span class="s1">&#39;Kevin MacLeod&#39;</span><span class="p">)</span> <span class="c1"># Give credit, wherever required</span>
+<span class="c1"># 5. Save the project progress (Optional, you may directly jump to preview or render)</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="c1"># 6. Preview if required (Optional, you may jump to render if you are sure)</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">preview</span><span class="p">()</span>
+
+<span class="c1"># 7. Send rendering request for the active project</span>
+<span class="n">pv_project</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="example-sdk-features.html" class="btn btn-neutral float-right" title="Other SDK features" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Getting Started with SDK" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Picovico Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

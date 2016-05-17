@@ -1,0 +1,1118 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Picovico Modules &mdash; Picovico Python SDK (Documentation)</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Picovico Python SDK (Documentation)" href="../../index.html"/>
+        <link rel="up" title="Class Reference" href="../index-class.html"/>
+        <link rel="next" title="Class documentation (picovico.components)" href="picovico.components.html"/>
+        <link rel="prev" title="Class Reference" href="../index-class.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Picovico-SDK
+          
+
+          
+            
+            <img src="../../_static/logo_white.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Getting Started with SDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index-cli.html">Command Line Utility</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index-class.html">Class Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">  Core Feature Modules</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="picovico.components.html">  Component Modules</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Picovico-SDK</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index-class.html">Class Reference</a> &raquo;</li>
+      
+    <li>Picovico Modules</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/articles/classdoc/picovico.general.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="picovico-modules">
+<h1>Picovico Modules<a class="headerlink" href="#picovico-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-picovico">
+<span id="base"></span><h2>Base<a class="headerlink" href="#module-picovico" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="picovico.PicovicoAPI">
+<em class="property">class </em><code class="descclassname">picovico.</code><code class="descname">PicovicoAPI</code><span class="sig-paren">(</span><em>app_id</em>, <em>device_id=None</em>, <em>app_secret=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: The API class.
+Base class for API activity. It will ready component and project objects based
+on authorization.</p>
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.photo_component">
+<code class="descname">photo_component</code><a class="headerlink" href="#picovico.PicovicoAPI.photo_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.photo.PicovicoPhoto" title="picovico.components.photo.PicovicoPhoto"><code class="xref py py-class docutils literal"><span class="pre">PicovicoPhoto</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.video_component">
+<code class="descname">video_component</code><a class="headerlink" href="#picovico.PicovicoAPI.video_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.video.PicovicoVideo" title="picovico.components.video.PicovicoVideo"><code class="xref py py-class docutils literal"><span class="pre">PicovicoVideo</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.music_component">
+<code class="descname">music_component</code><a class="headerlink" href="#picovico.PicovicoAPI.music_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.music.PicovicoMusic" title="picovico.components.music.PicovicoMusic"><code class="xref py py-class docutils literal"><span class="pre">PicovicoMusic</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.style_component">
+<code class="descname">style_component</code><a class="headerlink" href="#picovico.PicovicoAPI.style_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.style.PicovicoStyle" title="picovico.components.style.PicovicoStyle"><code class="xref py py-class docutils literal"><span class="pre">PicovicoStyle</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.project">
+<code class="descname">project</code><a class="headerlink" href="#picovico.PicovicoAPI.project" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#picovico.project.PicovicoProject" title="picovico.project.PicovicoProject"><code class="xref py py-class docutils literal"><span class="pre">PicovicoProject</span></code></a> instance.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Components and Projects are available only after authorization.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>app_id</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Application ID given by Picovico.</li>
+<li><strong>device_id</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Some Device identifier. [Default  will be used]</li>
+<li><strong>app_secret</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; <em>Optional</em> If  application secret is given.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="picovico.PicovicoAPI.login">
+<code class="descname">login</code><span class="sig-paren">(</span><em>username</em>, <em>password</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.login" title="Permalink to this definition">¶</a></dt>
+<dd><p>API login method.
+Calls login action on API and sets access headers.
+Also, it readies the component attributes if everything ok.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>username</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Picovico login username.</li>
+<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Picovico login password.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.PicovicoAPI.authenticate">
+<code class="descname">authenticate</code><span class="sig-paren">(</span><em>app_secret=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.authenticate" title="Permalink to this definition">¶</a></dt>
+<dd><p>API authentication workflow.</p>
+<p>This is application secret based authentication.
+This also sets access headers and readies components.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>app_secret</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Application Secret provided by Picovico.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.PicovicoAPI.me">
+<code class="descname">me</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.me" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get my profile.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.access_key">
+<code class="descname">access_key</code><a class="headerlink" href="#picovico.PicovicoAPI.access_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-Only Access Key.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.access_token">
+<code class="descname">access_token</code><a class="headerlink" href="#picovico.PicovicoAPI.access_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-Only Access Token.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.app_id">
+<code class="descname">app_id</code><a class="headerlink" href="#picovico.PicovicoAPI.app_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-Only Application ID provided during initiation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.app_secret">
+<code class="descname">app_secret</code><a class="headerlink" href="#picovico.PicovicoAPI.app_secret" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-Only Application Secret.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.device_id">
+<code class="descname">device_id</code><a class="headerlink" href="#picovico.PicovicoAPI.device_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Device Idetifier to be used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.PicovicoAPI.headers">
+<code class="descname">headers</code><a class="headerlink" href="#picovico.PicovicoAPI.headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Header dict based on is_authorized else None.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.PicovicoAPI.is_anonymous">
+<code class="descname">is_anonymous</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.is_anonymous" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if key and token are set.
+This should be opposite of is_authorized.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> if access_key and access_token is set else <em>False</em>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.PicovicoAPI.is_authorized">
+<code class="descname">is_authorized</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.is_authorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if key and token are set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>False</em> if is_anonymous else <em>True</em>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.PicovicoAPI.logout">
+<code class="descname">logout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.logout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush access key and token.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.PicovicoAPI.set_access_tokens">
+<code class="descname">set_access_tokens</code><span class="sig-paren">(</span><em>access_key</em>, <em>access_token</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.PicovicoAPI.set_access_tokens" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set access_key and access_token for authentication</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>access_key</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; access key provided by picovico</li>
+<li><strong>access_token</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; access token provided by picovico</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-picovico.baserequest">
+<span id="picovico-baserequest-module"></span><h2>picovico.baserequest module<a class="headerlink" href="#module-picovico.baserequest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="picovico.baserequest.PicovicoRequest">
+<em class="property">class </em><code class="descclassname">picovico.baserequest.</code><code class="descname">PicovicoRequest</code><span class="sig-paren">(</span><em>headers=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.baserequest.PicovicoRequest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Picovico Request class for API calls.</p>
+<p>This class is a convenience wrapper around <cite>requests</cite> module.
+It provides method calls and arguments for Picovico API. This also
+include URL buildup.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>headers</strong> (<a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; <em>Optional</em> headers to be included with API request.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="picovico.baserequest.PicovicoRequest.host">
+<code class="descname">host</code><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.host" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base host URL. By default its provided by picovico.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.baserequest.PicovicoRequest.url">
+<code class="descname">url</code><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>The URL created  using host and path.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.baserequest.PicovicoRequest.headers">
+<code class="descname">headers</code><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>The header that is provided in init along with appends for additional headers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.baserequest.PicovicoRequest.is_authenticated">
+<code class="descname">is_authenticated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether the object is authenticated or not.</p>
+<p>This method checks for header for authentication token and key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><em>True</em> if header consist of authentication headers else <em>False</em>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.baserequest.PicovicoRequest.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request get method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; URL path.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first simple">
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoNotFound" title="picovico.exceptions.PicovicoNotFound"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoNotFound</span></code></a> &#8211; If status is 404.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoUnauthorized" title="picovico.exceptions.PicovicoUnauthorized"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoUnauthorized</span></code></a> &#8211; If status is 401.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoRequestError" title="picovico.exceptions.PicovicoRequestError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoRequestError</span></code></a> &#8211; If status is 400 related.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoServerError" title="picovico.exceptions.PicovicoServerError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoServerError</span></code></a> &#8211; If status is 500.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/library/json.html#module-json" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">json</span></code></a> data.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.baserequest.PicovicoRequest.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>path</em>, <em>post_data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request post method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; URL path.</li>
+<li><strong>post_data</strong> (<a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; <em>Optional</em> Data to be posted <cite>{&#8216;k&#8217;: &#8216;v&#8217;}</cite> format.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first simple">
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoNotFound" title="picovico.exceptions.PicovicoNotFound"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoNotFound</span></code></a> &#8211; If status is 404.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoUnauthorized" title="picovico.exceptions.PicovicoUnauthorized"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoUnauthorized</span></code></a> &#8211; If status is 401.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoRequestError" title="picovico.exceptions.PicovicoRequestError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoRequestError</span></code></a> &#8211; If status is 400 related.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoServerError" title="picovico.exceptions.PicovicoServerError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoServerError</span></code></a> &#8211; If status is 500.</li>
+<li><code class="xref py py-exc docutils literal"><span class="pre">AssertionError</span></code> &#8211; when post_data is not <a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/library/json.html#module-json" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">json</span></code></a> data.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.baserequest.PicovicoRequest.put">
+<code class="descname">put</code><span class="sig-paren">(</span><em>path</em>, <em>filename=None</em>, <em>data_headers=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request put method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; URL path.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; <em>Optional</em> filename with full path.</li>
+<li><strong>data_headers</strong> (<a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; <em>Optional</em> Data to be posted <cite>{&#8216;k&#8217;: &#8216;v&#8217;}</cite> format.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first simple">
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoNotFound" title="picovico.exceptions.PicovicoNotFound"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoNotFound</span></code></a> &#8211; If status is 404.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoUnauthorized" title="picovico.exceptions.PicovicoUnauthorized"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoUnauthorized</span></code></a> &#8211; If status is 401.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoRequestError" title="picovico.exceptions.PicovicoRequestError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoRequestError</span></code></a> &#8211; If status is 400 related.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoServerError" title="picovico.exceptions.PicovicoServerError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoServerError</span></code></a> &#8211; If status is 500.</li>
+<li><code class="xref py py-exc docutils literal"><span class="pre">AssertionError</span></code> &#8211; when filename or data_headers are provided but donot match the types.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/library/json.html#module-json" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">json</span></code></a> data.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.baserequest.PicovicoRequest.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.baserequest.PicovicoRequest.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Request put method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; URL path.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first simple">
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoNotFound" title="picovico.exceptions.PicovicoNotFound"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoNotFound</span></code></a> &#8211; If status is 404.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoUnauthorized" title="picovico.exceptions.PicovicoUnauthorized"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoUnauthorized</span></code></a> &#8211; If status is 401.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoRequestError" title="picovico.exceptions.PicovicoRequestError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoRequestError</span></code></a> &#8211; If status is 400 related.</li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoServerError" title="picovico.exceptions.PicovicoServerError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoServerError</span></code></a> &#8211; If status is 500.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/library/json.html#module-json" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">json</span></code></a> data.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-picovico.decorators">
+<span id="picovico-decorators-module"></span><h2>picovico.decorators module<a class="headerlink" href="#module-picovico.decorators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="picovico.decorators.pv_auth_required">
+<code class="descclassname">picovico.decorators.</code><code class="descname">pv_auth_required</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.decorators.pv_auth_required" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Authentication necessity decorator.</p>
+<p>This decorator checks for object methods such as <cite>is_authorized</cite> and <cite>is_authenticated</cite>.
+It is mostly used with component and api class.
+Also it sets header to <cite>_pv_request</cite> attribute of the object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#picovico.exceptions.PicovicoAPINotAllowed" title="picovico.exceptions.PicovicoAPINotAllowed"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoAPINotAllowed</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="picovico.decorators.pv_not_implemented">
+<code class="descclassname">picovico.decorators.</code><code class="descname">pv_not_implemented</code><span class="sig-paren">(</span><em>against</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.decorators.pv_not_implemented" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Checks Implementation.</p>
+<p>Used in component class to check if
+the object component is implemented in API or not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>againsts</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">list</span></code></a> | <code class="xref py py-class docutils literal"><span class="pre">tuple</span></code>) &#8211; The check itertor.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="picovico.decorators.pv_project_check_begin">
+<code class="descclassname">picovico.decorators.</code><code class="descname">pv_project_check_begin</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.decorators.pv_project_check_begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Check Project Initiation.</p>
+<p>This checks project object <cite>video</cite> attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#picovico.exceptions.PicovicoProjectNotAllowed" title="picovico.exceptions.PicovicoProjectNotAllowed"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoProjectNotAllowed</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-picovico.exceptions">
+<span id="picovico-exceptions-module"></span><h2>picovico.exceptions module<a class="headerlink" href="#module-picovico.exceptions" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoRequestError">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoRequestError</code><span class="sig-paren">(</span><em>status=400</em>, <em>message=None</em>, <em>response=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.exceptions.PicovicoRequestError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Class for all the client related request errors.</p>
+<p>This class is raised when the response from server is not related to
+200 or 300 and 500 status.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoNotFound">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoNotFound</code><span class="sig-paren">(</span><em>message=None</em>, <em>response=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.exceptions.PicovicoNotFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK:  Error for 404 status.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoUnauthorized">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoUnauthorized</code><span class="sig-paren">(</span><em>message=None</em>, <em>response=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.exceptions.PicovicoUnauthorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Error for 401 status.</p>
+<p>This error is raised when there is fault in access-token
+and access-key scenario. i.e. Authentication problems.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoServerError">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoServerError</code><span class="sig-paren">(</span><em>status=500</em>, <em>message=None</em>, <em>response=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.exceptions.PicovicoServerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Same as <a class="reference internal" href="#picovico.exceptions.PicovicoRequestError" title="picovico.exceptions.PicovicoRequestError"><code class="xref py py-class docutils literal"><span class="pre">PicovicoRequestError</span></code></a>.</p>
+<p>This is raised for status codes of 500 i.e. server related errors.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoAPINotAllowed">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoAPINotAllowed</code><a class="headerlink" href="#picovico.exceptions.PicovicoAPINotAllowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Helper class for  API errors.</p>
+<p>This class is raised when there is some api related thresholds.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoComponentNotSupported">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoComponentNotSupported</code><a class="headerlink" href="#picovico.exceptions.PicovicoComponentNotSupported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Helper class for component errors.</p>
+<p>This is raised when user sets component that is not yet supported.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="picovico.exceptions.PicovicoProjectNotAllowed">
+<em class="property">exception </em><code class="descclassname">picovico.exceptions.</code><code class="descname">PicovicoProjectNotAllowed</code><a class="headerlink" href="#picovico.exceptions.PicovicoProjectNotAllowed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Project related error class.</p>
+<p>This is raised when there is some assertions in project
+methods.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="picovico.exceptions.raise_valid_error">
+<code class="descclassname">picovico.exceptions.</code><code class="descname">raise_valid_error</code><span class="sig-paren">(</span><em>**error_response</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.exceptions.raise_valid_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Exception raising helper.
+Raises valid errors according to status_code provided.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>status_code</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; HTTP status code either from response itself or provided explicitly.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoNotFound" title="picovico.exceptions.PicovicoNotFound"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoNotFound</span></code></a></li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoUnauthorized" title="picovico.exceptions.PicovicoUnauthorized"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoUnauthorized</span></code></a></li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoRequestError" title="picovico.exceptions.PicovicoRequestError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoRequestError</span></code></a></li>
+<li><a class="reference internal" href="#picovico.exceptions.PicovicoServerError" title="picovico.exceptions.PicovicoServerError"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoServerError</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-picovico.project">
+<span id="picovico-project-module"></span><h2>picovico.project module<a class="headerlink" href="#module-picovico.project" title="Permalink to this headline">¶</a></h2>
+<dl class="attribute">
+<dt id="picovico.project.Vdd">
+<code class="descclassname">picovico.project.</code><code class="descname">Vdd</code><a class="headerlink" href="#picovico.project.Vdd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Video Data Definition to be used in project
+All video related components are stored in <cite>Vdd</cite></p>
+<p>alias of <code class="xref py py-class docutils literal"><span class="pre">VideoDefinitionData</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="picovico.project.PicovicoProject">
+<em class="property">class </em><code class="descclassname">picovico.project.</code><code class="descname">PicovicoProject</code><span class="sig-paren">(</span><em>request_obj</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject" title="Permalink to this definition">¶</a></dt>
+<dd><p>Picovico-SDK: Project class.</p>
+<p>This class is a helper for stateful video creation process.
+The object will hold all component related actions as well.</p>
+<dl class="attribute">
+<dt id="picovico.project.PicovicoProject.photo_component">
+<code class="descname">photo_component</code><a class="headerlink" href="#picovico.project.PicovicoProject.photo_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.photo.PicovicoPhoto" title="picovico.components.photo.PicovicoPhoto"><code class="xref py py-class docutils literal"><span class="pre">PicovicoPhoto</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.project.PicovicoProject.video_component">
+<code class="descname">video_component</code><a class="headerlink" href="#picovico.project.PicovicoProject.video_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.video.PicovicoVideo" title="picovico.components.video.PicovicoVideo"><code class="xref py py-class docutils literal"><span class="pre">PicovicoVideo</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.project.PicovicoProject.music_component">
+<code class="descname">music_component</code><a class="headerlink" href="#picovico.project.PicovicoProject.music_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.music.PicovicoMusic" title="picovico.components.music.PicovicoMusic"><code class="xref py py-class docutils literal"><span class="pre">PicovicoMusic</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.project.PicovicoProject.style_component">
+<code class="descname">style_component</code><a class="headerlink" href="#picovico.project.PicovicoProject.style_component" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="picovico.components.html#picovico.components.style.PicovicoStyle" title="picovico.components.style.PicovicoStyle"><code class="xref py py-class docutils literal"><span class="pre">PicovicoStyle</span></code></a> instance.</p>
+</dd></dl>
+
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>request_obj</strong> (<a class="reference internal" href="#picovico.baserequest.PicovicoRequest" title="picovico.baserequest.PicovicoRequest"><em>PicovicoRequest</em></a>) &#8211; Request object with authentication</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">PicovicoProjectNotAllowed</span></code> &#8211; when <cite>request_obj</cite> is not authorized.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="picovico.project.PicovicoProject.vdd">
+<code class="descname">vdd</code><a class="headerlink" href="#picovico.project.PicovicoProject.vdd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only <a class="reference internal" href="#picovico.project.Vdd" title="picovico.project.Vdd"><code class="xref py py-class docutils literal"><span class="pre">Vdd</span></code></a> instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="picovico.project.PicovicoProject.video">
+<code class="descname">video</code><a class="headerlink" href="#picovico.project.PicovicoProject.video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read-only video identifier from project initiation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.begin">
+<code class="descname">begin</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.begin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initiate the video proect.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; <em>Optional</em> Name of video or default &#8216;Untitled&#8217; name</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.discard">
+<code class="descname">discard</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.discard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Discard current project if set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save <cite>Vdd</cite> component.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.render">
+<code class="descname">render</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render/Create the video.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.preview">
+<code class="descname">preview</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.preview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preview the video.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.populate_vdd">
+<code class="descname">populate_vdd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.populate_vdd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make <cite>Vdd</cite> post data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">data based on <a class="reference internal" href="#picovico.project.Vdd" title="picovico.project.Vdd"><code class="xref py py-class docutils literal"><span class="pre">Vdd</span></code></a> instance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="picovico.project.PicovicoProject.time_counter">
+<em class="property">static </em><code class="descname">time_counter</code><span class="sig-paren">(</span><em>assets</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.time_counter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time counter.
+Appends time in assets.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">data with &#8216;start_time&#8217; and &#8216;end_time&#8217;.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="picovico.project.PicovicoProject.create_asset_dict">
+<em class="property">static </em><code class="descname">create_asset_dict</code><span class="sig-paren">(</span><em>asset_type</em>, <em>asset_id=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.create_asset_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asset data creator.
+Creates asset post data from asset type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>asset_type</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name of asset to be sent.</li>
+<li><strong>asset_id</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; <em>Optional</em> id of some asset component</li>
+<li><strong>data</strong> (<a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; <em>Optional</em> additional data to be sent.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Single Asset post data.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.set_style">
+<code class="descname">set_style</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.set_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add style to video project.
+Sets <a class="reference internal" href="#picovico.project.Vdd" title="picovico.project.Vdd"><code class="xref py py-class docutils literal"><span class="pre">Vdd</span></code></a> style.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; style name of picovico.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">AssertionError</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.set_quality">
+<code class="descname">set_quality</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.set_quality" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add quality to video project.
+Sets <a class="reference internal" href="#picovico.project.Vdd" title="picovico.project.Vdd"><code class="xref py py-class docutils literal"><span class="pre">Vdd</span></code></a> quality.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; allowed quality by picovico</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">AssertionError</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add name to video project.
+Sets <a class="reference internal" href="#picovico.project.Vdd" title="picovico.project.Vdd"><code class="xref py py-class docutils literal"><span class="pre">Vdd</span></code></a> name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; name to set.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_music">
+<code class="descname">add_music</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_music" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add music to video project.
+Adds music asset to <a class="reference internal" href="#picovico.project.Vdd" title="picovico.project.Vdd"><code class="xref py py-class docutils literal"><span class="pre">Vdd</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>music_id</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; music identifier from picovico.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.set_privacy">
+<code class="descname">set_privacy</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.set_privacy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set privacy of video project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; value of allowed privacy.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_credit">
+<code class="descname">add_credit</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_credit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add single credit to video project.
+Credits are list of length 2.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; first credit value</li>
+<li><strong>value</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; second credit value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_text">
+<code class="descname">add_text</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add text asset to video project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; title of text asset</li>
+<li><strong>body</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; body of text asset that coheres with title</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">AssertionError</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_photo">
+<code class="descname">add_photo</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add photo asset to video project.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>photo_id</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; photo identifier from picovico</li>
+<li><strong>caption</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; caption to be used with photo.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_music_url">
+<code class="descname">add_music_url</code><span class="sig-paren">(</span><em>url</em>, <em>preview=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_music_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set music from URL and preview.
+Calls upload url then sets identifier as music asset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; URL of music</li>
+<li><strong>preview</strong> (<em>optional[str]</em>) &#8211; Preview URL of music.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_music_file">
+<code class="descname">add_music_file</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_music_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set music from file.
+Calls upload file and then sets identifier in music asset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; filname path.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_photo_url">
+<code class="descname">add_photo_url</code><span class="sig-paren">(</span><em>url</em>, <em>thumbnail=None</em>, <em>caption=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_photo_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set photo asset from url.
+Calls upload_url and then sets identifier in photo asset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; URL of photo to upload.</li>
+<li><strong>thumbnail</strong> (<em>optional[str]</em>) &#8211; thumbnail URL of photo.</li>
+<li><strong>caption</strong> (<em>optional[str]</em>) &#8211; caption to be used in photo.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.add_photo_file">
+<code class="descname">add_photo_file</code><span class="sig-paren">(</span><em>filename</em>, <em>caption=None</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.add_photo_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set photo asset from file.
+Calls upload file and then sets identifier in photo asset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path of file.</li>
+<li><strong>caption</strong> (<em>optional[str]</em>) &#8211; caption to be used in photo.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.clear_assets">
+<code class="descname">clear_assets</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.clear_assets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear video project vdd assets.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="picovico.project.PicovicoProject.clear_credits">
+<code class="descname">clear_credits</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#picovico.project.PicovicoProject.clear_credits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear video project credit assets.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-picovico.urls">
+<span id="picovico-urls-module"></span><h2>picovico.urls module<a class="headerlink" href="#module-picovico.urls" title="Permalink to this headline">¶</a></h2>
+<p>All the api related endpoints and host.</p>
+<dl class="data">
+<dt id="picovico.urls.PICOVICO_BASE">
+<code class="descclassname">picovico.urls.</code><code class="descname">PICOVICO_BASE</code><em class="property"> = 'https://uapi-f1.picovico.com/v2.1/'</em><a class="headerlink" href="#picovico.urls.PICOVICO_BASE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base URL</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="picovico.components.html" class="btn btn-neutral float-right" title="Class documentation (picovico.components)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index-class.html" class="btn btn-neutral" title="Class Reference" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Picovico Inc..
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'2.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
