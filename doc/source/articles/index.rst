@@ -9,10 +9,12 @@ Basic Workflow
   2. Create API instance with the credentials ``api=PicovicoAPI(id, device_id)``
   3. Authenticate with your account ``api.authenticate(secret)``
   4. Project Workflow (To Create a video)
+
     a. Begin a project
     b. Define the video (Add slides, music, style, etc)
     c. Preview the project if required
     d. Render the video
+
   5. Explore other features
 
 Examples
@@ -22,3 +24,4 @@ Examples
 
   sdk/example-hello-world
   sdk/example-sdk-features
+

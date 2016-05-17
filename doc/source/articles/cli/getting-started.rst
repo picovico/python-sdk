@@ -30,7 +30,6 @@ Available Commands
 | c. ``--log`` 
 |     Enable / Disable request logging *(stored inside* ``$HOME/.picovico`` *)*    
 
-| 
 2. login
 ~~~~~~~~
 User session is mandatory for all the component commands. Login command prompts for username and password, and is generally used to identify third-party users.
@@ -51,3 +50,4 @@ View details of the account currently logged in.
 ~~~~~~~~~~
 All actions related to a video project is provided by this command. It requires subcommands for respective action.
 Learn more about `The Project Workflow, and subcommands <cli-project-workflow.html>`_
+
