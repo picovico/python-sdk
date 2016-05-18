@@ -49,6 +49,14 @@ help:
 	@echo "  coverage   to run coverage check of the documentation (if enabled)"
 	@echo "  dummy      to check syntax errors of document sources"
 
+.PHONY: ghpush
+ghpush: clean
+	mkdir -p $(BUILDDIR)/html
+	cp -rv ../.git $(BUILDDIR)/html
+	cd $(BUILDDIR)/html && git checkout gh-pages
+	make html
+	cd $(BUILDDIR)/html && git add . && git commit -m "Rebuilt Docs - $(date) " && git push origin gh-pages
+
 .PHONY: clean
 clean:
 	rm -rf $(BUILDDIR)/*
