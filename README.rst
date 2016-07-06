@@ -1,9 +1,8 @@
-
-.. image:: https://travis-ci.org/sagarchalise/picovico-python-sdk.svg?branch=master
-    :target: https://travis-ci.org/sagarchalise/picovico-python-sdk
-
 python-sdk (Beta)
 ==========
+
+.. image:: https://travis-ci.org/sagarchalise/picovico-python-sdk.svg?branch=master
+   :target: https://travis-ci.org/sagarchalise/picovico-python-sdk
 
 The official python-sdk from Picovico API.
 - Includes picovico-client CLI tool to explore the API
