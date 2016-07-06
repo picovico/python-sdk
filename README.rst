@@ -1,5 +1,6 @@
 
-https://travis-ci.org/sagarchalise/picovico-python-sdk.svg?branch=master
+.. image:: https://travis-ci.org/sagarchalise/picovico-python-sdk.svg?branch=master
+    :target: https://travis-ci.org/sagarchalise/picovico-python-sdk
 
 python-sdk (Beta)
 ==========
