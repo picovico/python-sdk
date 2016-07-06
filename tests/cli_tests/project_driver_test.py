@@ -1,10 +1,9 @@
 import itertools
 import pytest
-
+import six
 from picovico import PicovicoAPI
 from picovico.cli import project_driver as pv_project_driver
 from picovico import project as pv_project
-from picovico import constants as pv_constants
 
 def create_comb_com(ch):
     for l in ch:
@@ -18,10 +17,10 @@ def create_comb_com(ch):
 def project_arg(command, *args):
     # b = {'project': command}
     yield command
-    comb_arg = zip(args, args)
+    comb_arg = six.moves.zip(args, args)
     i = 1
     c = []
-    while i <= len(comb_arg):
+    while i <= len(list(comb_arg)):
         c.append(itertools.combinations(comb_arg, i))
         i += 1
     ch = itertools.chain(*[itertools.product((command,), cc) for cc in c])
