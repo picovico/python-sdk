@@ -2,11 +2,15 @@ import os
 import errno
 
 import pytest
+import six
 
 from picovico.cli import file_utils as pv_cli_file_utility
 
 def file_mock(mocker, return_value=None, side_effect=None, open_data=None):
-    mo = mocker.patch('picovico.cli.file_utils.open')
+    if six.PY2:
+        mo = mocker.patch('picovico.cli.file_utils.open')
+    else:
+        mo = mocker.patch('builtins.open')
     if return_value:
         mo.return_value = return_value
     if side_effect:
