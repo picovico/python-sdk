@@ -36,6 +36,8 @@ class TestCliActions:
         msc.assert_called_with(call_args, profiles[1])
         mli = mocker.patch('picovico.cli.prompt.configure_login_info')
         mli.return_value = return_args[3:]
+        mc = mocker.patch('picovico.cli.profile_utils.get_raw_profile')
+        mc.return_value = mocker.Mock(spec=six.moves.configparser.SafeConfigParser)
         conf_info = driver.configure(login=True)
         call_args.update(dict(zip(('USERNAME', 'PASSWORD'), mli.return_value)))
         msc.assert_called_with(call_args, profiles[0])

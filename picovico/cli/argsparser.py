@@ -40,14 +40,12 @@ def create_arguments(parser, actions):
 def create_subcommands(parser, actions, sub_title, sub_dest, **extras):
     sub_parser = parser.add_subparsers(title=sub_title, dest=sub_dest)
     for action in actions:
-        sub = sub_parser.add_parser(action.COMMAND,  help='{} help'.format(action.COMMAND))
-        #if hasattr(action, 'GROUPS') and action.GROUPS:
-            #groups = sub.add_argument_group(action.GROUP_NAME)
-            #create_arguments(groups, action.GROUPS)
-        if hasattr(action, 'OPTIONS') and action.OPTIONS:
-            create_arguments(sub, action.OPTIONS)
-        for k, v in six.iteritems(extras):
-            sub.add_argument(k, **v)
+        if hasattr(sub_parser, 'add_parser'):
+            sub = sub_parser.add_parser(action.COMMAND,  help='{} help'.format(action.COMMAND))
+            if hasattr(action, 'OPTIONS') and action.OPTIONS:
+                create_arguments(sub, action.OPTIONS)
+            for k, v in six.iteritems(extras):
+                sub.add_argument(k, **v)
         if hasattr(action, 'SUBCOMMANDS') and action.SUBCOMMANDS:
             sub_parser = create_subcommands(sub, action.SUBCOMMANDS, action.SUB_TITLE, action.SUB_DEST, **action.SUB_EXTRAS)
     return parser

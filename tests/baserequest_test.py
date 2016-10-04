@@ -1,3 +1,4 @@
+import six
 import pytest
 try:
     import mock
@@ -63,7 +64,10 @@ class TestPicovicoRequest:
                 argument.update(post_data=data)
             else:
                 data = 'putdata'
-                mocker.patch('picovico.baserequest.open', mock.mock_open(read_data=data))
+                if six.PY2:
+                    mocker.patch('picovico.baserequest.open', mock.mock_open(read_data=data))
+                else:
+                    mocker.patch('builtins.open', mock.mock_open(read_data=data))
                 argument.update(filename='helo')
         method_func(urls.ME) if not argument else method_func(urls.ME, **argument)
         respond_mock.assert_called_with(urls.ME)
