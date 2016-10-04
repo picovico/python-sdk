@@ -57,6 +57,8 @@ def is_in_profile(values_to_check, profile_name):
 
 def set_profile(values_to_set, profile_name):
     cfg = get_raw_profile()
+    if not cfg:
+        cfg = six.moves.configparser.SafeConfigParser()
     write_new_profile_info(cfg, profile_name)
     if isinstance(values_to_set, dict):
         copied_value = values_to_set.copy()
