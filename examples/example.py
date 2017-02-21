@@ -13,6 +13,7 @@ PICOVICO_APP_SECRET = 'YOUR-APP-SECRET'
   api.login('username', 'password')
 """
 api = PicovicoAPI(PICOVICO_APP_ID, PICOVICO_DEVICE_ID, PICOVICO_APP_SECRET)
+api.authenticate()
 
 # Picovico Components are referenced as api.some_component
 pv_music = api.music_component

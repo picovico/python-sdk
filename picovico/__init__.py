@@ -72,9 +72,10 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
         Args:
             app_secret(str): Application Secret provided by Picovico.
         """
-        assert app_secret, 'App secret provided by picovico is required'
-        if app_secret is not None and not self.app_secret:
+        assert app_secret or self.app_secret, 'App secret provided by picovico is required'
+        if app_secret is not None:
             self._set_app_secret(app_secret)
+
         data={
             'app_id': self.app_id,
             'app_secret': self.app_secret,

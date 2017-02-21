@@ -16,4 +16,4 @@ class PicovicoPhoto(PicovicoBaseComponent):
             url(str): Photo URL to upload.
             thumbnail(str): Thumbnail URL to upload.
         """
-        return super(PicovicoPhoto, self).upload_url(url, thumbnail_url=thumbnail)
+        return super(PicovicoPhoto, self).upload_url(url, thumbnail_url=thumbnail, source="hosted")
