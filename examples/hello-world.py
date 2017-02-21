@@ -8,6 +8,7 @@ PICOVICO_APP_SECRET = 'YOUR-APP-SECRET'
 # 2. Initialize API
 # - Provide the app_secret argument, or call api.authenticate() later
 api = PicovicoAPI(PICOVICO_APP_ID, PICOVICO_DEVICE_ID, PICOVICO_APP_SECRET)
+api.authenticate()
 
 # component alias (optional)
 pv_music = api.music_component
