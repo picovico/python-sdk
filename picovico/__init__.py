@@ -99,3 +99,9 @@ class PicovicoAPI(PicovicoSessionMixin, PicovicoComponentMixin):
         if self.__is_set_header():
             self.__project = pv_project.PicovicoProject(self._pv_request)
             super(PicovicoAPI, self)._ready_component_property()
+
+    def text_slide(self, title='', body=''):
+        pass
+    
+    def image_slide(self, image_id, image_url=None, caption=''):
+        pass

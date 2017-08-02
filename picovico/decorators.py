@@ -30,7 +30,7 @@ def pv_not_implemented(against):
     the object component is implemented in API or not.
 
     Args:
-        againsts(:class:`list` | :class:`tuple`): The check itertor.
+        against(:class:`list` | :class:`tuple`): Check against the value provided.
 
     Raises:
         NotImplementedError

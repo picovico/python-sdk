@@ -12,11 +12,12 @@ _quality = {
     'PREVIEW': 144,
     'STANDARD': 360,
     'MEDIUM' : 480,
-    'HIGH_DEF': 720
+    'HIGH_DEF': 720,
+    'FULL_HD': 1080 # when supported
 }
 QUALITY = namedtuple('Quality',_quality.keys())(**_quality)
 
-_asset = ('image', 'music', 'video', 'audio', 'text')
+_asset = ('image', 'music', 'video', 'text')
 ASSETS = namedtuple('Asset', [a.upper() for a in _asset])._make(_asset)
 
 VIDEO_NAME = 'Untitled Video From SDK'

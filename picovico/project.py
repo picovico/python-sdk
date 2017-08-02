@@ -23,7 +23,7 @@ class PicovicoProject(object):
         style_component: :class:`.PicovicoStyle` instance.
 
     Args:
-        request_obj(PicovicoRequest): Request object with authentication
+        request_obj(PicovicoRequest): Request object with authentication.
 
     Raises:
         PicovicoProjectNotAllowed: when `request_obj` is not authorized.
@@ -119,7 +119,7 @@ class PicovicoProject(object):
 
 
     @staticmethod
-    def create_asset_dict(asset_type, asset_id=None, data=None):
+    def create_asset_dict(asset_type, asset_id=None, data=None, asset_url=None):
         """ Asset data creator.
         Creates asset post data from asset type.
 
@@ -131,13 +131,15 @@ class PicovicoProject(object):
         Returns:
             dict: Single Asset post data.
         """
+        if asset_id and url:
+            raise AssertionError('Either add URL or id but not both')
         asset_dict = {
-            'name': asset_type,
-            'start_time': 0,
-            'end_time': 0
+            'name': asset_type
         }
-        if asset_id:
-            asset_dict.update(asset_id=asset_id)
+        if url:
+            asset_dict.update(url=asset_url)
+        elif asset_id:
+            asset_dict.update(id=asset_id)
         if data:
             asset_dict.update(data=data)
         return asset_dict
@@ -155,18 +157,18 @@ class PicovicoProject(object):
         assert isinstance(assets, list), 'assets should be list'
         self.__replace_vdd_data(assets=assets)
 
-    def _add_credits(self, credits):
-        """ **Not for User.
-        A helper to add whole credits in vdd.
+    # def _add_credits(self, credits):
+        # """ **Not for User.
+        # A helper to add whole credits in vdd.
 
-        Args:
-            credits(list): list of credits.
+        # Args:
+            # credits(list): list of credits.
 
-        Raises:
-            AssertionError
-        """
-        assert isinstance(credits, list), 'assets should be list'
-        self.__replace_vdd_data(credits=credits)
+        # Raises:
+            # AssertionError
+        # """
+        # assert isinstance(credits, list), 'assets should be list'
+        # self.__replace_vdd_data(credits=credits)
 
     def __add_asset(self, asset, time=True):
         if time:
@@ -203,7 +205,6 @@ class PicovicoProject(object):
         Raises:
             AssertionError
         """
-        assert int(value) in pv_constants.QUALITY, '{0} is not supported. Choose [{1}]'.format(value, ','.join(str(q) for q in pv_constants.QUALITY))
         self.__replace_vdd_data(quality=int(value))
 
     def set_name(self, value):
@@ -215,6 +216,10 @@ class PicovicoProject(object):
         """
         if value:
             self.__replace_vdd_data(name=value)
+    
+    @pv_decorators.pv_project_check_begin
+    def add_asset_slide(self, asset_slide):
+        pass
 
     @pv_decorators.pv_project_check_begin
     def add_music(self, music_id):
@@ -237,19 +242,19 @@ class PicovicoProject(object):
         assert value in pv_constants.PRIVACY, 'Privacy can be [{}]'.format(','.join(pv_constants.PRIVACY))
         self.__replace_vdd_data(privacy=value)
 
-    @pv_decorators.pv_project_check_begin
-    def add_credit(self, name, value):
-        """ Add single credit to video project.
-        Credits are list of length 2.
+    # @pv_decorators.pv_project_check_begin
+    # def add_credit(self, name, value):
+        # """ Add single credit to video project.
+        # Credits are list of length 2.
 
-        Args:
-            name(str): first credit value
-            value(str): second credit value
-        """
-        assert all((name, value)), 'Credit should be two texts'
-        if self.vdd.credits is None:
-            self.__replace_vdd_data(credits=[])
-        self.vdd.credits.append((name, value))
+        # Args:
+            # name(str): first credit value
+            # value(str): second credit value
+        # """
+        # assert all((name, value)), 'Credit should be two texts'
+        # if self.vdd.credits is None:
+            # self.__replace_vdd_data(credits=[])
+        # self.vdd.credits.append((name, value))
 
     @pv_decorators.pv_project_check_begin
     def add_text(self, title=None, body=None):
@@ -287,16 +292,16 @@ class PicovicoProject(object):
         component_method = getattr(getattr(self, '{}_component'.format(component)), method_name)
         return component_method(**kwargs)
 
-    def add_music_url(self, url, preview=None):
-        """ Set music from URL and preview.
-        Calls upload url then sets identifier as music asset.
+    # def add_music_url(self, url, preview=None):
+        # """ Set music from URL and preview.
+        # Calls upload url then sets identifier as music asset.
 
-        Args:
-            url(str): URL of music
-            preview(optional[str]): Preview URL of music.
-        """
-        res = self.__component_actions('music', 'upload_url', url=url, preview=preview)
-        self.add_music(res['id'])
+        # Args:
+            # url(str): URL of music
+            # preview(optional[str]): Preview URL of music.
+        # """
+        # res = self.__component_actions('music', 'upload_url', url=url, preview=preview)
+        # self.add_music(res['id'])
 
     def add_music_file(self, filename):
         """ Set music from file.
@@ -308,17 +313,17 @@ class PicovicoProject(object):
         res = self.__component_actions('music', 'upload_file', filename=filename)
         self.add_music(res['id'])
 
-    def add_photo_url(self, url, thumbnail=None, caption=None):
-        """ Set photo asset from url.
-        Calls upload_url and then sets identifier in photo asset.
+    # def add_photo_url(self, url, thumbnail=None, caption=None):
+        # """ Set photo asset from url.
+        # Calls upload_url and then sets identifier in photo asset.
 
-        Args:
-            url(str): URL of photo to upload.
-            thumbnail(optional[str]): thumbnail URL of photo.
-            caption(optional[str]): caption to be used in photo.
-        """
-        res = self.__component_actions('photo', 'upload_url', url=url, thumbnail=thumbnail)
-        self.add_photo(res['id'], caption)
+        # Args:
+            # url(str): URL of photo to upload.
+            # thumbnail(optional[str]): thumbnail URL of photo.
+            # caption(optional[str]): caption to be used in photo.
+        # """
+        # res = self.__component_actions('photo', 'upload_url', url=url, thumbnail=thumbnail)
+        # self.add_photo(res['id'], caption)
 
     def add_photo_file(self, filename, caption=None):
         """ Set photo asset from file.
@@ -337,8 +342,12 @@ class PicovicoProject(object):
         """
         self.__replace_vdd_data(assets=None)
 
-    @pv_decorators.pv_project_check_begin
-    def clear_credits(self):
-        """ Clear video project credit assets.
-        """
-        self.__replace_vdd_data(credits=None)
+    # @pv_decorators.pv_project_check_begin
+    # def clear_credits(self):
+        # """ Clear video project credit assets.
+        # """
+        # self.__replace_vdd_data(credits=None)
+
+    def project_from_json_file(self, json_file):
+        with open(json_file) as f:
+            pass

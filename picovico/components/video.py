@@ -27,7 +27,7 @@ class PicovicoVideo(PicovicoBaseComponent):
             Rendering state of the video will not be changed.
         '''
         req_args = self.create_request_args(**{
-            'method': 'post',
+            'method': 'put',
             'url_attr': 'MY_SINGLE_VIDEO_PREVIEW',
         })
         return self._api_call(video_id=video_id, **req_args)
@@ -38,7 +38,7 @@ class PicovicoVideo(PicovicoBaseComponent):
             Picovico: Sends the actual rendering request to rendering engine
         '''
         req_args = self.create_request_args(**{
-            'method': 'post',
+            'method': 'put',
             'url_attr': 'MY_SINGLE_VIDEO_CREATE',
         })
         return self._api_call(video_id=video_id, **req_args)
