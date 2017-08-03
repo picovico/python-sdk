@@ -89,7 +89,7 @@ class PicovicoSessionMixin(object):
         return not self.is_anonymous()
 
     @property
-    def headers(self):
+    def auth_headers(self):
         """ Header dict based on is_authorized else None.
         """
         if self.is_authorized():

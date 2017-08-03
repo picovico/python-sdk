@@ -109,7 +109,7 @@ class PicovicoRequest(object):
             dict: :mod:`json` data.
         """
         self.request_args = self.get_request_args('get')
-        return self.__respond(path)
+        return self._respond(path)
 
     def post(self, path, post_data=None):
         """ Request post method.
@@ -131,7 +131,7 @@ class PicovicoRequest(object):
         if post_data:
             assert isinstance(post_data, dict), 'data should be of {"key": "value"} format'
         self.request_args = self.get_request_args('post', post_data)
-        return self.__respond(path)
+        return self._respond(path)
 
     def  put(self, path, filename=None, data_headers=None):
         """ Request put method.
@@ -159,7 +159,7 @@ class PicovicoRequest(object):
             assert isinstance(filename, six.string_types), 'Filename should be valid name'
             put_data = open(filename, 'rb').read()
         self.request_args = self.get_request_args('put', req_data=put_data)
-        return self.__respond(path)
+        return self._respond(path)
 
     def delete(self, path):
         """ Request put method.
@@ -177,9 +177,9 @@ class PicovicoRequest(object):
             dict: :mod:`json` data.
         """
         self.request_args = self.get_request_args('delete')
-        return self.__respond(path)
+        return self._respond(path)
 
-    def __respond(self, path):
+    def _respond(self, path):
         """ **Not for user.
         Appends path to URL and calls `requests` for API populating request arguments.
         Raises error  based on status.
