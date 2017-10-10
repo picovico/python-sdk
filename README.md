@@ -1,5 +1,5 @@
 #Picovico Python SDK
-The official python-sdk from Picovico API. **(Includes picovico-client CLI tool to explore the API)**
+The official python-sdk from Picovico API.
 
 Reference | Link
 --- | ---
