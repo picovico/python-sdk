@@ -5,7 +5,7 @@ Reference | Link
 --- | ---
 API documentation | http://docs.picovico.com
 Create API account | https://api.picovico.com
-Python SDK and CLI Guide | https://picovico.github.io/python-sdk/
+
 
 ##For Testing
  - `python setup.py develop`
