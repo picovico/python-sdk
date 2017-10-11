@@ -1,4 +1,4 @@
 Hello World Example
 ===================
 
-.. literalinclude:: ../../../../examples/hello-world.py
+.. literalinclude:: ../../../../examples/pv3_sample.py

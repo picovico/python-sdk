@@ -6,16 +6,9 @@ Picovico Python SDK provides a wrapper functionality to the Picovico RESTlike AP
 Basic Workflow
 ~~~~~~~~~~~~~~
   1. Define API Credentials ``App ID, App Secret, Device ID``
-  2. Create API instance with the credentials ``api=PicovicoAPI(id, device_id)``
-  3. Authenticate with your account ``api.authenticate(secret)``
-  4. Project Workflow (To Create a video)
-
-    a. Begin a project
-    b. Define the video (Add slides, music, style, etc)
-    c. Preview the project if required
-    d. Render the video
-
-  5. Explore other features
+  2. Create API instance with the credentials ``api=PicovicoAPI(id, device_id, secret)``
+  3. Authenticate with your account ``api.authenticate(secret)`` //Only if not initiated with secret
+  4. Call api `api.authenticated_api(method='get', url='/me')`
 
 Examples
 ~~~~~~~~

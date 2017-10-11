@@ -10,5 +10,5 @@ Table of Contents
     :titlesonly:
 
     articles/index
-    articles/index-cli
-    articles/index-class
+..    articles/index-cli
+..    articles/index-class
