@@ -2,7 +2,7 @@ from __future__ import print_function
 import json
 
 from picovico.exceptions import PicovicoError
-from picovico import PicovicoAPI2 as PicovicoAPI
+from picovico import PicovicoAPI as PicovicoAPI
 
 APP_ID = ''
 APP_SECRET = ''
