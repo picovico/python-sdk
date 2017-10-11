@@ -164,7 +164,7 @@ def pv_request():
 def pv_mocks(mocker):
     mob = {
         'request': mocker.patch('picovico.baserequest.requests.request'),
-        'api_call': mocker.patch('picovico.components.base.PicovicoBaseComponent._api_call'),
+        # 'api_call': mocker.patch('picovico.components.base.PicovicoBaseComponent._api_call'),
         #'respond': mocker.patch.object('picovico.baserequest.PicovicoRequest', '_PicovicoRequest__respond'),
         'obj': mocker
     }

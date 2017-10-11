@@ -13,7 +13,7 @@ class TestPicovicoSession:
         pv_session.device_id = "my_new_device_id"
         assert pv_session.device_id != session.DEFAULT_DEVICE_ID
         assert pv_session.device_id == "my_new_device_id"
-        assert pv_session.headers is None
+        assert pv_session.auth_headers is None
         pv_session.set_access_tokens("access_key", "access_token")
         assert pv_session.access_token == "access_token"
         assert pv_session.access_key == "access_key"
@@ -23,8 +23,8 @@ class TestPicovicoSession:
         with pytest.raises(AttributeError):
             pv_session.access_token = "new_access_key"
         with pytest.raises(AttributeError):
-            pv_session.headers = None
-        assert pv_session.headers is not None
+            pv_session.auth_headers = None
+        assert pv_session.auth_headers is not None
 
 
     def test_anonymous_vs_logged_in(self):

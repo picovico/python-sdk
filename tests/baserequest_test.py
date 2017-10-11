@@ -37,7 +37,7 @@ class TestPicovicoRequest:
         request_mock.return_value = pv_response.SUCCESS.OK
         pv_request = PicovicoRequest()
         pv_request.request_args = RequestArg(method='get', data=None)
-        res = pv_request._PicovicoRequest__respond(urls.ME)
+        res = pv_request._respond(urls.ME)
         assert pv_request.url == pv_urls.ME
         get_call = pv_act_request_args.GET.copy()
         get_call.update(url=pv_urls.ME)
@@ -45,12 +45,12 @@ class TestPicovicoRequest:
         assert res == pv_messages.SUCCESS.OK
         request_mock.return_value = pv_response.ERROR.BAD
         with pytest.raises(pv_exceptions.PicovicoRequestError):
-            pv_request._PicovicoRequest__respond(urls.ME)
+            pv_request._respond(urls.ME)
 
     @pytest.mark.parametrize('method', pv_constants.ALLOWED_METHODS)
     def test_methods(self, pv_mocks, pv_urls, method):
         mocker = pv_mocks.OBJ
-        respond_mock = mocker.patch.object(PicovicoRequest, '_PicovicoRequest__respond')
+        respond_mock = mocker.patch.object(PicovicoRequest, '_respond')
         pv_req = PicovicoRequest()
         method_func = getattr(pv_req, method)
         argument = {}
