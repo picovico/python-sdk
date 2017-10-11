@@ -1,6 +1,6 @@
 About Picovico
 ==============
-`Picovico <http://picovico.com>`_ is a cloud based platform which converts photos into videos. Picovico also exposes its service via REST like APIs. This page provides documentation for the official Python SDK and the built-in command line utility.
+`Picovico <http://picovico.com>`_ is a cloud based platform which converts photos into videos. Picovico also exposes its service via REST like APIs. This page provides documentation for the official Python SDK which is a simple wrapper around the api.
 
 Table of Contents
 -----------------
