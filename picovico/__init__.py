@@ -1,6 +1,7 @@
 from picovico.session import PicovicoSessionMixin
 from picovico import urls as pv_urls
 from picovico import baserequest as pv_request
+from picovico.exceptions import PicovicoError
 
 class PicovicoAPI(PicovicoSessionMixin, pv_request.PicovicoRequest):
     def __init__(self, app_id, device_id=None, app_secret=None):
@@ -9,12 +10,14 @@ class PicovicoAPI(PicovicoSessionMixin, pv_request.PicovicoRequest):
     def authenticated_api(self, method='get', url=None, params=None, headers=None):
         self.request_args = self.get_request_args(method, req_data=params)
         auth_headers = self.auth_headers
-        if headers is not None:
+        if isinstance(headers, dict):
             if not auth_headers:
                 auth_headers = headers
             else:
                 auth_headers.update(headers)
         self.headers = auth_headers
+        if not self.is_authenticated():
+            raise PicovicoError(status=400, message='Not authenticated yet. Please authenticate.')
         return self._respond(url)
         
     def anonymous_api(self, method='get', url=None, params=None, headers=None):
