@@ -179,7 +179,7 @@ class PicovicoRequest(object):
         self.request_args = self.get_request_args('delete')
         return self._respond(path)
 
-    def _respond(self, path):
+    def _respond(self, path, headers=None):
         """ **Not for user.
         Appends path to URL and calls `requests` for API populating request arguments.
         Raises error  based on status.
@@ -191,7 +191,10 @@ class PicovicoRequest(object):
         self.url = path
         request_args = self.request_args._asdict()
         request_args.update(url=self.url)
-        request_args.update(headers=self.headers)
+        if not headers:
+            request_args.update(headers=self.headers)
+        elif isinstance(headers, dict):
+            request_args.update(headers=headers)
         response = requests.request(**request_args)
         try:
             json_response = response.json()

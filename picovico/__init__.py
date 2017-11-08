@@ -11,20 +11,23 @@ class PicovicoAPI(PicovicoSessionMixin, pv_request.PicovicoRequest):
         self.request_args = self.get_request_args(method, req_data=params)
         auth_headers = self.auth_headers
         if isinstance(headers, dict):
-            if not auth_headers:
-                auth_headers = headers
-            else:
-                auth_headers.update(headers)
-        self.headers = auth_headers
-        if not self.is_authenticated():
-            raise PicovicoError(status=400, message='Not authenticated yet. Please authenticate.')
-        return self._respond(url)
-        
+            if 'X-PV-Meta-App' not in headers:
+                headers.update(self.headers)
+            if not all(headers.get(k) for k in ('X-Access-Key', 'X-Access-Token')) and isinstance(auth_headers, dict):
+                headers.update(auth_headers)
+        else:
+            self.headers = auth_headers
+            if not self.is_authenticated():
+                raise PicovicoError(status=400, message='Not authenticated yet. Please authenticate.')
+        return self._respond(url, headers=headers)
+    
+    
     def anonymous_api(self, method='get', url=None, params=None, headers=None):
         self.request_args = self.get_request_args(method, req_data=params)
-        self.header = headers
-        return self._respond(url)
-    
+        if isinstance(headers, dict) and 'X-PV-Meta-App' not in headers:
+            headers.update(self.headers)
+        return self._respond(url, headers)
+         
     def authenticate(self, app_secret=None):
         """ API authentication workflow.
 
