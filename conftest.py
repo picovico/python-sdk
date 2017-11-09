@@ -58,8 +58,8 @@ def pv_messages():
     }
     error_msg = _create_namedtuple('ErrorMsg', error_msg)
     success_msg = {
-        'ok': {'message': "This is success response."},
-        'auth': {'access_key': "key", 'access_token': "token"},
+        'ok': {'data': [{'message': "This is success response."}]},
+        'auth': {'data': [{'access_key': "key", 'access_token': "token"}]},
     }
     success_msg = _create_namedtuple('SuccessMsg', success_msg)
 
