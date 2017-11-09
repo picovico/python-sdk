@@ -30,7 +30,9 @@ payload = {
     ]
 }
 try:
-    pv.authenticated_api(method='post', url='me/videos', json.dumps(payload), headers={'Content-Type': 'application/json', 'Accept': 'application/json'})
+    res = pv.authenticated_api(method='post', url='me/videos', json.dumps(payload), headers={'Content-Type': 'application/json', 'Accept': 'application/json'})
 except PicovicoError as e:
     print(str(e))
-    
+else:
+    print(res)
+

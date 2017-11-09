@@ -80,7 +80,7 @@ class PicovicoRequest(object):
         }
         return RequestArg(**args)
 
-    def is_authenticated(self):
+    def is_authenticated(self, check_headers=None):
         """ Checks whether the object is authenticated or not.
 
         This method checks for header for authentication token and key.
@@ -88,9 +88,11 @@ class PicovicoRequest(object):
         Returns:
             bool: *True* if header consist of authentication headers else *False*.
         """
+        if not check_headers:
+            check_headers = self.headers
         check = False
-        if self.headers:
-            check = all(k in self.headers and self.headers[k] for k in ('X-Access-Key', 'X-Access-Token'))
+        if check_headers:
+            check = all(k in check_headers and check_headers[k] for k in ('X-Access-Key', 'X-Access-Token'))
         return check
 
     def get(self, path):
@@ -179,7 +181,7 @@ class PicovicoRequest(object):
         self.request_args = self.get_request_args('delete')
         return self._respond(path)
 
-    def _respond(self, path):
+    def _respond(self, path, headers=None):
         """ **Not for user.
         Appends path to URL and calls `requests` for API populating request arguments.
         Raises error  based on status.
@@ -191,7 +193,10 @@ class PicovicoRequest(object):
         self.url = path
         request_args = self.request_args._asdict()
         request_args.update(url=self.url)
-        request_args.update(headers=self.headers)
+        if not headers:
+            request_args.update(headers=self.headers)
+        elif isinstance(headers, dict):
+            request_args.update(headers=headers)
         response = requests.request(**request_args)
         try:
             json_response = response.json()

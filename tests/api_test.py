@@ -9,8 +9,9 @@ class TestPicovicoAPI:
     def test_api_proxy(self):
         api = PicovicoAPI('app_id', 'device_id')
         assert api.app_id
-        assert api.headers is None
+        assert api.auth_headers is None
         api.set_access_tokens("access_key", "access_token")
+        api.set_auth_headers()
         assert api.auth_headers
         assert api.is_authorized()
         api.logout()

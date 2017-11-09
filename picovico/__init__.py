@@ -1,27 +1,35 @@
 from picovico.session import PicovicoSessionMixin
 from picovico import urls as pv_urls
 from picovico import baserequest as pv_request
+from picovico.exceptions import PicovicoError
 
 class PicovicoAPI(PicovicoSessionMixin, pv_request.PicovicoRequest):
     def __init__(self, app_id, device_id=None, app_secret=None):
         super(PicovicoAPI, self).__init__(app_id, device_id=device_id, app_secret=app_secret)
+        self.headers = self.app_headers
 
     def authenticated_api(self, method='get', url=None, params=None, headers=None):
         self.request_args = self.get_request_args(method, req_data=params)
         auth_headers = self.auth_headers
-        if headers is not None:
-            if not auth_headers:
-                auth_headers = headers
-            else:
-                auth_headers.update(headers)
-        self.headers = auth_headers
-        return self._respond(url)
-        
+        if isinstance(headers, dict):
+            headers.update(auth_headers)
+            headers.update(self.app_headers)
+        else:
+            headers = auth_headers
+            headers.update(self.app_headers)
+        if self.is_authenticated(headers):
+            return self._respond(url, headers=headers)
+        raise PicovicoError('Not authenticated yet.')
+    
+    
     def anonymous_api(self, method='get', url=None, params=None, headers=None):
         self.request_args = self.get_request_args(method, req_data=params)
-        self.header = headers
-        return self._respond(url)
-    
+        if isinstance(headers, dict):
+            headers.update(self.app_headers)
+        else:
+            headers = self.app_headers
+        return self._respond(url, headers)
+         
     def authenticate(self, app_secret=None):
         """ API authentication workflow.
 
@@ -39,10 +47,11 @@ class PicovicoAPI(PicovicoSessionMixin, pv_request.PicovicoRequest):
             'app_secret': self.app_secret,
             'device_id': self.device_id
         }
-        self.headers = {'X-PV-Meta-App': self.app_id}
         response = self.post(path=pv_urls.PICOVICO_APP, post_data=data)
+        response = response.get('data')[0]
         self.set_access_tokens(access_key=response.get('access_key'),
                 access_token=response.get('access_token'))
+        self.set_auth_headers()
 
 
     def text_slide(self, title='', body=''):

@@ -20,6 +20,8 @@ class PicovicoSessionMixin(object):
         self.__access_key = None
         self.__access_token = None
         self.__device_id = device_id
+        self.app_headers = {'X-PV-Meta-App': self.app_id}
+        self.auth_headers = None
 
     @property
     def device_id(self):
@@ -71,6 +73,13 @@ class PicovicoSessionMixin(object):
         self.__access_key = access_key
         self.__access_token = access_token
 
+    def set_auth_headers(self):
+        if self.is_authorized():
+            self.auth_headers = {
+                'X-Access-Key': self.access_key,
+                'X-Access-Token': self.access_token
+            }
+
     def  is_anonymous(self):
         """ Check if key and token are set.
         This should be opposite of is_authorized.
@@ -87,16 +96,6 @@ class PicovicoSessionMixin(object):
             bool: *False* if is_anonymous else *True*.
         """
         return not self.is_anonymous()
-
-    @property
-    def auth_headers(self):
-        """ Header dict based on is_authorized else None.
-        """
-        if self.is_authorized():
-            return {
-                'X-Access-Key': self.access_key,
-                'X-Access-Token': self.access_token
-            }
 
     def logout(self):
         """ Flush access key and token.
