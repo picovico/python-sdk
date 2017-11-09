@@ -18,12 +18,11 @@ class TestPicovicoSession:
         assert pv_session.access_token == "access_token"
         assert pv_session.access_key == "access_key"
         with pytest.raises(AttributeError):
-            #donot allow override of tokens and auth_header
+            #donot allow override of tokens
             pv_session.access_key = "new_access_token"
         with pytest.raises(AttributeError):
             pv_session.access_token = "new_access_key"
-        with pytest.raises(AttributeError):
-            pv_session.auth_headers = None
+        pv_session.set_auth_headers()
         assert pv_session.auth_headers is not None
 
 
