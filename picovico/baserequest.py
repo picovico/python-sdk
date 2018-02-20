@@ -24,6 +24,7 @@ class PicovicoRequest(object):
     """
 
     def __init__(self, headers=None):
+        super(PicovicoRequest, self).__init__()
         self.__host = pv_urls.PICOVICO_BASE
         self.__headers = headers
         self.__url = self.host
