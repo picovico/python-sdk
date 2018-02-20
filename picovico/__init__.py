@@ -63,7 +63,7 @@ class PicovicoAPI(PicovicoSessionMixin, pv_request.PicovicoRequest):
             }
         }
     
-    def image_slide(self, image_url, image_id, caption=''):
+    def image_slide(self, image_url=None, image_id=None, caption=''):
         d = {
             "name": 'image',
             "data": {
